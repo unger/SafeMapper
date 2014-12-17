@@ -1,54 +1,52 @@
 ﻿namespace MapEverything
 {
     using System;
-    using System.Diagnostics;
+    using System.ComponentModel;
     using System.Globalization;
-    using System.Reflection;
 
-    public class TypeMapper
+    public class TypeMapper : TypeMapperBase
     {
-        public TypeMapper()
-        {
-            
-        }
-
-        public object ConvertTo(object value, Type type)
-        {
-            return this.ConvertTo(value, type, CultureInfo.CurrentCulture);
-        }
-
-        public object ConvertTo(object value, Type type, IFormatProvider formatProvider)
+        public override object Convert(object value, Type toType, IFormatProvider formatProvider)
         {
             if (value == null)
             {
-                return this.GetDefaultValue(type);
+                return this.GetDefaultValue(toType);
             }
 
-            var converter = this.FindConverter(value.GetType(), type, formatProvider);
+            if (toType == this.ConvertTypes[(int)TypeCode.String])
+            {
+                return this.ConvertToString(value, formatProvider);
+            }
 
+            var toConverter = this.GetConverter(toType);
+            if (toConverter.CanConvertFrom(value.GetType()))
+            {
+                return toConverter.ConvertFrom(null, (CultureInfo)formatProvider, value);
+            }
 
-            return converter.Invoke(null, new[] { value });
+            var fromConverter = this.GetConverter(value.GetType());
+            if (fromConverter.CanConvertTo(toType))
+            {
+                return fromConverter.ConvertTo(null, (CultureInfo)formatProvider, value, toType);
+            }
+
+            return System.Convert.ChangeType(value, toType, formatProvider);
         }
 
-        private MethodInfo FindConverter(Type sourceType, Type destinationType, IFormatProvider formatProvider)
+        private string ConvertToString(object value, IFormatProvider formatProvider)
         {
-            var parseMethod = destinationType.GetMethod("Parse", new Type[] { sourceType });
-            if (parseMethod != null)
+            var ic = value as IConvertible;
+            if (ic != null)
             {
-                return parseMethod;
+                return ic.ToString(formatProvider);
             }
 
-            return null;
+            return value.ToString();
         }
 
-        private object GetDefaultValue(Type t)
+        private TypeConverter GetConverter(Type type)
         {
-            if (t.IsValueType)
-            {
-                return Activator.CreateInstance(t);
-            }
-
-            return null;
+            return this.TypeConverters.GetOrAdd(type, TypeDescriptor.GetConverter);
         }
     }
 }
