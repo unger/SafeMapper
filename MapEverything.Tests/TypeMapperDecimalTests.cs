@@ -60,5 +60,30 @@
                 Assert.AreEqual(DecimalValue.ToString(cultureInfo), converted);
             }
         }
+
+        [Test]
+        public void CanConvertStringToDecimalWithoutCulture()
+        {
+            const decimal DecimalValue = 123.45m;
+            var value = DecimalValue.ToString();
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<string, decimal>(value);
+                Assert.AreEqual(DecimalValue, converted);
+            }
+        }
+
+        [Test]
+        public void CanConvertDecimalToStringWithoutCulture()
+        {
+            const decimal DecimalValue = 123.45m;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<decimal, string>(DecimalValue);
+                Assert.AreEqual(DecimalValue.ToString(), converted);
+            }
+        }
     }
 }

@@ -29,5 +29,17 @@
                 Assert.AreEqual(value.ToString(), converted);
             }
         }
+
+        [Test]
+        public void ConvertNonGuidStringToGuid_ShouldReturnEmptyGuid()
+        {
+            var value = "test";
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<string, Guid>(value);
+                Assert.AreEqual(Guid.Empty, converted);
+            }
+        }
     }
 }

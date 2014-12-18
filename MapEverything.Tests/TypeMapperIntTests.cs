@@ -27,5 +27,17 @@
                 Assert.AreEqual("12345", converted);
             }
         }
+
+        [Test]
+        public void ConvertNullToInt_ShouldReturnDefault()
+        {
+            string value = null;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<string, int>(value);
+                Assert.AreEqual(default(int), converted);
+            }
+        }
     }
 }

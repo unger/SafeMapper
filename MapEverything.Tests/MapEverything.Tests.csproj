@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeMapperGuidTests.cs" />
+    <Compile Include="TypeMapperDateTimeTests.cs" />
     <Compile Include="TypeMapperTestsBase.cs" />
     <Compile Include="TypeMapperDecimalTests.cs" />
     <Compile Include="TypeMapperIntTests.cs" />

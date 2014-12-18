@@ -18,13 +18,15 @@
         {
             var formatProvider = CultureInfo.CurrentCulture;
 
-            const int Iterations = 100000;
+            const int Iterations = 10000;
             var stringIntArray = new string[Iterations];
             var stringDecimalArray = new string[Iterations];
             var stringGuidArray = new string[Iterations];
+            var stringDateTimeArray = new string[Iterations];
             var guidArray = new Guid[Iterations];
             var intArray = new int[Iterations];
             var decimalArray = new decimal[Iterations];
+            var dateTimeArray = new DateTime[Iterations];
 
             for (int i = 0; i < Iterations; i++)
             {
@@ -34,6 +36,8 @@
                 intArray[i] = i;
                 decimalArray[i] = i * 0.9m;
                 guidArray[i] = Guid.NewGuid();
+                stringDateTimeArray[i] = DateTime.Now.ToString(formatProvider);
+                dateTimeArray[i] = DateTime.Now;
             }
 
             ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
@@ -42,11 +46,15 @@
 
             ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
 
+            ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => DateTime.Parse(stringDateTimeArray[i], formatProvider));
+
             ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
 
             ProfileConvert<decimal, string>(decimalArray, formatProvider, i => decimalArray[i].ToString(formatProvider));
-            
+
             ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
+
+            ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
         }
 
         private static void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
