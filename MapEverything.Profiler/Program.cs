@@ -57,10 +57,6 @@
             var reflectionConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var standardConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
 
-            //Mapper.CreateMap<TSource, TDestination>();
-
-            standardMapper.AddConverter<Guid>(new GuidTypeConverter());
-
             Console.WriteLine("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length);
 
             Profile(

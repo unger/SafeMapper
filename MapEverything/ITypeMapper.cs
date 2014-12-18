@@ -9,9 +9,17 @@
 
         TTo Convert<TFrom, TTo>(TFrom value, IFormatProvider formatProvider);
 
+        TTo Convert<TFrom, TTo>(TFrom value, Converter<TFrom, TTo> converter);
+
+        Converter<TFrom, TTo> GetConverter<TFrom, TTo>();
+
+        Converter<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider formatProvider);
+        
         object Convert(object value, Type toType);
 
         object Convert(object value, Type toType, IFormatProvider formatProvider);
+
+        object Convert(object value, Func<object, object> converter);
 
         Func<object, object> GetConverter(Type fromType, Type toType);
 

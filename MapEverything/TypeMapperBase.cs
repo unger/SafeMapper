@@ -40,9 +40,30 @@
             return (TTo)this.Convert(value, typeof(TTo), formatProvider);
         }
 
+        public TTo Convert<TFrom, TTo>(TFrom value, Converter<TFrom, TTo> converter)
+        {
+            return converter(value);
+        }
+
+        public Converter<TFrom, TTo> GetConverter<TFrom, TTo>()
+        {
+            return this.GetConverter<TFrom, TTo>(CultureInfo.CurrentCulture);
+        }
+
+        public Converter<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider formatProvider)
+        {
+            var converter = this.GetConverter(typeof(TFrom), typeof(TTo), formatProvider);
+            return value => (TTo)converter(value);
+        }
+
         public object Convert(object value, Type toType)
         {
             return this.Convert(value, toType, CultureInfo.CurrentCulture);
+        }
+
+        public object Convert(object value, Func<object, object> converter)
+        {
+            return converter(value);
         }
 
         public Func<object, object> GetConverter(Type fromType, Type toType)
