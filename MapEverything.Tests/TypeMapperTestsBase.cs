@@ -11,7 +11,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.Mappers = new List<ITypeMapper> { new ReflectionTypeMapper() };
+            this.Mappers = new List<ITypeMapper> { new TypeMapper() };
         }
     }
 }

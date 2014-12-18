@@ -1,36 +1,44 @@
 ﻿namespace MapEverything
 {
     using System;
+    using System.Collections.Concurrent;
     using System.ComponentModel;
     using System.Globalization;
 
     public class TypeMapper : TypeMapperBase
     {
-        public override object Convert(object value, Type toType, IFormatProvider formatProvider)
-        {
-            if (value == null)
-            {
-                return this.GetDefaultValue(toType);
-            }
+        private ConcurrentDictionary<Type, TypeConverter> typeConverters;
 
+        public TypeMapper()
+        {
+            this.typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
+        }
+
+        public override Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider)
+        {
             if (toType == this.ConvertTypes[(int)TypeCode.String])
             {
-                return this.ConvertToString(value, formatProvider);
+                return value => this.ConvertToString(value, formatProvider);
             }
 
-            var toConverter = this.GetConverter(toType);
-            if (toConverter.CanConvertFrom(value.GetType()))
+            var toConverter = this.GetTypeConverter(toType);
+            if (toConverter.CanConvertFrom(fromType))
             {
-                return toConverter.ConvertFrom(null, (CultureInfo)formatProvider, value);
+                return value => toConverter.ConvertFrom(null, (CultureInfo)formatProvider, value);
             }
 
-            var fromConverter = this.GetConverter(value.GetType());
+            var fromConverter = this.GetTypeConverter(fromType);
             if (fromConverter.CanConvertTo(toType))
             {
-                return fromConverter.ConvertTo(null, (CultureInfo)formatProvider, value, toType);
+                return value => fromConverter.ConvertTo(null, (CultureInfo)formatProvider, value, toType);
             }
 
-            return System.Convert.ChangeType(value, toType, formatProvider);
+            return value => System.Convert.ChangeType(value, toType, formatProvider);
+        }
+
+        public void AddConverter<T>(TypeConverter typeConverter)
+        {
+            this.typeConverters[typeof(T)] = typeConverter;
         }
 
         private string ConvertToString(object value, IFormatProvider formatProvider)
@@ -44,9 +52,9 @@
             return value.ToString();
         }
 
-        private TypeConverter GetConverter(Type type)
+        private TypeConverter GetTypeConverter(Type type)
         {
-            return this.TypeConverters.GetOrAdd(type, TypeDescriptor.GetConverter);
+            return this.typeConverters.GetOrAdd(type, TypeDescriptor.GetConverter);
         }
     }
 }

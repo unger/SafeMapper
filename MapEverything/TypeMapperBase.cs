@@ -1,9 +1,6 @@
 ﻿namespace MapEverything
 {
     using System;
-    using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Globalization;
 
     public abstract class TypeMapperBase : ITypeMapper
@@ -33,21 +30,6 @@
                 typeof(String)
             };
 
-        private ConcurrentDictionary<Type, TypeConverter> typeConverters;
-
-        protected TypeMapperBase()
-        {
-            this.typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
-        }
-
-        protected ConcurrentDictionary<Type, TypeConverter> TypeConverters
-        {
-            get
-            {
-                return this.typeConverters;
-            }
-        }
-
         public TTo Convert<TFrom, TTo>(TFrom value)
         {
             return (TTo)this.Convert(value, typeof(TTo));
@@ -63,12 +45,24 @@
             return this.Convert(value, toType, CultureInfo.CurrentCulture);
         }
 
-        public abstract object Convert(object value, Type toType, IFormatProvider formatProvider);
-
-        public void AddConverter<T>(TypeConverter typeConverter)
+        public Func<object, object> GetConverter(Type fromType, Type toType)
         {
-            this.typeConverters[typeof(T)] = typeConverter;
+            return this.GetConverter(fromType, toType, CultureInfo.CurrentCulture);
         }
+
+        public virtual object Convert(object value, Type toType, IFormatProvider formatProvider)
+        {
+            if (value == null)
+            {
+                return this.GetDefaultValue(toType);
+            }
+
+            var converter = this.GetConverter(value.GetType(), toType, formatProvider);
+
+            return converter(value);
+        }
+
+        public abstract Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider);
 
         protected object GetDefaultValue(Type t)
         {

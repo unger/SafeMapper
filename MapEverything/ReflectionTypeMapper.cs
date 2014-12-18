@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.ComponentModel;
-    using System.Globalization;
     using System.Reflection;
 
     using Fasterflect;
@@ -12,43 +10,44 @@
     {
         private ConcurrentDictionary<string, ConverterInvoker> convertMethods = new ConcurrentDictionary<string, ConverterInvoker>();
 
-        public override object Convert(object value, Type toType, IFormatProvider formatProvider)
+        private enum ConverterType
         {
-            if (value == null)
-            {
-                return this.GetDefaultValue(toType);
-            }
-
-            var converter = this.GetConverter(value.GetType(), toType, formatProvider);
-
-            if (converter == null)
-            {
-                return this.GetDefaultValue(toType);
-            }
-
-            switch (converter.ConverterType)
-            {
-                case ConverterType.NoParams:
-                    return converter.Method.Invoke(value, null);
-                case ConverterType.OnlyFormatProvider:
-                    return converter.Method.Invoke(value, formatProvider);
-                case ConverterType.OnlyValue:
-                    return converter.Method.Invoke(null, new[] { value });
-                case ConverterType.ValueAndFormatProvider:
-                    return converter.Method.Invoke(null, new[] { value, formatProvider });
-            }
-
-            return this.GetDefaultValue(toType);
+            NoParams,
+            OnlyValue,
+            OnlyFormatProvider,
+            ValueAndFormatProvider
         }
 
-        private ConverterInvoker GetConverter(Type fromType, Type toType, IFormatProvider formatProvider)
+        public override Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider)
+        {
+            var converter = this.GetConverterInvoker(fromType, toType);
+
+            if (converter != null)
+            {
+                switch (converter.ConverterType)
+                {
+                    case ConverterType.NoParams:
+                        return value => converter.Method(value.WrapIfValueType(), null);
+                    case ConverterType.OnlyFormatProvider:
+                        return value => converter.Method(value.WrapIfValueType(), formatProvider);
+                    case ConverterType.OnlyValue:
+                        return value => converter.Method(null, new[] { value });
+                    case ConverterType.ValueAndFormatProvider:
+                        return value => converter.Method(null, new[] { value, formatProvider });
+                }
+            }
+
+            return value => this.GetDefaultValue(toType);
+        }
+
+        private ConverterInvoker GetConverterInvoker(Type fromType, Type toType)
         {
             var key = string.Format("{0};{1}", fromType.FullName, toType.FullName);
 
-            return this.convertMethods.GetOrAdd(key, k => this.FindConverter(fromType, toType, formatProvider));
+            return this.convertMethods.GetOrAdd(key, k => this.FindConverterInvoker(fromType, toType));
         }
 
-        private ConverterInvoker FindConverter(Type fromType, Type toType, IFormatProvider formatProvider)
+        private ConverterInvoker FindConverterInvoker(Type fromType, Type toType)
         {
             MethodInfo methodInfo;
 
@@ -80,14 +79,6 @@
             }
 
             return null;
-        }
-
-        private enum ConverterType
-        {
-            NoParams,
-            OnlyValue,
-            OnlyFormatProvider,
-            ValueAndFormatProvider
         }
 
         private class ConverterInvoker

@@ -13,6 +13,8 @@
 
         object Convert(object value, Type toType, IFormatProvider formatProvider);
 
-        void AddConverter<T>(TypeConverter typeConverter);
+        Func<object, object> GetConverter(Type fromType, Type toType);
+
+        Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider);
     }
 }

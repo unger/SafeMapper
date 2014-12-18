@@ -18,7 +18,7 @@
         {
             var formatProvider = CultureInfo.CurrentCulture;
 
-            const int Iterations = 10000;
+            const int Iterations = 100000;
             var stringIntArray = new string[Iterations];
             var stringDecimalArray = new string[Iterations];
             var stringGuidArray = new string[Iterations];
@@ -54,6 +54,9 @@
             var reflectionMapper = new ReflectionTypeMapper();
             var standardMapper = new TypeMapper();
 
+            var reflectionConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
+            var standardConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
+
             //Mapper.CreateMap<TSource, TDestination>();
 
             standardMapper.AddConverter<Guid>(new GuidTypeConverter());
@@ -71,11 +74,20 @@
                 input.Length,
                 i => standardMapper.Convert(input[i], typeof(TDestination), formatProvider));
 
+            Profile(
+                "StandardTypeMapper delegate",
+                input.Length,
+                i => standardConverter(input[i]));
 
             Profile(
                 "ReflectionTypeMapper",
                 input.Length,
                 i => reflectionMapper.Convert(input[i], typeof(TDestination), formatProvider));
+
+            Profile(
+                "ReflectionTypeMapper delegate",
+                input.Length,
+                i => reflectionConverter(input[i]));
 
 
             Profile(
@@ -119,11 +131,11 @@
                 }
 
                 watch.Stop();
-                Console.WriteLine("{0,-25}{1} ms", description, watch.Elapsed.TotalMilliseconds);
+                Console.WriteLine("{0,-40}{1} ms", description, watch.Elapsed.TotalMilliseconds);
             }
             catch (Exception e)
             {
-                Console.WriteLine("{0,-25} throws exception {1}", description, e.Message);
+                Console.WriteLine("{0,-40} throws exception {1}", description, e.Message);
             }
         }
 
