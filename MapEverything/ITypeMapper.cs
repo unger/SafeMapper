@@ -24,5 +24,7 @@
         Func<object, object> GetConverter(Type fromType, Type toType);
 
         Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider);
+
+        void AddTypeConverter<T>(TypeConverter typeConverter);
     }
 }

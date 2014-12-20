@@ -6,7 +6,7 @@
 
     using Fasterflect;
 
-    public class ReflectionTypeMapper : TypeMapperBase
+    public class ReflectionTypeMapper : TypeMapper
     {
         private ConcurrentDictionary<string, ConverterInvoker> convertMethods = new ConcurrentDictionary<string, ConverterInvoker>();
 
@@ -37,7 +37,7 @@
                 }
             }
 
-            return value => this.GetDefaultValue(toType);
+            return base.GetConverter(fromType, toType, formatProvider);
         }
 
         private ConverterInvoker GetConverterInvoker(Type fromType, Type toType)

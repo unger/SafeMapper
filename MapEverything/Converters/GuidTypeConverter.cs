@@ -18,11 +18,11 @@
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if (destinationType == typeof(Guid))
+            if (destinationType == typeof(string))
             {
                 return true;
             }
-
+            
             return base.CanConvertTo(context, destinationType);
         }
 
@@ -31,7 +31,13 @@
             if (value is string)
             {
                 string text = ((string)value).Trim();
-                return new Guid(text);
+                Guid guid;
+                if (Guid.TryParse(text, out guid))
+                {
+                    return guid;
+                }
+
+                return Guid.Empty;
             }
 
             return base.ConvertFrom(context, culture, value);

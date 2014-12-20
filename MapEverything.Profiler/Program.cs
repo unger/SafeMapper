@@ -1,6 +1,7 @@
 ﻿namespace MapEverything.Profiler
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Globalization;
 
@@ -27,6 +28,7 @@
             var intArray = new int[Iterations];
             var decimalArray = new decimal[Iterations];
             var dateTimeArray = new DateTime[Iterations];
+            var personArray = new Person[Iterations];
 
             for (int i = 0; i < Iterations; i++)
             {
@@ -38,6 +40,13 @@
                 guidArray[i] = Guid.NewGuid();
                 stringDateTimeArray[i] = DateTime.Now.ToString(formatProvider);
                 dateTimeArray[i] = DateTime.Now;
+                personArray[i] = new Person
+                                     {
+                                         Id = Guid.NewGuid(),
+                                         Name = "Test Name " + i,
+                                         Age = i % 85,
+                                         Length = 1.70m + ((i % 20) / 100m)
+                                     };
             }
 
             ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
@@ -55,66 +64,88 @@
             ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
 
             ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
+
+            ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
         }
 
         private static void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
             var reflectionMapper = new ReflectionTypeMapper();
-            var standardMapper = new TypeMapper();
+            var standardMapper = new StandardTypeMapper();
+            var typeMapper = new TypeMapper();
 
             var reflectionConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var standardConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
+            var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
+
+            reflectionMapper.AddTypeConverter<Person>(new GenericTypeConverter<Person, PersonDto>(reflectionMapper));
+            standardMapper.AddTypeConverter<Person>(new GenericTypeConverter<Person, PersonDto>(standardMapper));
+            typeMapper.AddTypeConverter<Person>(new GenericTypeConverter<Person, PersonDto>(typeMapper));
+
+            Mapper.CreateMap<TSource, TDestination>();
 
             Console.WriteLine("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length);
 
-            Profile(
-                "Native",
-                input.Length,
-                compareFunc);
+            var result = new List<Tuple<string, double>>();
+
+            if (compareFunc != null)
+            {
+                result.Add(Profile("Native", input.Length, compareFunc));
+            }
 
 
-            Profile(
-                "StandardTypeMapper",
-                input.Length,
-                i => standardMapper.Convert(input[i], typeof(TDestination), formatProvider));
 
-            Profile(
-                "StandardTypeMapper delegate",
-                input.Length,
-                i => standardConverter(input[i]));
+            result.Add(
+                Profile(
+                    "StandardTypeMapper",
+                    input.Length,
+                    i => standardMapper.Convert(input[i], typeof(TDestination), formatProvider)));
 
-            Profile(
-                "ReflectionTypeMapper",
-                input.Length,
-                i => reflectionMapper.Convert(input[i], typeof(TDestination), formatProvider));
+            result.Add(Profile("StandardTypeMapper delegate", input.Length, i => standardMapper.Convert(input[i], standardConverter)));
 
-            Profile(
-                "ReflectionTypeMapper delegate",
-                input.Length,
-                i => reflectionConverter(input[i]));
+            result.Add(
+                Profile(
+                    "ReflectionTypeMapper",
+                    input.Length,
+                    i => reflectionMapper.Convert(input[i], typeof(TDestination), formatProvider)));
+
+            result.Add(Profile("ReflectionTypeMapper delegate", input.Length, i => reflectionMapper.Convert(input[i], reflectionConverter)));
+
+            result.Add(
+                Profile(
+                    "TypeMapper",
+                    input.Length,
+                    i => typeMapper.Convert(input[i], typeof(TDestination), formatProvider)));
+
+            result.Add(Profile("TypeMapper delegate", input.Length, i => typeMapper.Convert(input[i], typeMapperConverter)));
+
+            result.Add(
+                Profile(
+                    "SimpleTypeConverter",
+                    input.Length,
+                    i => SimpleTypeConverter.ConvertTo(input[i], typeof(TDestination), formatProvider)));
 
 
-            Profile(
-                "SimpleTypeConverter",
-                input.Length,
-                i => SimpleTypeConverter.ConvertTo(input[i], typeof(TDestination), formatProvider));
+            result.Add(
+                Profile(
+                    "UniversalTypeConverter",
+                    input.Length,
+                    i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider)));
 
 
-            Profile(
-                "UniversalTypeConverter",
-                input.Length,
-                i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider));
+            result.Add(Profile("AutoMapper", input.Length, i => Mapper.Map<TSource, TDestination>(input[i])));
 
+            result.Sort((t1, t2) => t1.Item2.CompareTo(t2.Item2));
 
-            Profile(
-                "AutoMapper",
-                input.Length,
-                i => Mapper.Map<TSource, TDestination>(input[i]));
+            foreach (var row in result)
+            {
+                Console.WriteLine(row.Item1);
+            }
 
             Console.WriteLine();
         }
 
-        private static void Profile(string description, int iterations, Action<int> func)
+        private static Tuple<string, double> Profile(string description, int iterations, Action<int> func)
         {
             try
             {
@@ -135,13 +166,39 @@
                 }
 
                 watch.Stop();
-                Console.WriteLine("{0,-40}{1} ms", description, watch.Elapsed.TotalMilliseconds);
+                return new Tuple<string, double>(string.Format("{0,-40}{1} ms", description, watch.Elapsed.TotalMilliseconds), watch.Elapsed.TotalMilliseconds);
             }
             catch (Exception e)
             {
-                Console.WriteLine("{0,-40} throws exception {1}", description, e.Message);
+                return new Tuple<string, double>(string.Format("{0,-40} throws exception", description), double.MaxValue);
             }
         }
 
+        private class Person
+        {
+            public Guid Id { get; set; }
+
+            public string Name { get; set; }
+
+            public int Age { get; set; }
+
+            public decimal Length { get; set; }
+
+            public DateTime BirthDate { get; set; }
+        }
+
+
+        private class PersonDto
+        {
+            public Guid Id { get; set; }
+
+            public string Name { get; set; }
+
+            public int Age { get; set; }
+
+            public decimal Length { get; set; }
+
+            public DateTime BirthDate { get; set; }
+        }
     }
 }
