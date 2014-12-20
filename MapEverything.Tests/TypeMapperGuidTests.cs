@@ -15,8 +15,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<Guid>(new GuidTypeConverter());
-
                 var converted = mapper.Convert<string, Guid>(value.ToString());
                 Assert.AreEqual(value, converted);
             }
@@ -29,8 +27,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<Guid>(new GuidTypeConverter());
-
                 var converted = mapper.Convert<Guid, string>(value);
                 Assert.AreEqual(value.ToString(), converted);
             }
@@ -43,8 +39,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<Guid>(new GuidTypeConverter());
-
                 var converted = mapper.Convert<string, Guid>(value);
                 Assert.AreEqual(Guid.Empty, converted);
             }

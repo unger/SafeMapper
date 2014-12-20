@@ -6,6 +6,8 @@
     using System.Globalization;
     using System.Reflection;
 
+    using Fasterflect;
+
     public class GenericTypeConverter<TFrom, TTo> : TypeConverter
     {
         private Dictionary<string, PropertyMapConvert> fromToMapping = new Dictionary<string, PropertyMapConvert>();
@@ -94,10 +96,18 @@
 
             private readonly PropertyInfo toPropertyInfo;
 
+            private readonly MemberGetter fromTypeMemberGetter;
+
+            private readonly MemberSetter toTypeMemberSetter;
+
+
             private readonly Func<object, object> converter;
 
             public PropertyMapConvert(PropertyInfo fromPropertyInfo, PropertyInfo toPropertyInfo, Func<object, object> converter)
             {
+                this.fromTypeMemberGetter = fromPropertyInfo.DelegateForGetPropertyValue();
+                this.toTypeMemberSetter = toPropertyInfo.DelegateForSetPropertyValue();
+
                 this.fromPropertyInfo = fromPropertyInfo;
                 this.toPropertyInfo = toPropertyInfo;
                 this.converter = converter;
@@ -105,9 +115,7 @@
 
             public void MapConvertProperty(object fromObject, object toObject)
             {
-                var fromValue = this.fromPropertyInfo.GetValue(fromObject);
-                var toValue = this.converter(fromValue);
-                this.toPropertyInfo.SetValue(toObject, toValue);
+                this.toTypeMemberSetter(toObject, this.converter(this.fromTypeMemberGetter(fromObject)));
             }
         }
     }

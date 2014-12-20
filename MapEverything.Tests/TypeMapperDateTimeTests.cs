@@ -58,5 +58,41 @@
             }
         }
 
+        [Test]
+        public void ConvertDateTimeMinValueToSqlDateTime_ShouldReturnSqlDateTimeMinValue()
+        {
+            var value = DateTime.MinValue;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<DateTime, SqlDateTime>(value);
+                Assert.AreEqual(SqlDateTime.MinValue, converted);
+            }
+        }
+
+        [Test]
+        public void CanConvertDateTimeTodayToSqlDateTime()
+        {
+            var value = DateTime.Today;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<DateTime, SqlDateTime>(value);
+                Assert.AreEqual(value, converted.Value);
+            }
+        }
+
+        [Test]
+        public void ConvertSqlDateTimeMinValueToDateTime_ShouldReturnSameValue()
+        {
+            var value = SqlDateTime.MinValue;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<SqlDateTime, DateTime>(value);
+                Assert.AreEqual(value.Value, converted);
+            }
+        }
+
     }
 }

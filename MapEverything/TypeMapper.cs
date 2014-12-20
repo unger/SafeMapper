@@ -5,6 +5,9 @@
     using System.ComponentModel;
     using System.Globalization;
 
+    using MapEverything.Converters;
+    using System.Data.SqlTypes;
+
     public class TypeMapper : ITypeMapper
     {
         private ConcurrentDictionary<Type, TypeConverter> typeConverters;
@@ -12,6 +15,9 @@
         public TypeMapper()
         {
             this.typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
+
+            this.typeConverters.TryAdd(typeof(Guid), new GuidTypeConverter());
+            this.typeConverters.TryAdd(typeof(SqlDateTime), new SqlDateTimeTypeConverter());
         }
 
         protected readonly Type[] ConvertTypes =
