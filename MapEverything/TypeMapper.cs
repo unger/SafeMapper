@@ -3,47 +3,45 @@
     using System;
     using System.Collections.Concurrent;
     using System.ComponentModel;
+    using System.Data.SqlTypes;
     using System.Globalization;
+    using System.Linq;
 
     using MapEverything.Converters;
-    using System.Data.SqlTypes;
 
     public class TypeMapper : ITypeMapper
     {
+        protected readonly Type[] ConvertTypes =
+            {
+                null,               // TypeCode.Empty = 0
+                typeof(object),     // TypeCode.Object = 1
+                typeof(DBNull),     // TypeCode.DBNull = 2
+                typeof(bool),       // TypeCode.Boolean = 3
+                typeof(char),       // TypeCode.Char = 4
+                typeof(sbyte),      // TypeCode.SByte = 5
+                typeof(byte),       // TypeCode.Byte = 6
+                typeof(short),      // TypeCode.Int16 = 7
+                typeof(ushort),     // TypeCode.UInt16 = 8
+                typeof(int),        // TypeCode.Int32 = 9
+                typeof(uint),       // TypeCode.UInt32 = 10
+                typeof(long),       // TypeCode.Int64 = 11
+                typeof(ulong),      // TypeCode.UInt64 = 12
+                typeof(float),      // TypeCode.Single = 13
+                typeof(double),     // TypeCode.Double = 14
+                typeof(decimal),    // TypeCode.Decimal = 15
+                typeof(DateTime),   // TypeCode.DateTime = 16
+                typeof(object),     // 17 is missing
+                typeof(string)      // TypeCode.String = 18
+            };
+
         private ConcurrentDictionary<Type, TypeConverter> typeConverters;
 
         public TypeMapper()
         {
             this.typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
-
-            this.typeConverters.TryAdd(typeof(Guid), new GuidTypeConverter());
-            this.typeConverters.TryAdd(typeof(SqlDateTime), new SqlDateTimeTypeConverter());
+            this.AddTypeConverter(typeof(Guid), new GuidTypeConverter());
+            this.AddTypeConverter(typeof(SqlDateTime), new SqlDateTimeTypeConverter());
         }
-
-        protected readonly Type[] ConvertTypes =
-            {
-                null, 
-                typeof(Object), 
-                typeof(DBNull), 
-                typeof(Boolean),
-                typeof(Char), 
-                typeof(SByte), 
-                typeof(Byte), 
-                typeof(Int16),
-                typeof(UInt16), 
-                typeof(Int32), 
-                typeof(UInt32), 
-                typeof(Int64),
-                typeof(UInt64), 
-                typeof(Single), 
-                typeof(Double), 
-                typeof(Decimal),
-                typeof(DateTime), 
-
-                // TypeCode is discontinuous so we need a placeholder.
-                typeof(Object),
-                typeof(String)
-            };
 
         public TTo Convert<TFrom, TTo>(TFrom value)
         {

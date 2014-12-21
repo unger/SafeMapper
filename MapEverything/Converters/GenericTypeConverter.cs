@@ -1,17 +1,13 @@
 ﻿namespace MapEverything.Converters
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Globalization;
-    using System.Reflection;
-
-    using Fasterflect;
 
     public class GenericTypeConverter<TFrom, TTo> : TypeConverter
     {
-        private Dictionary<string, PropertyMapConvert> fromToMapping = new Dictionary<string, PropertyMapConvert>();
-        private Dictionary<string, PropertyMapConvert> toFromMapping = new Dictionary<string, PropertyMapConvert>();
+        private TypeMap fromTypeMap;
+        private TypeMap toTypeMap;
 
         public GenericTypeConverter(ITypeMapper typeMapper) : this(typeMapper, CultureInfo.CurrentCulture)
         {
@@ -22,17 +18,8 @@
             var fromType = typeof(TFrom);
             var toType = typeof(TTo);
 
-            foreach (var fromProp in fromType.GetProperties())
-            {
-                var toProp = toType.GetProperty(fromProp.Name);
-                if (toProp != null)
-                {
-                    var fromConverter = typeMapper.GetConverter(fromProp.PropertyType, toProp.PropertyType);
-                    var toConverter = typeMapper.GetConverter(toProp.PropertyType, fromProp.PropertyType);
-                    this.fromToMapping.Add(fromProp.Name, new PropertyMapConvert(fromProp, toProp, fromConverter));
-                    this.toFromMapping.Add(toProp.Name, new PropertyMapConvert(toProp, fromProp, toConverter));
-                }
-            }
+            this.fromTypeMap = new TypeMap(toType, fromType, typeMapper);
+            this.toTypeMap = new TypeMap(fromType, toType, typeMapper);
         }
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
@@ -61,10 +48,7 @@
             {
                 var result = Activator.CreateInstance<TFrom>();
 
-                foreach (var key in this.toFromMapping.Keys)
-                {
-                    this.toFromMapping[key].MapConvertProperty(value, result);
-                }
+                this.fromTypeMap.Map(value, result);
 
                 return result;
             }
@@ -78,45 +62,12 @@
             {
                 var result = Activator.CreateInstance<TTo>();
 
-                foreach (var key in this.fromToMapping.Keys)
-                {
-                    this.fromToMapping[key].MapConvertProperty(value, result);
-                }
+                this.toTypeMap.Map(value, result);
 
                 return result;
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
-        }
-
-
-        private class PropertyMapConvert
-        {
-            private readonly PropertyInfo fromPropertyInfo;
-
-            private readonly PropertyInfo toPropertyInfo;
-
-            private readonly MemberGetter fromTypeMemberGetter;
-
-            private readonly MemberSetter toTypeMemberSetter;
-
-
-            private readonly Func<object, object> converter;
-
-            public PropertyMapConvert(PropertyInfo fromPropertyInfo, PropertyInfo toPropertyInfo, Func<object, object> converter)
-            {
-                this.fromTypeMemberGetter = fromPropertyInfo.DelegateForGetPropertyValue();
-                this.toTypeMemberSetter = toPropertyInfo.DelegateForSetPropertyValue();
-
-                this.fromPropertyInfo = fromPropertyInfo;
-                this.toPropertyInfo = toPropertyInfo;
-                this.converter = converter;
-            }
-
-            public void MapConvertProperty(object fromObject, object toObject)
-            {
-                this.toTypeMemberSetter(toObject, this.converter(this.fromTypeMemberGetter(fromObject)));
-            }
         }
     }
 }
