@@ -98,6 +98,11 @@
 
         public virtual Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider)
         {
+            if (toType.IsAssignableFrom(fromType))
+            {
+                return value => System.Convert.ChangeType(value, toType, formatProvider);
+            }
+
             if (toType == this.ConvertTypes[(int)TypeCode.String])
             {
                 return value => this.ConvertToString(value, formatProvider);
@@ -117,7 +122,18 @@
                 return value => fromConverter.ConvertTo(null, (CultureInfo)formatProvider, value, toType);
             }
 
-            return value => System.Convert.ChangeType(value, toType, formatProvider);
+            if (!fromType.IsClass && !toType.IsClass)
+            {
+                return value => System.Convert.ChangeType(value, toType, formatProvider);
+            }
+
+            // Create instance of GenericTypeConverter<TFrom, TTo> and add to list
+            Type genericType = typeof(GenericTypeConverter<,>);
+            Type[] typeArgs = { fromType, toType };
+            Type typedGenericType = genericType.MakeGenericType(typeArgs);
+            var genericTypeConverter = (TypeConverter)Activator.CreateInstance(typedGenericType, this, formatProvider);
+            this.AddTypeConverter(fromType, genericTypeConverter);
+            return value => genericTypeConverter.ConvertTo(null, (CultureInfo)formatProvider, value, toType);
         }
 
         public void AddTypeConverter<T>(TypeConverter typeConverter)

@@ -74,16 +74,14 @@
             var standardMapper = new StandardTypeMapper();
             var typeMapper = new TypeMapper();
 
-            reflectionMapper.AddTypeConverter<Person>(new GenericTypeConverter<TSource, TDestination>(reflectionMapper));
-            standardMapper.AddTypeConverter<Person>(new GenericTypeConverter<TSource, TDestination>(standardMapper));
-            typeMapper.AddTypeConverter<Person>(new GenericTypeConverter<TSource, TDestination>(typeMapper));
-
             var reflectionConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var standardConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
 
-
-            Mapper.CreateMap<TSource, TDestination>();
+            if (typeof(TDestination) != typeof(string))
+            {
+                Mapper.CreateMap<TSource, TDestination>();
+            }
 
             Console.WriteLine("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length);
 

@@ -20,8 +20,8 @@
         {
             this.fromType = fromType;
             this.toType = toType;
-            this.fromTypeGetDelegate = this.FindGetDelegate(fromType, fromPropertyName);
-            this.toTypeSetDelegate = this.FindSetDelegate(toType, toPropertyName);
+            this.fromTypeGetDelegate = this.FindMemberGetter(fromType, fromPropertyName);
+            this.toTypeSetDelegate = this.FindMemberSetter(toType, toPropertyName);
             this.converter = value => value;
         }
 
@@ -44,7 +44,7 @@
             this.toTypeSetDelegate(toObject, this.converter(this.fromTypeGetDelegate(fromObject)));
         }
 
-        private MemberGetter FindGetDelegate(Type type, string propertyName)
+        protected MemberGetter FindMemberGetter(Type type, string propertyName)
         {
             var pi = type.GetProperty(propertyName);
             if (pi != null)
@@ -63,7 +63,7 @@
             return null;
         }
 
-        private MemberSetter FindSetDelegate(Type type, string propertyName)
+        protected MemberSetter FindMemberSetter(Type type, string propertyName)
         {
             var pi = type.GetProperty(propertyName);
             if (pi != null)

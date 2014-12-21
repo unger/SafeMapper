@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\GenericTypeConverterOld.cs" />
     <Compile Include="Converters\GenericTypeConverter.cs" />
     <Compile Include="Converters\GuidTypeConverter.cs" />
     <Compile Include="Converters\SQLDateTimeTypeConverter.cs" />

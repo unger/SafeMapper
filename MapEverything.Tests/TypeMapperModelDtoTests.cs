@@ -25,8 +25,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<Person>(new GenericTypeConverter<Person, PersonDto>(mapper));
-
                 var converted = mapper.Convert<Person, PersonDto>(value);
 
                 Assert.IsInstanceOf<PersonDto>(converted);
@@ -53,8 +51,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<Person>(new GenericTypeConverterOld<Person, PersonDto>(mapper));
-
                 var converted = mapper.Convert<Person, PersonDto>(value);
 
                 Assert.IsInstanceOf<PersonDto>(converted);
@@ -81,8 +77,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<Person>(new GenericTypeConverter<Person, PersonStringDto>(mapper));
-
                 var converted = mapper.Convert<Person, PersonStringDto>(value);
 
                 Assert.IsInstanceOf<PersonStringDto>(converted);
@@ -118,8 +112,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<PersonStringDto>(new GenericTypeConverter<PersonStringDto, Person>(mapper));
-
                 var converted = mapper.Convert<PersonStringDto, Person>(value);
 
                 Assert.IsInstanceOf<Person>(converted);
@@ -146,8 +138,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<Person>(new GenericTypeConverter<Person, PersonDbDto>(mapper));
-
                 var converted = mapper.Convert<Person, PersonDbDto>(value);
 
                 Assert.IsInstanceOf<PersonDbDto>(converted);
@@ -174,8 +164,6 @@
 
             foreach (var mapper in this.Mappers)
             {
-                mapper.AddTypeConverter<PersonDbDto>(new GenericTypeConverter<PersonDbDto, Person>(mapper));
-
                 var converted = mapper.Convert<PersonDbDto, Person>(value);
 
                 Assert.IsInstanceOf<Person>(converted);
