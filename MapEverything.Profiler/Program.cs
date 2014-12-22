@@ -9,8 +9,9 @@
 
     using FastMapper;
 
-    using MapEverything.Converters;
     using MapEverything.Profiler.AutoMapperHelpers;
+    using MapEverything.Profiler.Model;
+    using MapEverything.Tests.Model;
     using MapEverything.Utils;
 
     using TB.ComponentModel;
@@ -31,6 +32,7 @@
             var intArray = new int[Iterations];
             var decimalArray = new decimal[Iterations];
             var dateTimeArray = new DateTime[Iterations];
+            var customerArray = new Customer[Iterations];
             var personArray = new Person[Iterations];
 
             for (int i = 0; i < Iterations; i++)
@@ -51,7 +53,9 @@
                                          Age = i % 85,
                                          Length = 1.70m + ((i % 20) / 100m)
                                      };
+                customerArray[i] = CustomerFactory.CreateTestCustomer();
             }
+            /*
             
             ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
 
@@ -78,6 +82,8 @@
             ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
 
             ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
+
+            ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);*/
 
             ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
         }
@@ -177,33 +183,6 @@
             {
                 return new Tuple<string, double>(string.Format("{0,-40} throws exception", description, e.Message), double.MaxValue);
             }
-        }
-
-        private class Person
-        {
-            public Guid Id { get; set; }
-
-            public string Name { get; set; }
-
-            public int Age { get; set; }
-
-            public decimal Length { get; set; }
-
-            public DateTime BirthDate { get; set; }
-        }
-
-
-        private class PersonDto
-        {
-            public Guid Id { get; set; }
-
-            public string Name { get; set; }
-
-            public int Age { get; set; }
-
-            public decimal Length { get; set; }
-
-            public DateTime BirthDate { get; set; }
         }
     }
 }

@@ -42,15 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\PersonDbDto.cs" />
-    <Compile Include="Model\PersonStringDto.cs" />
-    <Compile Include="Model\PersonDto.cs" />
-    <Compile Include="Model\Person.cs" />
-    <Compile Include="Model\PersonStructDto.cs" />
-    <Compile Include="Model\PersonStruct.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeMapperArrayTests.cs" />
     <Compile Include="TypeMapperGuidTests.cs" />
     <Compile Include="TypeMapperDateTimeTests.cs" />
+    <Compile Include="TypeMapperCustomerTests.cs" />
     <Compile Include="TypeMapperStructTests.cs" />
     <Compile Include="TypeMapperModelDtoTests.cs" />
     <Compile Include="TypeMapperTestsBase.cs" />
@@ -61,6 +57,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MapEverything.Tests.Model\MapEverything.Tests.Model.csproj">
+      <Project>{955aa075-d841-4bb9-9487-dac42eebcecc}</Project>
+      <Name>MapEverything.Tests.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MapEverything\MapEverything.csproj">
       <Project>{6240f741-b1ab-46fc-acca-06414ec53e45}</Project>
       <Name>MapEverything</Name>
