@@ -50,11 +50,11 @@
     <Compile Include="IMemberMap.cs" />
     <Compile Include="ITypeMapper.cs" />
     <Compile Include="DictionaryMemberMap.cs" />
-    <Compile Include="StandardTypeMapper.cs" />
     <Compile Include="ReflectionTypeMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeMap.cs" />
     <Compile Include="TypeMapper.cs" />
+    <Compile Include="Utils\StringParseHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

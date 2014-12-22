@@ -38,8 +38,12 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.3.0\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
+    <Reference Include="FastMapper">
+      <HintPath>..\packages\FastMapper.1.2.0\lib\net40\FastMapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -50,9 +54,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoMapperHelpers\AutoMapperDateTimeTypeConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleTypeConverter.cs" />
+    <Compile Include="SimpleTypeConverter\SimpleTypeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

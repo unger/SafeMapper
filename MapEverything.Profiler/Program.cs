@@ -7,9 +7,11 @@
 
     using AutoMapper;
 
-    using LuceneNetExtensions;
+    using FastMapper;
 
     using MapEverything.Converters;
+    using MapEverything.Profiler.AutoMapperHelpers;
+    using MapEverything.Utils;
 
     using TB.ComponentModel;
 
@@ -21,6 +23,7 @@
 
             const int Iterations = 10000;
             var stringIntArray = new string[Iterations];
+            var stringInvalidArray = new string[Iterations];
             var stringDecimalArray = new string[Iterations];
             var stringGuidArray = new string[Iterations];
             var stringDateTimeArray = new string[Iterations];
@@ -33,6 +36,7 @@
             for (int i = 0; i < Iterations; i++)
             {
                 stringIntArray[i] = i.ToString(formatProvider);
+                stringInvalidArray[i] = System.Web.Security.Membership.GeneratePassword((i % 10) + 1, i % 5);
                 stringDecimalArray[i] = (i * 0.9m).ToString(formatProvider);
                 stringGuidArray[i] = Guid.NewGuid().ToString();
                 intArray[i] = i;
@@ -48,19 +52,29 @@
                                          Length = 1.70m + ((i % 20) / 100m)
                                      };
             }
-
+            
             ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
 
-            ProfileConvert<string, decimal>(stringIntArray, formatProvider, i => decimal.Parse(stringDecimalArray[i], formatProvider));
+            //ProfileConvert<string, int>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
+
+            ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
+
+            //ProfileConvert<string, decimal>(stringInvalidArray, formatProvider, i => StringParser.TryParseDecimal(stringInvalidArray[i], formatProvider));
 
             ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
 
-            ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => DateTime.Parse(stringDateTimeArray[i], formatProvider));
+            //ProfileConvert<string, Guid>(stringInvalidArray, formatProvider, i => new Guid(stringInvalidArray[i]));
 
+            ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
+
+            //ProfileConvert<string, DateTime>(stringInvalidArray, formatProvider, i => Convert.ToDateTime(stringInvalidArray[i]));
+
+
+            
             ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
-
+            
             ProfileConvert<decimal, string>(decimalArray, formatProvider, i => decimalArray[i].ToString(formatProvider));
-
+            
             ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
 
             ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
@@ -68,19 +82,23 @@
             ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
         }
 
+
+
         private static void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
-            var reflectionMapper = new ReflectionTypeMapper();
-            var standardMapper = new StandardTypeMapper();
             var typeMapper = new TypeMapper();
-
-            var reflectionConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
-            var standardConverter = reflectionMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
 
             if (typeof(TDestination) != typeof(string))
             {
-                Mapper.CreateMap<TSource, TDestination>();
+                if (typeof(TDestination) == typeof(DateTime) && typeof(TSource) == typeof(string))
+                {
+                    Mapper.CreateMap(typeof(TSource), typeof(TDestination)).ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
+                }
+                else
+                {
+                    Mapper.CreateMap<TSource, TDestination>();
+                }
             }
 
             Console.WriteLine("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length);
@@ -91,24 +109,6 @@
             {
                 result.Add(Profile("Native", input.Length, compareFunc));
             }
-
-
-
-            result.Add(
-                Profile(
-                    "StandardTypeMapper",
-                    input.Length,
-                    i => standardMapper.Convert(input[i], typeof(TDestination), formatProvider)));
-
-            result.Add(Profile("StandardTypeMapper delegate", input.Length, i => standardMapper.Convert(input[i], standardConverter)));
-
-            result.Add(
-                Profile(
-                    "ReflectionTypeMapper",
-                    input.Length,
-                    i => reflectionMapper.Convert(input[i], typeof(TDestination), formatProvider)));
-
-            result.Add(Profile("ReflectionTypeMapper delegate", input.Length, i => reflectionMapper.Convert(input[i], reflectionConverter)));
 
             result.Add(
                 Profile(
@@ -130,6 +130,12 @@
                     "UniversalTypeConverter",
                     input.Length,
                     i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider)));
+
+            result.Add(
+                Profile(
+                    "FastMapper",
+                    input.Length,
+                    i => TypeAdapter.Adapt<TSource, TDestination>(input[i])));
 
 
             result.Add(Profile("AutoMapper", input.Length, i => Mapper.Map<TSource, TDestination>(input[i])));
@@ -169,7 +175,7 @@
             }
             catch (Exception e)
             {
-                return new Tuple<string, double>(string.Format("{0,-40} throws exception", description), double.MaxValue);
+                return new Tuple<string, double>(string.Format("{0,-40} throws exception", description, e.Message), double.MaxValue);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace LuceneNetExtensions
+﻿namespace MapEverything.Profiler
 {
     using System;
     using System.Collections;

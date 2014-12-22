@@ -41,7 +41,9 @@
 
         public void Map(object fromObject, object toObject)
         {
-            this.toTypeSetDelegate(toObject, this.converter(this.fromTypeGetDelegate(fromObject)));
+            this.toTypeSetDelegate(
+                toObject, 
+                this.converter(this.fromTypeGetDelegate(fromObject)));
         }
 
         protected MemberGetter FindMemberGetter(Type type, string propertyName)

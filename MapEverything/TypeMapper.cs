@@ -6,8 +6,12 @@
     using System.Data.SqlTypes;
     using System.Globalization;
     using System.Linq;
+    using System.Reflection;
+
+    using Fasterflect;
 
     using MapEverything.Converters;
+    using MapEverything.Utils;
 
     public class TypeMapper : ITypeMapper
     {
@@ -103,6 +107,17 @@
                 return value => System.Convert.ChangeType(value, toType, formatProvider);
             }
 
+            // Specialhandling when converting from string
+            if (fromType == this.ConvertTypes[(int)TypeCode.String])
+            {
+                var stringConverter = this.GetStringConverter(toType, formatProvider);
+                if (stringConverter != null)
+                {
+                    return stringConverter;
+                }
+            }
+
+            // Specialhandling when converting to string
             if (toType == this.ConvertTypes[(int)TypeCode.String])
             {
                 return value => this.ConvertToString(value, formatProvider);
@@ -162,8 +177,62 @@
             return null;
         }
 
+        protected virtual Func<object, object> GetStringConverter(Type toType, IFormatProvider formatProvider)
+        {
+            if (toType == this.ConvertTypes[(int)TypeCode.UInt16])
+            {
+                return value => StringParser.TryParseUInt16((string)value, formatProvider);
+            }
+            
+            if (toType == this.ConvertTypes[(int)TypeCode.Int16])
+            {
+                return value => StringParser.TryParseInt16((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.Int32])
+            {
+                return value => StringParser.TryParseInt32((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.Int64])
+            {
+                return value => StringParser.TryParseInt64((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.Decimal])
+            {
+                return value => StringParser.TryParseDecimal((string)value, formatProvider);
+            }
+
+            if (toType == typeof(Guid))
+            {
+                return value => StringParser.TryParseGuid((string)value, formatProvider);
+            }
+
+            if (toType == typeof(DateTime))
+            {
+                return value => StringParser.TryParseDateTime((string)value, formatProvider);
+            }
+
+            // Temporary find missing with reflection
+            var typeCode = Type.GetTypeCode(toType);
+            var mi = typeof(StringParser).GetMethod("TryParse" + typeCode);
+            if (mi != null)
+            {
+                return value => mi.DelegateForCallMethod()(null, value, formatProvider);
+            }
+
+            return null;
+        }
+
         protected virtual string ConvertToString(object value, IFormatProvider formatProvider)
         {
+            var formatable = value as IFormattable;
+            if (formatable != null)
+            {
+                return formatable.ToString(null, formatProvider);
+            }
+
             var ic = value as IConvertible;
             if (ic != null)
             {
