@@ -4,7 +4,6 @@
     using System.Data.SqlTypes;
 
     using MapEverything.Converters;
-    using MapEverything.Profiler.Model;
     using MapEverything.Tests.Model;
 
     using NUnit.Framework;
@@ -13,7 +12,7 @@
     public class TypeMapperCustomerTests : TypeMapperTestsBase
     {
         [Test]
-        public void CanConvertPersonStructToPerson()
+        public void CanConvertCustomerToCustomerDto()
         {
             var value = CustomerFactory.CreateTestCustomer();
 

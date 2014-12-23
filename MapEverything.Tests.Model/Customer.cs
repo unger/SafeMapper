@@ -1,4 +1,4 @@
-﻿namespace MapEverything.Profiler.Model
+﻿namespace MapEverything.Tests.Model
 {
     using System.Collections.Generic;
 

@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeDefinitionTests.cs" />
     <Compile Include="TypeMapperArrayTests.cs" />
     <Compile Include="TypeMapperGuidTests.cs" />
     <Compile Include="TypeMapperDateTimeTests.cs" />

@@ -26,5 +26,7 @@
         Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider);
 
         void AddTypeConverter<T>(TypeConverter typeConverter);
+
+        TypeDefinition GetTypeDefinition(Type type);
     }
 }

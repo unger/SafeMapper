@@ -2,8 +2,6 @@
 {
     using System.Collections.Generic;
 
-    using MapEverything.Profiler.Model;
-
     public class CustomerFactory
     {
         public static Customer CreateTestCustomer()

@@ -5,6 +5,7 @@
 
     using MapEverything.Converters;
     using MapEverything.Tests.Model;
+    using MapEverything.Tests.Model.Person;
 
     using NUnit.Framework;
 

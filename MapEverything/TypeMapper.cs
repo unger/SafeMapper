@@ -39,10 +39,12 @@
             };
 
         private ConcurrentDictionary<Type, TypeConverter> typeConverters;
+        private ConcurrentDictionary<Type, TypeDefinition> typeDefinitions;
 
         public TypeMapper()
         {
             this.typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
+            this.typeDefinitions = new ConcurrentDictionary<Type, TypeDefinition>();
             this.AddTypeConverter(typeof(Guid), new GuidTypeConverter());
             this.AddTypeConverter(typeof(SqlDateTime), new SqlDateTimeTypeConverter());
         }
@@ -102,6 +104,9 @@
 
         public virtual Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider)
         {
+            var fromTypeDef = this.GetTypeDefinition(fromType);
+            var toTypeDef = this.GetTypeDefinition(toType);
+
             if (toType.IsAssignableFrom(fromType))
             {
                 return value => System.Convert.ChangeType(value, toType, formatProvider);
@@ -144,7 +149,7 @@
 
             // Create instance of GenericTypeConverter<TFrom, TTo> and add to list
             Type genericType = typeof(GenericTypeConverter<,>);
-            Type[] typeArgs = { fromType, toType };
+            Type[] typeArgs = { fromTypeDef.ConcreteType, toTypeDef.ConcreteType };
             Type typedGenericType = genericType.MakeGenericType(typeArgs);
             var genericTypeConverter = (TypeConverter)Activator.CreateInstance(typedGenericType, this, formatProvider);
             this.AddTypeConverter(fromType, genericTypeConverter);
@@ -154,6 +159,11 @@
         public void AddTypeConverter<T>(TypeConverter typeConverter)
         {
             this.AddTypeConverter(typeof(T), typeConverter);
+        }
+
+        public TypeDefinition GetTypeDefinition(Type type)
+        {
+            return this.typeDefinitions.AddOrUpdate(type, t => new TypeDefinition(t), (t, definition) => definition);
         }
 
         protected TypeConverter GetTypeConverter(Type type)

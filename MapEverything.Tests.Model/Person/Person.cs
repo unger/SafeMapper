@@ -1,4 +1,4 @@
-﻿namespace MapEverything.Tests.Model
+﻿namespace MapEverything.Tests.Model.Person
 {
     using System;
 

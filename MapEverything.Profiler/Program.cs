@@ -10,8 +10,8 @@
     using FastMapper;
 
     using MapEverything.Profiler.AutoMapperHelpers;
-    using MapEverything.Profiler.Model;
     using MapEverything.Tests.Model;
+    using MapEverything.Tests.Model.Person;
     using MapEverything.Utils;
 
     using TB.ComponentModel;
@@ -86,6 +86,12 @@
             ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);*/
 
             ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+
+            var td = new TypeDefinition<Person>();
+
+            Console.WriteLine("{0}", Profile("TypeDefinitionCreateObject", 1000000, i => td.CreateObject()).Item1);
+            Console.WriteLine("{0}", Profile("Activator.CreateInstance", 1000000, i => Activator.CreateInstance<Person>()).Item1);
+
         }
 
 
