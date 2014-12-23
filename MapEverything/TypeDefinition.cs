@@ -16,6 +16,14 @@
             : base(typeof(T))
         {
         }
+
+        public Func<T, TProperty> GetPropertyGetter<TProperty>(string propertyName)
+        {
+            ParameterExpression paramExpression = Expression.Parameter(typeof(T), "value");
+            Expression propertyGetterExpression = Expression.Property(paramExpression, propertyName);
+
+            return Expression.Lambda<Func<T, TProperty>>(propertyGetterExpression, paramExpression).Compile();
+        }
     }
 
     public class TypeDefinition
@@ -70,7 +78,17 @@
 
         public bool IsCollection { get; private set; }
 
-        public Func<object> CreateObject { get; private set; }
+        public Func<object> CreateObject { get; protected set; }
+
+        public dynamic GetPropertyGetter(PropertyInfo propertyInfo)
+        {
+            return this.GetPropertyGetter(propertyInfo.DeclaringType, propertyInfo.PropertyType, propertyInfo.Name);
+        }
+
+        public Action<object, object> GetPropertySetter(PropertyInfo propertyInfo)
+        {
+            return this.GetPropertySetter(propertyInfo.DeclaringType, propertyInfo.PropertyType, propertyInfo.Name);
+        }
 
         private void CacheMembers()
         {
@@ -145,6 +163,33 @@
         {
             return type.IsArray
                 || (!type.IsAssignableFrom(typeof(string)) && type.GetInterfaces().Any(t => t == typeof(IEnumerable)));
+        }
+
+        private dynamic GetPropertyGetter(Type type, Type propertyType, string propertyName)
+        {
+            ParameterExpression paramExpression = Expression.Parameter(type, "value");
+
+            Expression propertyGetterExpression = Expression.Property(paramExpression, propertyName);
+
+            var func = typeof(Func<,>);
+            var genericFunc = func.MakeGenericType(type, propertyType);
+
+            return Expression.Lambda(genericFunc, propertyGetterExpression, paramExpression).Compile();
+        }
+
+        private Action<object, object> GetPropertySetter(Type type, Type propertyType, string propertyName)
+        {
+            ParameterExpression paramExpression = Expression.Parameter(type);
+
+            ParameterExpression paramExpression2 = Expression.Parameter(propertyType, propertyName);
+
+            MemberExpression propertyGetterExpression = Expression.Property(paramExpression, propertyName);
+
+            return
+                Expression.Lambda<Action<object, object>>(
+                    Expression.Assign(propertyGetterExpression, paramExpression2),
+                    paramExpression,
+                    paramExpression2).Compile();
         }
     }
 }

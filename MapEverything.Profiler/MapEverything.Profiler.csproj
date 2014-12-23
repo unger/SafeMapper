@@ -38,6 +38,10 @@
     <Reference Include="AutoMapper.Net4">
       <HintPath>..\packages\AutoMapper.3.3.0\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
+    <Reference Include="Fasterflect, Version=2.1.3.0, Culture=neutral, PublicKeyToken=38d18473284c1ca7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
+    </Reference>
     <Reference Include="FastMapper">
       <HintPath>..\packages\FastMapper.1.2.0\lib\net40\FastMapper.dll</HintPath>
     </Reference>
@@ -55,6 +59,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoMapperHelpers\AutoMapperDateTimeTypeConverter.cs" />
+    <Compile Include="ProfileBase.cs" />
+    <Compile Include="ProfileConversion.cs" />
+    <Compile Include="ProfilePropertyGetSet.cs" />
+    <Compile Include="ProfileCreation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimpleTypeConverter\SimpleTypeConverter.cs" />
