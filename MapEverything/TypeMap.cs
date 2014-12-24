@@ -28,6 +28,14 @@
             var isFromTypeDictionary = this.IsStringDictionary(fromType);
             var isToTypeDictionary = this.IsStringDictionary(toType);
 
+            var fromTypeDef = typeMapper.GetTypeDefinition(fromType);
+            var toTypeDef = typeMapper.GetTypeDefinition(toType);
+
+            if (fromTypeDef.IsCollection || toTypeDef.IsCollection)
+            {
+                return;
+            }
+
             if (!isFromTypeDictionary)
             {
                 foreach (var member in fromType.GetMembers())

@@ -5,6 +5,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Globalization;
+    using System.Linq;
 
     using Fasterflect;
 
@@ -86,6 +87,35 @@
             return base.ConvertFrom(context, culture, value);
         }
 
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(TTo))
+            {
+                if (this.fromTypeDef.IsCollection && this.toTypeDef.IsCollection)
+                {
+                    if (this.toTypeDef.ActualType.IsArray)
+                    {
+                        return this.CreateArray(this.fromTypeDef, this.toTypeDef, value);
+                    }
+
+                    if (this.toTypeDef.ActualType.IsGenericType)
+                    {
+                        return this.CreateGenericCollection(this.fromTypeDef, this.toTypeDef, value);
+                    }
+
+                    return this.toTypeDef.CreateInstanceDelegate();
+                }
+                else
+                {
+                    var result = Activator.CreateInstance<TTo>();
+                    this.toTypeMap.Map(value, result);
+                    return result;
+                }
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+
         private object CreateGenericCollection(TypeDefinition fromTypeDefinition, TypeDefinition toTypeDefinition, object value)
         {
             var fromElementType = fromTypeDefinition.ElementType;
@@ -138,7 +168,7 @@
             if (value.GetType().IsArray)
             {
                 var values = (Array)value;
-                var newElements = Array.CreateInstance(fromElementType ?? typeof(object), values.Length);
+                var newElements = Array.CreateInstance(toElementType ?? typeof(object), values.Length);
 
                 for (int i = 0; i < values.Length; i++)
                 {
@@ -151,7 +181,7 @@
             var collection = value as ICollection;
             if (collection != null)
             {
-                var newElements = Array.CreateInstance(fromElementType ?? typeof(object), collection.Count);
+                var newElements = Array.CreateInstance(toElementType ?? typeof(object), collection.Count);
 
                 var i = 0;
                 foreach (var elementValue in collection)
@@ -163,36 +193,7 @@
                 return newElements;
             }
 
-            return Array.CreateInstance(fromElementType ?? typeof(object), 0);
-        }
-
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
-        {
-            if (destinationType == typeof(TTo) && value is TFrom)
-            {
-                if (this.fromTypeDef.IsCollection && this.toTypeDef.IsCollection)
-                {
-                    if (this.toTypeDef.ActualType.IsArray)
-                    {
-                        return this.CreateArray(this.fromTypeDef, this.toTypeDef, value);
-                    }
-
-                    if (this.toTypeDef.ActualType.IsGenericType)
-                    {
-                        return this.CreateGenericCollection(this.fromTypeDef, this.toTypeDef, value);
-                    }
-
-                    return this.fromTypeDef.CreateInstanceDelegate();
-                }
-                else
-                {
-                    var result = Activator.CreateInstance<TTo>();
-                    this.toTypeMap.Map(value, result);
-                    return result;
-                }
-            }
-
-            return base.ConvertTo(context, culture, value, destinationType);
+            return Array.CreateInstance(toElementType ?? typeof(object), 0);
         }
     }
 }

@@ -117,7 +117,7 @@
                     i => typeMapper.Convert(input[i], typeof(TDestination), formatProvider)));
 
             result.Add(Profile("TypeMapper delegate", input.Length, i => typeMapper.Convert(input[i], typeMapperConverter)));
-
+            /*
             result.Add(
                 Profile(
                     "SimpleTypeConverter",
@@ -131,6 +131,7 @@
                     input.Length,
                     i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider)));
 
+            */
             result.Add(
                 Profile(
                     "FastMapper",

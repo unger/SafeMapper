@@ -128,13 +128,14 @@
                 return value => this.ConvertToString(value, formatProvider);
             }
 
+            /*
             var toConverter = this.GetTypeConverter(toType);
             if (toConverter.CanConvertFrom(fromType))
             {
                 this.AddTypeConverter(toType, toConverter);
                 return value => toConverter.ConvertFrom(null, (CultureInfo)formatProvider, value);
-            }
-
+            }*/
+            
             var fromConverter = this.GetTypeConverter(fromType);
             if (fromConverter.CanConvertTo(toType))
             {
@@ -149,7 +150,7 @@
 
             // Create instance of GenericTypeConverter<TFrom, TTo> and add to list
             Type genericType = typeof(GenericTypeConverter<,>);
-            Type[] typeArgs = { fromTypeDef.ConcreteType, toTypeDef.ConcreteType };
+            Type[] typeArgs = { fromTypeDef.ActualType, toTypeDef.ActualType };
             Type typedGenericType = genericType.MakeGenericType(typeArgs);
             var genericTypeConverter = (TypeConverter)Activator.CreateInstance(typedGenericType, this, formatProvider);
             this.AddTypeConverter(fromType, genericTypeConverter);
