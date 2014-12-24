@@ -41,9 +41,50 @@
             this.HasDefaultConstructor = defaultConstructor != null;
             this.IsCollection = this.IsCollectionType(currentType);
 
+            if (currentType.HasElementType)
+            {
+                this.ElementType = currentType.GetElementType();
+            }
+            else if (this.IsCollection && currentType.IsGenericType)
+            {
+                this.ElementType = currentType.GetGenericArguments()[0];
+            }
+
+            this.CreateInstanceDelegate = this.GenerateCreateInstanceDelegate(currentType);
+
+            if (!(currentType.IsPrimitive || this.IsCollection))
+            {
+                this.CacheMembers();
+            }
+        }
+
+        public Type ActualType { get; private set; }
+
+        public Type ConcreteType { get; private set; }
+
+        public Type ElementType { get; private set; }
+
+        public bool HasDefaultConstructor { get; private set; }
+
+        public bool IsCollection { get; private set; }
+
+        public Func<object> CreateInstanceDelegate { get; protected set; }
+
+        public dynamic GetPropertyGetter(PropertyInfo propertyInfo)
+        {
+            return this.GetPropertyGetter(propertyInfo.DeclaringType, propertyInfo.PropertyType, propertyInfo.Name);
+        }
+
+        public Action<object, object> GetPropertySetter(PropertyInfo propertyInfo)
+        {
+            return this.GetPropertySetter(propertyInfo.DeclaringType, propertyInfo.PropertyType, propertyInfo.Name);
+        }
+
+        private Func<object> GenerateCreateInstanceDelegate(Type currentType)
+        {
             if (this.HasDefaultConstructor)
             {
-                this.CreateObject = Expression.Lambda<Func<object>>(Expression.New(currentType)).Compile();
+                return Expression.Lambda<Func<object>>(Expression.New(currentType)).Compile();
             }
             else if (currentType.IsGenericType)
             {
@@ -57,37 +98,10 @@
 
                 this.ConcreteType = genericType.MakeGenericType(elementTypes);
 
-                this.CreateObject = () => Activator.CreateInstance(this.ConcreteType);
-            }
-            else
-            {
-                this.CreateObject = () => this.GetDefaultValue(currentType);
+                return () => Activator.CreateInstance(this.ConcreteType);
             }
 
-            if (!(currentType.IsPrimitive || this.IsCollection))
-            {
-                this.CacheMembers();
-            }
-        }
-
-        public Type ActualType { get; private set; }
-
-        public Type ConcreteType { get; private set; }
-
-        public bool HasDefaultConstructor { get; private set; }
-
-        public bool IsCollection { get; private set; }
-
-        public Func<object> CreateObject { get; protected set; }
-
-        public dynamic GetPropertyGetter(PropertyInfo propertyInfo)
-        {
-            return this.GetPropertyGetter(propertyInfo.DeclaringType, propertyInfo.PropertyType, propertyInfo.Name);
-        }
-
-        public Action<object, object> GetPropertySetter(PropertyInfo propertyInfo)
-        {
-            return this.GetPropertySetter(propertyInfo.DeclaringType, propertyInfo.PropertyType, propertyInfo.Name);
+            return () => this.GetDefaultValue(currentType);
         }
 
         private void CacheMembers()

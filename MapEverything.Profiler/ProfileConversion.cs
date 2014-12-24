@@ -54,7 +54,7 @@
                 customerArray[i] = CustomerFactory.CreateTestCustomer();
             }
             
-
+            /*
             ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
 
             //ProfileConvert<string, int>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
@@ -77,7 +77,7 @@
             
             ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
 
-            ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
+            ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());*/
 
             ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
 

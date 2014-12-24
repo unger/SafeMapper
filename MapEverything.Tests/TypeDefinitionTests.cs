@@ -13,7 +13,7 @@
         {
             var td = new TypeDefinition<string>();
 
-            var obj = td.CreateObject();
+            var obj = td.CreateInstanceDelegate();
 
             Assert.AreEqual(null, obj);
         }
@@ -23,7 +23,7 @@
         {
             var td = new TypeDefinition<int>();
 
-            var obj = td.CreateObject();
+            var obj = td.CreateInstanceDelegate();
 
             Assert.IsInstanceOf<int>(obj);
             Assert.AreEqual(default(int), obj);
@@ -34,7 +34,7 @@
         {
             var td = new TypeDefinition<List<int>>();
 
-            var obj = td.CreateObject() as List<int>;
+            var obj = td.CreateInstanceDelegate() as List<int>;
 
             Assert.IsInstanceOf<List<int>>(obj);
             Assert.AreEqual(0, obj.Count);
@@ -45,7 +45,7 @@
         {
             var td = new TypeDefinition<int[]>();
 
-            var obj = td.CreateObject();
+            var obj = td.CreateInstanceDelegate();
 
             Assert.AreEqual(null, obj);
         }
@@ -55,7 +55,7 @@
         {
             var td = new TypeDefinition<IEnumerable<int>>();
 
-            var obj = td.CreateObject() as IEnumerable<int>;
+            var obj = td.CreateInstanceDelegate() as IEnumerable<int>;
 
             Assert.IsInstanceOf<IEnumerable<int>>(obj);
             Assert.AreEqual(0, obj.Count());
@@ -66,7 +66,7 @@
         {
             var td = new TypeDefinition<IList<int>>();
 
-            var obj = td.CreateObject() as IList<int>;
+            var obj = td.CreateInstanceDelegate() as IList<int>;
 
             Assert.IsInstanceOf<IList<int>>(obj);
             Assert.AreEqual(0, obj.Count());
@@ -77,7 +77,7 @@
         {
             var td = new TypeDefinition<HashSet<string>>();
 
-            var obj = td.CreateObject() as HashSet<string>;
+            var obj = td.CreateInstanceDelegate() as HashSet<string>;
 
             Assert.IsInstanceOf<HashSet<string>>(obj);
             Assert.AreEqual(0, obj.Count);
@@ -88,7 +88,7 @@
         {
             var td = new TypeDefinition<ISet<string>>();
 
-            var obj = td.CreateObject() as ISet<string>;
+            var obj = td.CreateInstanceDelegate() as ISet<string>;
 
             Assert.IsInstanceOf<ISet<string>>(obj);
             Assert.AreEqual(0, obj.Count);

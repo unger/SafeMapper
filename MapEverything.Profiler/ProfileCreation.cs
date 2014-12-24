@@ -21,7 +21,7 @@ namespace MapEverything.Profiler
 
             Console.WriteLine("{0}", Profile("new Person()", iterations, i => new Person()).Item1);
             Console.WriteLine("{0}", Profile("fasterflect cctor", iterations, i => fasterflectCctor()).Item1);
-            Console.WriteLine("{0}", Profile("compiled expression", iterations, i => td.CreateObject()).Item1);
+            Console.WriteLine("{0}", Profile("compiled expression", iterations, i => td.CreateInstanceDelegate()).Item1);
             Console.WriteLine("{0}", Profile("Activator.CreateInstance", iterations, i => Activator.CreateInstance<Person>()).Item1);
             Console.WriteLine("{0}", Profile("Reflection", iterations, i => cctor.Invoke(new object[] { })).Item1);
             Console.WriteLine();

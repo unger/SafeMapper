@@ -9,6 +9,10 @@
 
     public class TypeMap
     {
+        private readonly Type fromType;
+
+        private readonly Type toType;
+
         private readonly ITypeMapper typeMapper;
 
         private Dictionary<string, IMemberMap> memberMaps = new Dictionary<string, IMemberMap>();
@@ -18,6 +22,8 @@
 
         public TypeMap(Type fromType, Type toType, ITypeMapper typeMapper)
         {
+            this.fromType = fromType;
+            this.toType = toType;
             this.typeMapper = typeMapper;
             var isFromTypeDictionary = this.IsStringDictionary(fromType);
             var isToTypeDictionary = this.IsStringDictionary(toType);
