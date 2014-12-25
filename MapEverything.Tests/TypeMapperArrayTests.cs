@@ -41,5 +41,21 @@ namespace MapEverything.Tests
             }
         }
 
+        [Test]
+        public void ConvertIntArrayToIntList()
+        {
+            var value = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<int[], List<int>>(value);
+
+                Assert.IsInstanceOf<List<int>>(converted);
+
+                Assert.AreEqual(value, converted);
+            }
+        }
+
+
     }
 }

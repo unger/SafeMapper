@@ -66,7 +66,7 @@
             }
             catch (Exception e)
             {
-                return new Tuple<string, double>(string.Format("{0,-40} throws exception {1}", description, e.Message), double.MaxValue);
+                return new Tuple<string, double>(string.Format("{0,-40} throws exception", description, e.Message), double.MaxValue);
             }
         }
     }

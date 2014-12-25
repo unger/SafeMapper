@@ -13,12 +13,11 @@
     {
         private readonly ITypeMapper typeMapper;
 
-        private TypeMap fromTypeMap;
-        private TypeMap toTypeMap;
+        private readonly TypeMap toFromTypeMap;
+        private readonly TypeMap fromToTypeMap;
 
-        private TypeDefinition fromTypeDef;
-
-        private TypeDefinition toTypeDef;
+        private Type toType;
+        private Type fromType;
 
         public GenericTypeConverter(ITypeMapper typeMapper) 
             : this(typeMapper, CultureInfo.CurrentCulture)
@@ -27,20 +26,20 @@
 
         public GenericTypeConverter(ITypeMapper typeMapper, IFormatProvider formatProvider)
         {
+            this.fromType = typeof(TFrom);
+            this.toType = typeof(TTo);
+
+            TypeDefinition toTypeDef = typeMapper.GetTypeDefinition(this.toType);
+            TypeDefinition fromTypeDef = typeMapper.GetTypeDefinition(this.fromType);
             this.typeMapper = typeMapper;
-            var fromType = typeof(TFrom);
-            var toType = typeof(TTo);
 
-            this.fromTypeDef = typeMapper.GetTypeDefinition(fromType);
-            this.toTypeDef = typeMapper.GetTypeDefinition(toType);
-
-            this.fromTypeMap = new TypeMap(this.toTypeDef, this.fromTypeDef, typeMapper);
-            this.toTypeMap = new TypeMap(this.fromTypeDef, this.toTypeDef, typeMapper);
+            this.fromToTypeMap = new TypeMap(fromTypeDef, toTypeDef, typeMapper);
+            this.toFromTypeMap = new TypeMap(toTypeDef, fromTypeDef, typeMapper);
         }
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(TTo))
+            if (sourceType == this.toType)
             {
                 return true;
             }
@@ -50,7 +49,7 @@
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if (destinationType == typeof(TTo))
+            if (destinationType == this.toType)
             {
                 return true;
             }
@@ -62,22 +61,7 @@
         {
             if (value is TTo)
             {
-                if (this.fromTypeDef.IsCollection && this.toTypeDef.IsCollection)
-                {
-                    if (this.fromTypeDef.ActualType.IsArray)
-                    {
-                        return this.CreateArray(this.toTypeDef, this.fromTypeDef, value);
-                    }
-
-                    if (this.fromTypeDef.ActualType.IsGenericType)
-                    {
-                        return this.CreateGenericCollection(this.toTypeDef, this.fromTypeDef, value);
-                    }
-
-                    return this.fromTypeDef.CreateInstanceDelegate();
-                }
-
-                return this.fromTypeMap.Convert(value);
+                return this.toFromTypeMap.Convert(value);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -85,109 +69,12 @@
 
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (destinationType == typeof(TTo))
+            if (destinationType == this.toType)
             {
-                if (this.fromTypeDef.IsCollection && this.toTypeDef.IsCollection)
-                {
-                    if (this.toTypeDef.ActualType.IsArray)
-                    {
-                        return this.CreateArray(this.fromTypeDef, this.toTypeDef, value);
-                    }
-
-                    if (this.toTypeDef.ActualType.IsGenericType)
-                    {
-                        return this.CreateGenericCollection(this.fromTypeDef, this.toTypeDef, value);
-                    }
-
-                    return this.toTypeDef.CreateInstanceDelegate();
-                }
-                else
-                {
-                    return this.toTypeMap.Convert(value);
-                }
+                return this.fromToTypeMap.Convert(value);
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
-        }
-
-        private object CreateGenericCollection(TypeDefinition fromTypeDefinition, TypeDefinition toTypeDefinition, object value)
-        {
-            var fromElementType = fromTypeDefinition.ElementType;
-            var toElementType = toTypeDefinition.ElementType;
-            var elementConverter = this.typeMapper.GetConverter(fromElementType, toElementType);
-
-            var toAddDelegate = toTypeDefinition.ActualType.DelegateForCallMethod("Add", new[] { toElementType });
-
-            if (value.GetType().IsArray)
-            {
-                var values = (Array)value;
-                var newElements = toTypeDefinition.CreateInstanceDelegate();
-
-                for (int i = 0; i < values.Length; i++)
-                {
-                    toAddDelegate(
-                        newElements,
-                        elementConverter(values.GetElement(i)));
-                }
-
-                return newElements;
-            }
-
-            var collection = value as ICollection;
-            if (collection != null)
-            {
-                var newElements = toTypeDefinition.CreateInstanceDelegate();
-
-                var i = 0;
-                foreach (var elementValue in collection)
-                {
-                    toAddDelegate(
-                        newElements,
-                        elementConverter(elementValue));
-                    i++;
-                }
-
-                return newElements;
-            }
-
-            return toTypeDefinition.CreateInstanceDelegate();
-        }
-
-        private object CreateArray(TypeDefinition fromTypeDefinition, TypeDefinition toTypeDefinition, object value)
-        {
-            var fromElementType = fromTypeDefinition.ElementType;
-            var toElementType = toTypeDefinition.ElementType;
-            var elementConverter = this.typeMapper.GetConverter(fromElementType, toElementType);
-
-            if (value.GetType().IsArray)
-            {
-                var values = (Array)value;
-                var newElements = Array.CreateInstance(toElementType ?? typeof(object), values.Length);
-
-                for (int i = 0; i < values.Length; i++)
-                {
-                    newElements.SetValue(elementConverter(values.GetElement(i)), i);
-                }
-
-                return newElements;
-            }
-
-            var collection = value as ICollection;
-            if (collection != null)
-            {
-                var newElements = Array.CreateInstance(toElementType ?? typeof(object), collection.Count);
-
-                var i = 0;
-                foreach (var elementValue in collection)
-                {
-                    newElements.SetValue(elementConverter(elementValue), i);
-                    i++;
-                }
-
-                return newElements;
-            }
-
-            return Array.CreateInstance(toElementType ?? typeof(object), 0);
         }
     }
 }

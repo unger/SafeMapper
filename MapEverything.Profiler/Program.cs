@@ -8,9 +8,13 @@
 
             //new ProfilePropertyGetSet().Execute();
 
-            new ProfileArrayConversion().Execute();
-            
+            //new ProfileArrayToArray().Execute();
+
+            new ProfileArrayToList().Execute();
+
             //new ProfileConversion().Execute();
+
+            //new ProfileTypeOf().Execute();
         }
     }
 }

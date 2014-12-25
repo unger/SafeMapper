@@ -59,9 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoMapperHelpers\AutoMapperDateTimeTypeConverter.cs" />
+    <Compile Include="ProfileArrayToList.cs" />
     <Compile Include="ProfileBase.cs" />
     <Compile Include="ProfileConversion.cs" />
-    <Compile Include="ProfileArrayConversion.cs" />
+    <Compile Include="ProfileArrayToArray.cs" />
+    <Compile Include="ProfileTypeOf.cs" />
     <Compile Include="ProfilePropertyGetSet.cs" />
     <Compile Include="ProfileCreation.cs" />
     <Compile Include="Program.cs" />

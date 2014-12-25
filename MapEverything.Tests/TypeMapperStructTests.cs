@@ -12,6 +12,7 @@
     [TestFixture]
     public class TypeMapperStructTests : TypeMapperTestsBase
     {
+        [Ignore]
         [Test]
         public void CanConvertPersonStructToPerson()
         {

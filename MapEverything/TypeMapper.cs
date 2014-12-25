@@ -131,7 +131,6 @@
                 return value => this.ConvertToString(value, formatProvider);
             }
 
-
             var toConverter = this.GetTypeConverter(toType, fromType);
             if (toConverter.CanConvertFrom(fromType))
             {

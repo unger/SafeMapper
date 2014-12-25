@@ -81,7 +81,7 @@
 
             this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
