@@ -4,9 +4,9 @@
 
     public interface IMemberMap
     {
-        Type FromPropertyType { get; }
+        Type FromMemberType { get; }
 
-        Type ToPropertyType { get; }
+        Type ToMemberType { get; }
 
         void Map(object fromObject, object toObject);
 

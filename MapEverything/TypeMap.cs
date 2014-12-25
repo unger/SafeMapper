@@ -13,104 +13,63 @@
 
         private readonly Type toType;
 
+        private readonly TypeDefinition fromTypeDef;
+
+        private readonly TypeDefinition toTypeDef;
+
         private readonly ITypeMapper typeMapper;
 
         private Dictionary<string, IMemberMap> memberMaps = new Dictionary<string, IMemberMap>();
 
-        private Dictionary<string, MemberInfo> fromMembers = new Dictionary<string, MemberInfo>();
-        private Dictionary<string, MemberInfo> toMembers = new Dictionary<string, MemberInfo>();
-
-        public TypeMap(Type fromType, Type toType, ITypeMapper typeMapper)
+        public TypeMap(TypeDefinition fromTypeDef, TypeDefinition toTypeDef, ITypeMapper typeMapper)
         {
-            this.fromType = fromType;
-            this.toType = toType;
+            this.fromType = fromTypeDef.ActualType;
+            this.toType = toTypeDef.ActualType;
+            this.fromTypeDef = fromTypeDef;
+            this.toTypeDef = toTypeDef;
             this.typeMapper = typeMapper;
-            var isFromTypeDictionary = this.IsStringDictionary(fromType);
-            var isToTypeDictionary = this.IsStringDictionary(toType);
-
-            var fromTypeDef = typeMapper.GetTypeDefinition(fromType);
-            var toTypeDef = typeMapper.GetTypeDefinition(toType);
 
             if (fromTypeDef.IsCollection || toTypeDef.IsCollection)
             {
                 return;
             }
 
-            if (!isFromTypeDictionary)
+            foreach (var key in fromTypeDef.MemberGetters.Keys)
             {
-                foreach (var member in fromType.GetMembers())
+                if (toTypeDef.MemberSetters.ContainsKey(key))
                 {
-                    if (member.IsReadable() && !member.IsInvokable())
-                    {
-                        this.fromMembers.Add(member.Name, member);
-                    }
-                }
-            }
-            
-            if (!isToTypeDictionary)
-            {
-                foreach (var member in toType.GetMembers())
-                {
-                    if (member.IsReadable() && !member.IsInvokable())
-                    {
-                        this.toMembers.Add(member.Name, member);
-                    }
-                }
-            }
+                    var fromMember = fromTypeDef.Members[key];
+                    var toMember = toTypeDef.Members[key];
 
-            if (isFromTypeDictionary && isToTypeDictionary)
-            {
-                // Both Dictionaries
-            }
-            else if (isFromTypeDictionary)
-            {
-                foreach (var key in this.toMembers.Keys)
-                {
-                    var member = this.toMembers[key];
-                    var memberMap = new DictionaryMemberMap(fromType, toType, member.Name, member.Name);
+                    var memberMap = new MemberMap(
+                        fromTypeDef.ActualType,
+                        toTypeDef.ActualType,
+                        fromMember.Type(),
+                        toMember.Type(),
+                        fromTypeDef.MemberGetters[key],
+                        toTypeDef.MemberSetters[key]);
 
-                    this.AddMemberMap(member.Name, memberMap);
-                }
-            }
-            else if (isToTypeDictionary)
-            {
-                foreach (var key in this.fromMembers.Keys)
-                {
-                    var member = this.fromMembers[key];
-                    var memberMap = new DictionaryMemberMap(fromType, toType, member.Name, member.Name);
-
-                    this.AddMemberMap(member.Name, memberMap);
-                }
-            }
-            else
-            {
-                // No Dictionary
-                foreach (var key in this.fromMembers.Keys)
-                {
-                    if (this.toMembers.ContainsKey(key))
-                    {
-                        var member = this.fromMembers[key];
-                        var memberMap = new MemberMap(fromType, toType, member.Name, member.Name);
-
-                        this.AddMemberMap(member.Name, memberMap);
-                    }
+                    this.AddMemberMap(key, memberMap);
                 }
             }
         }
 
-        public void Map(object fromObject, object toObject)
+        public object Convert(object fromObject)
         {
+            var toObject = this.toTypeDef.CreateInstanceDelegate();
             foreach (var key in this.memberMaps.Keys)
             {
                 this.memberMaps[key].Map(fromObject, toObject);
             }
+
+            return toObject;
         }
 
         private void AddMemberMap(string name, IMemberMap memberMap)
         {
             if (memberMap.IsValid())
             {
-                memberMap.SetConverter(this.typeMapper.GetConverter(memberMap.FromPropertyType, memberMap.ToPropertyType));
+                memberMap.SetConverter(this.typeMapper.GetConverter(memberMap.FromMemberType, memberMap.ToMemberType));
                 this.memberMaps.Add(name, memberMap);
             }
         }

@@ -19,12 +19,11 @@ namespace MapEverything.Profiler
             var fasterflectCctor = typeof(Person).DelegateForCreateInstance(Type.EmptyTypes);
             var cctor = typeof(Person).GetConstructor(Type.EmptyTypes);
 
-            Console.WriteLine("{0}", Profile("new Person()", iterations, i => new Person()).Item1);
-            Console.WriteLine("{0}", Profile("fasterflect cctor", iterations, i => fasterflectCctor()).Item1);
-            Console.WriteLine("{0}", Profile("compiled expression", iterations, i => td.CreateInstanceDelegate()).Item1);
-            Console.WriteLine("{0}", Profile("Activator.CreateInstance", iterations, i => Activator.CreateInstance<Person>()).Item1);
-            Console.WriteLine("{0}", Profile("Reflection", iterations, i => cctor.Invoke(new object[] { })).Item1);
-            Console.WriteLine();
+            this.AddResult(this.Profile("new Person()", iterations, i => new Person()));
+            this.AddResult(this.Profile("fasterflect cctor", iterations, i => fasterflectCctor()));
+            this.AddResult(this.Profile("compiled expression", iterations, i => td.CreateInstanceDelegate()));
+            this.AddResult(this.Profile("Activator.CreateInstance", iterations, i => Activator.CreateInstance<Person>()));
+            this.AddResult(this.Profile("Reflection", iterations, i => cctor.Invoke(new object[] { })));
         }
     }
 }

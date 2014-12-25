@@ -61,6 +61,7 @@
     <Compile Include="AutoMapperHelpers\AutoMapperDateTimeTypeConverter.cs" />
     <Compile Include="ProfileBase.cs" />
     <Compile Include="ProfileConversion.cs" />
+    <Compile Include="ProfileArrayConversion.cs" />
     <Compile Include="ProfilePropertyGetSet.cs" />
     <Compile Include="ProfileCreation.cs" />
     <Compile Include="Program.cs" />

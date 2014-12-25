@@ -7,6 +7,7 @@
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.Serialization.Formatters;
 
     using Fasterflect;
 
@@ -38,15 +39,17 @@
                 typeof(string)      // TypeCode.String = 18
             };
 
-        private ConcurrentDictionary<Type, TypeConverter> typeConverters;
+        private ConcurrentDictionary<string, TypeConverter> typeConverters;
         private ConcurrentDictionary<Type, TypeDefinition> typeDefinitions;
 
         public TypeMapper()
         {
-            this.typeConverters = new ConcurrentDictionary<Type, TypeConverter>();
+            var sqlDateTimeConverter = new SqlDateTimeTypeConverter();
+            this.typeConverters = new ConcurrentDictionary<string, TypeConverter>();
             this.typeDefinitions = new ConcurrentDictionary<Type, TypeDefinition>();
-            this.AddTypeConverter(typeof(Guid), new GuidTypeConverter());
-            this.AddTypeConverter(typeof(SqlDateTime), new SqlDateTimeTypeConverter());
+            this.AddTypeConverter(typeof(string), typeof(Guid), new GuidTypeConverter());
+            this.AddTypeConverter(typeof(SqlDateTime), typeof(DateTime), sqlDateTimeConverter);
+            this.AddTypeConverter(typeof(DateTime), typeof(SqlDateTime), sqlDateTimeConverter);
         }
 
         public TTo Convert<TFrom, TTo>(TFrom value)
@@ -128,18 +131,18 @@
                 return value => this.ConvertToString(value, formatProvider);
             }
 
-            /*
-            var toConverter = this.GetTypeConverter(toType);
+
+            var toConverter = this.GetTypeConverter(toType, fromType);
             if (toConverter.CanConvertFrom(fromType))
             {
-                this.AddTypeConverter(toType, toConverter);
+                this.AddTypeConverter(toType, fromType, toConverter);
                 return value => toConverter.ConvertFrom(null, (CultureInfo)formatProvider, value);
-            }*/
-            
-            var fromConverter = this.GetTypeConverter(fromType);
+            }
+
+            var fromConverter = this.GetTypeConverter(fromType, toType);
             if (fromConverter.CanConvertTo(toType))
             {
-                this.AddTypeConverter(fromType, fromConverter);
+                this.AddTypeConverter(fromType, toType, fromConverter);
                 return value => fromConverter.ConvertTo(null, (CultureInfo)formatProvider, value, toType);
             }
 
@@ -153,13 +156,13 @@
             Type[] typeArgs = { fromTypeDef.ActualType, toTypeDef.ActualType };
             Type typedGenericType = genericType.MakeGenericType(typeArgs);
             var genericTypeConverter = (TypeConverter)Activator.CreateInstance(typedGenericType, this, formatProvider);
-            this.AddTypeConverter(fromType, genericTypeConverter);
+            this.AddTypeConverter(fromType, toType, genericTypeConverter);
             return value => genericTypeConverter.ConvertTo(null, (CultureInfo)formatProvider, value, toType);
         }
 
-        public void AddTypeConverter<T>(TypeConverter typeConverter)
+        public void AddTypeConverter<TFrom, TTo>(TypeConverter typeConverter)
         {
-            this.AddTypeConverter(typeof(T), typeConverter);
+            this.AddTypeConverter(typeof(TFrom), typeof(TTo), typeConverter);
         }
 
         public TypeDefinition GetTypeDefinition(Type type)
@@ -167,15 +170,16 @@
             return this.typeDefinitions.AddOrUpdate(type, t => new TypeDefinition(t), (t, definition) => definition);
         }
 
-        protected TypeConverter GetTypeConverter(Type type)
+        protected TypeConverter GetTypeConverter(Type fromType, Type toType)
         {
+            var key = string.Format("{0}{1}", fromType.FullName, toType.FullName);
             TypeConverter typeConverter;
-            if (this.typeConverters.TryGetValue(type, out typeConverter))
+            if (this.typeConverters.TryGetValue(key, out typeConverter))
             {
                 return typeConverter;
             }
 
-            return TypeDescriptor.GetConverter(type);
+            return TypeDescriptor.GetConverter(fromType);
         }
 
         protected virtual object GetDefaultValue(Type t)
@@ -253,9 +257,10 @@
             return value.ToString();
         }
 
-        private void AddTypeConverter(Type keyType, TypeConverter typeConverter)
+        private void AddTypeConverter(Type fromType, Type toType, TypeConverter typeConverter)
         {
-            this.typeConverters[keyType] = typeConverter;
+            var key = string.Format("{0}{1}", fromType.FullName, toType.FullName);
+            this.typeConverters[key] = typeConverter;
         }
     }
 }

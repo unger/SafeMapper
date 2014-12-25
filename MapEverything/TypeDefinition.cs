@@ -58,6 +58,30 @@
             }
         }
 
+        public Dictionary<string, MemberInfo> Members
+        {
+            get
+            {
+                return this.members;
+            }
+        }
+
+        public Dictionary<string, MemberGetter> MemberGetters
+        {
+            get
+            {
+                return this.memberGetters;
+            }
+        }
+
+        public Dictionary<string, MemberSetter> MemberSetters
+        {
+            get
+            {
+                return this.memberSetters;
+            }
+        }
+
         public Type ActualType { get; private set; }
 
         public Type ConcreteType { get; private set; }

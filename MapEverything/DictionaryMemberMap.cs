@@ -25,9 +25,9 @@
             this.converter = value => value;
         }
 
-        public Type FromPropertyType { get; private set; }
+        public Type FromMemberType { get; private set; }
 
-        public Type ToPropertyType { get; private set; }
+        public Type ToMemberType { get; private set; }
 
         public bool IsValid()
         {
@@ -49,21 +49,21 @@
             var getIndexer = type.GetProperty("Item", new[] { typeof(string) });
             if (getIndexer != null)
             {
-                this.FromPropertyType = getIndexer.PropertyType;
+                this.FromMemberType = getIndexer.PropertyType;
                 return obj => type.DelegateForGetIndexer(new[] { typeof(string) })(obj, propertyName);
             }
 
             var pi = type.GetProperty(propertyName);
             if (pi != null)
             {
-                this.FromPropertyType = pi.PropertyType;
+                this.FromMemberType = pi.PropertyType;
                 return obj => pi.DelegateForGetPropertyValue()(obj);
             }
 
             var fi = type.GetField(propertyName);
             if (fi != null)
             {
-                this.FromPropertyType = fi.FieldType;
+                this.FromMemberType = fi.FieldType;
                 return obj => fi.DelegateForGetFieldValue()(obj);
             }
 
@@ -77,7 +77,7 @@
             {
                 if (setIndexer.IsWritable())
                 {
-                    this.ToPropertyType = setIndexer.PropertyType;
+                    this.ToMemberType = setIndexer.PropertyType;
                     return (obj, value) => type.DelegateForSetIndexer(new[] { typeof(string), setIndexer.PropertyType })(obj, propertyName, value);
                 }
             }
@@ -87,7 +87,7 @@
             {
                 if (pi.IsWritable())
                 {
-                    this.ToPropertyType = pi.PropertyType;
+                    this.ToMemberType = pi.PropertyType;
                     return (obj, value) => pi.DelegateForSetPropertyValue()(obj, value);
                 }
             }
@@ -97,7 +97,7 @@
             {
                 if (fi.IsWritable())
                 {
-                    this.ToPropertyType = fi.FieldType;
+                    this.ToMemberType = fi.FieldType;
                     return (obj, value) => fi.DelegateForSetFieldValue()(obj, value);
                 }
             }

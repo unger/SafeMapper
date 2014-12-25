@@ -31,11 +31,11 @@
             var fromType = typeof(TFrom);
             var toType = typeof(TTo);
 
-            this.fromTypeMap = new TypeMap(toType, fromType, typeMapper);
-            this.toTypeMap = new TypeMap(fromType, toType, typeMapper);
-
             this.fromTypeDef = typeMapper.GetTypeDefinition(fromType);
             this.toTypeDef = typeMapper.GetTypeDefinition(toType);
+
+            this.fromTypeMap = new TypeMap(this.toTypeDef, this.fromTypeDef, typeMapper);
+            this.toTypeMap = new TypeMap(this.fromTypeDef, this.toTypeDef, typeMapper);
         }
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
@@ -76,12 +76,8 @@
 
                     return this.fromTypeDef.CreateInstanceDelegate();
                 }
-                else
-                {
-                    var result = Activator.CreateInstance<TFrom>();
-                    this.fromTypeMap.Map(value, result);
-                    return result;
-                }
+
+                return this.fromTypeMap.Convert(value);
             }
 
             return base.ConvertFrom(context, culture, value);
@@ -107,9 +103,7 @@
                 }
                 else
                 {
-                    var result = Activator.CreateInstance<TTo>();
-                    this.toTypeMap.Map(value, result);
-                    return result;
+                    return this.toTypeMap.Convert(value);
                 }
             }
 

@@ -7,8 +7,10 @@
             //new ProfileCreation().Execute();
 
             //new ProfilePropertyGetSet().Execute();
+
+            new ProfileArrayConversion().Execute();
             
-            new ProfileConversion().Execute();
+            //new ProfileConversion().Execute();
         }
     }
 }

@@ -79,9 +79,9 @@
 
             ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());*/
 
-            ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
 
-            ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
@@ -103,52 +103,42 @@
 
             Console.WriteLine("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length);
 
-            var result = new List<Tuple<string, double>>();
-
             if (compareFunc != null)
             {
-                result.Add(Profile("Native", input.Length, compareFunc));
+                this.AddResult(this.Profile("Native", input.Length, compareFunc));
             }
 
-            result.Add(
-                Profile(
+            this.AddResult(
+                this.Profile(
                     "TypeMapper",
                     input.Length,
                     i => typeMapper.Convert(input[i], typeof(TDestination), formatProvider)));
 
-            result.Add(Profile("TypeMapper delegate", input.Length, i => typeMapper.Convert(input[i], typeMapperConverter)));
+            this.AddResult(this.Profile("TypeMapper delegate", input.Length, i => typeMapper.Convert(input[i], typeMapperConverter)));
             /*
-            result.Add(
-                Profile(
+            this.AddResult(
+                this.Profile(
                     "SimpleTypeConverter",
                     input.Length,
                     i => SimpleTypeConverter.ConvertTo(input[i], typeof(TDestination), formatProvider)));
 
 
-            result.Add(
-                Profile(
+            this.AddResult(
+                this.Profile(
                     "UniversalTypeConverter",
                     input.Length,
                     i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider)));
 
             */
-            result.Add(
-                Profile(
+            this.AddResult(
+                this.Profile(
                     "FastMapper",
                     input.Length,
                     i => TypeAdapter.Adapt<TSource, TDestination>(input[i])));
 
 
-            result.Add(Profile("AutoMapper", input.Length, i => Mapper.Map<TSource, TDestination>(input[i])));
+            this.AddResult(this.Profile("AutoMapper", input.Length, i => Mapper.Map<TSource, TDestination>(input[i])));
 
-            result.Sort((t1, t2) => t1.Item2.CompareTo(t2.Item2));
-
-            foreach (var row in result)
-            {
-                Console.WriteLine(row.Item1);
-            }
-
-            Console.WriteLine();
         }
     }
 }

@@ -16,18 +16,22 @@
 
         private Func<object, object> converter;
 
-        public MemberMap(Type fromType, Type toType, string fromPropertyName, string toPropertyName)
+        public MemberMap(Type fromType, Type toType, Type fromMemberType, Type toMemberType, MemberGetter fromMemberGetter, MemberSetter toMemberSetter)
         {
             this.fromType = fromType;
             this.toType = toType;
-            this.fromTypeGetDelegate = this.FindMemberGetter(fromType, fromPropertyName);
-            this.toTypeSetDelegate = this.FindMemberSetter(toType, toPropertyName);
+            this.fromTypeGetDelegate = fromMemberGetter;
+            this.toTypeSetDelegate = toMemberSetter;
+
             this.converter = value => value;
+
+            this.FromMemberType = fromMemberType;
+            this.ToMemberType = toMemberType;
         }
 
-        public Type FromPropertyType { get; private set; }
+        public Type FromMemberType { get; private set; }
 
-        public Type ToPropertyType { get; private set; }
+        public Type ToMemberType { get; private set; }
 
         public bool IsValid()
         {
@@ -45,7 +49,7 @@
                 toObject, 
                 this.converter(this.fromTypeGetDelegate(fromObject)));
         }
-
+        /*
         protected MemberGetter FindMemberGetter(Type type, string propertyName)
         {
             var pi = type.GetProperty(propertyName);
@@ -88,6 +92,6 @@
             }
 
             return null;
-        }
+        }*/
     }
 }

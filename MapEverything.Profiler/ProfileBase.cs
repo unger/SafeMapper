@@ -1,28 +1,45 @@
 ﻿namespace MapEverything.Profiler
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
 
     public abstract class ProfileBase
     {
+        private List<Tuple<string, double>> results = new List<Tuple<string, double>>();
+
         public void Execute()
         {
             this.ExecuteWrapper(100);
             this.ExecuteWrapper(1000);
             this.ExecuteWrapper(10000);
             this.ExecuteWrapper(100000);
-            this.ExecuteWrapper(1000000);
+            //this.ExecuteWrapper(1000000);
         }
 
         protected virtual void ExecuteWrapper(int iterations)
         {
+            this.results.Clear();
+
             Console.WriteLine("Iterations {0}", iterations);
             Console.WriteLine("========================================================");
             this.Execute(iterations);
+            this.results.Sort((t1, t2) => t1.Item2.CompareTo(t2.Item2));
+
+            foreach (var result in this.results)
+            {
+                Console.WriteLine(result.Item1);
+            }
+
             Console.WriteLine();
         }
 
         protected abstract void Execute(int iterations);
+
+        protected void AddResult(Tuple<string, double> result)
+        {
+            this.results.Add(result);
+        }
 
         protected Tuple<string, double> Profile(string description, int iterations, Action<int> func)
         {
@@ -49,7 +66,7 @@
             }
             catch (Exception e)
             {
-                return new Tuple<string, double>(string.Format("{0,-40} throws exception", description, e.Message), double.MaxValue);
+                return new Tuple<string, double>(string.Format("{0,-40} throws exception {1}", description, e.Message), double.MaxValue);
             }
         }
     }
