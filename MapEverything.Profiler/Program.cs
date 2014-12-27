@@ -6,6 +6,8 @@
         {
             //new ProfileCreation().Execute();
 
+            //new ProfileArrayCreation().Execute();
+
             //new ProfilePropertyGetSet().Execute();
 
             //new ProfileArrayToArray().Execute();

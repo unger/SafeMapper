@@ -88,6 +88,8 @@
         {
             var typeMapper = new TypeMapper();
             var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
+            var sourceType = typeof(TSource);
+            var destinationType = typeof(TDestination);
 
             if (typeof(TDestination) != typeof(string))
             {
@@ -132,9 +134,15 @@
             */
             this.AddResult(
                 this.Profile(
-                    "FastMapper",
+                    "FastMapper generic",
                     input.Length,
                     i => TypeAdapter.Adapt<TSource, TDestination>(input[i])));
+
+            this.AddResult(
+                this.Profile(
+                    "FastMapper",
+                    input.Length,
+                    i => TypeAdapter.Adapt(input[i], sourceType, destinationType)));
 
 
             this.AddResult(this.Profile("AutoMapper", input.Length, i => Mapper.Map<TSource, TDestination>(input[i])));

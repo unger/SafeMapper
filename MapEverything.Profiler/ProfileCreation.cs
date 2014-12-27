@@ -24,6 +24,8 @@ namespace MapEverything.Profiler
             this.AddResult(this.Profile("compiled expression", iterations, i => td.CreateInstanceDelegate()));
             this.AddResult(this.Profile("Activator.CreateInstance", iterations, i => Activator.CreateInstance<Person>()));
             this.AddResult(this.Profile("Reflection", iterations, i => cctor.Invoke(new object[] { })));
+
+
         }
     }
 }

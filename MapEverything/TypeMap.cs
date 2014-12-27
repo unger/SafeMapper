@@ -83,9 +83,9 @@
 
         private object ConvertGenericCollection(object fromObject)
         {
-            var toAddDelegate = this.toTypeDef.ActualType.DelegateForCallMethod("Add", new[] { this.toTypeDef.ElementType });
+            var toAddDelegate = this.toTypeDef.AddElementDelegate;
 
-            if (fromObject.GetType().IsArray)
+            if (this.fromTypeDef.ActualType.IsArray)
             {
                 var values = (Array)fromObject;
                 var newElements = this.toTypeDef.CreateInstanceDelegate();
@@ -120,7 +120,7 @@
 
         private object ConvertArray(object fromObject)
         {
-            if (fromObject.GetType().IsArray)
+            if (this.fromTypeDef.ActualType.IsArray)
             {
                 var array = (IList)fromObject;
                 var newArray = (IList)Array.CreateInstance(this.toTypeDef.ElementType ?? typeof(object), array.Count);
@@ -130,17 +130,6 @@
                 }
 
                 return newArray;
-
-
-                var values = (Array)fromObject;
-                var newElements = Array.CreateInstance(toTypeDef.ElementType ?? typeof(object), values.Length);
-
-                for (int i = 0; i < values.Length; i++)
-                {
-                    newElements.SetValue(elementConverter(values.GetElement(i)), i);
-                }
-
-                return newElements;
             }
 
             var collection = fromObject as ICollection;

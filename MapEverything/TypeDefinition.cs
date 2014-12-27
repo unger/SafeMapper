@@ -48,6 +48,8 @@
             else if (this.IsCollection && currentType.IsGenericType)
             {
                 this.ElementType = currentType.GetGenericArguments()[0];
+                this.AddElementDelegate = currentType.DelegateForCallMethod("Add", new[] { this.ElementType });
+
             }
 
             this.CreateInstanceDelegate = this.GenerateCreateInstanceDelegate(currentType);
@@ -93,6 +95,8 @@
         public bool IsCollection { get; private set; }
 
         public Func<object> CreateInstanceDelegate { get; protected set; }
+
+        public MethodInvoker AddElementDelegate { get; protected set; }
 
         public dynamic GetPropertyGetter(PropertyInfo propertyInfo)
         {
