@@ -39,11 +39,13 @@
                 typeof(string)      // TypeCode.String = 18
             };
 
+        private ConcurrentDictionary<string, TypeMap> typeMappers;
         private ConcurrentDictionary<string, TypeConverter> typeConverters;
         private ConcurrentDictionary<Type, TypeDefinition> typeDefinitions;
 
         public TypeMapper()
         {
+            this.typeMappers = new ConcurrentDictionary<string, TypeMap>();
             var sqlDateTimeConverter = new SqlDateTimeTypeConverter();
             this.typeConverters = new ConcurrentDictionary<string, TypeConverter>();
             this.typeDefinitions = new ConcurrentDictionary<Type, TypeDefinition>();
@@ -131,6 +133,9 @@
                 return value => this.ConvertToString(value, formatProvider);
             }
 
+            //return this.GetTypeMap(fromType, toType).Convert;
+
+            
             var toConverter = this.GetTypeConverter(toType, fromType);
             if (toConverter.CanConvertFrom(fromType))
             {
@@ -167,6 +172,12 @@
         public TypeDefinition GetTypeDefinition(Type type)
         {
             return this.typeDefinitions.AddOrUpdate(type, t => new TypeDefinition(t), (t, definition) => definition);
+        }
+
+        public TypeMap GetTypeMap(Type fromType, Type toType)
+        {
+            var key = string.Format("{0}{1}", fromType.FullName, toType.FullName);
+            return this.typeMappers.GetOrAdd(key, t => new TypeMap(this.GetTypeDefinition(fromType), this.GetTypeDefinition(toType), this));
         }
 
         protected TypeConverter GetTypeConverter(Type fromType, Type toType)

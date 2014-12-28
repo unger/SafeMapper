@@ -41,6 +41,8 @@
             this.HasDefaultConstructor = defaultConstructor != null;
             this.IsCollection = this.IsCollectionType(currentType);
 
+            this.CreateInstanceDelegate = this.GenerateCreateInstanceDelegate(currentType);
+
             if (currentType.HasElementType)
             {
                 this.ElementType = currentType.GetElementType();
@@ -48,11 +50,10 @@
             else if (this.IsCollection && currentType.IsGenericType)
             {
                 this.ElementType = currentType.GetGenericArguments()[0];
-                this.AddElementDelegate = currentType.DelegateForCallMethod("Add", new[] { this.ElementType });
+                this.AddElementDelegate = this.ConcreteType.DelegateForCallMethod("Add", new[] { this.ElementType });
 
             }
 
-            this.CreateInstanceDelegate = this.GenerateCreateInstanceDelegate(currentType);
 
             if (!(currentType.IsPrimitive || this.IsCollection))
             {
