@@ -39,5 +39,18 @@
                 Assert.AreEqual(default(int), converted);
             }
         }
+
+        [Test]
+        public void Convert_IntToDecimal()
+        {
+            var value = 12345;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<int, decimal>(value);
+                Assert.AreEqual(12345m, converted);
+            }
+        }
+
     }
 }

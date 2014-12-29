@@ -1,13 +1,9 @@
-﻿using MapEverything.Tests.Model.Person;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MapEverything.Profiler
+﻿namespace MapEverything.Profiler
 {
     using Fasterflect;
+
+    using MapEverything.Generic;
+    using MapEverything.Tests.Model.Person;
 
     public class ProfilePropertyGetSet : ProfileBase
     {

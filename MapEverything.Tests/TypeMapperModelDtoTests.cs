@@ -65,6 +65,76 @@
         }
 
         [Test]
+        public void ConvertNullValuedPersonStringDto_ShouldCreateEmptyValuedPerson()
+        {
+            var expectedValue = new Person
+            {
+                Id = Guid.Empty,
+                Name = null,
+                Age = 0,
+                Length = 0m,
+                BirthDate = DateTime.MinValue
+            };
+
+            var value = new PersonStringDto
+            {
+                Id = null,
+                Name = null,
+                Age = null,
+                Length = null,
+                BirthDate = null
+            };
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<PersonStringDto, Person>(value);
+
+                Assert.IsInstanceOf<Person>(converted);
+
+                Assert.AreEqual(expectedValue.Id, converted.Id);
+                Assert.AreEqual(expectedValue.Name, converted.Name);
+                Assert.AreEqual(expectedValue.Age, converted.Age);
+                Assert.AreEqual(expectedValue.Length, converted.Length);
+                Assert.AreEqual(expectedValue.BirthDate, converted.BirthDate);
+            }
+        }
+
+        [Test]
+        public void ConvertEmptyValuedPersonStringDto_ShouldCreateEmptyValuedPerson()
+        {
+            var expectedValue = new Person
+            {
+                Id = Guid.Empty,
+                Name = string.Empty,
+                Age = 0,
+                Length = 0m,
+                BirthDate = DateTime.MinValue
+            };
+
+            var value = new PersonStringDto
+            {
+                Id = string.Empty,
+                Name = string.Empty,
+                Age = string.Empty,
+                Length = string.Empty,
+                BirthDate = string.Empty
+            };
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<PersonStringDto, Person>(value);
+
+                Assert.IsInstanceOf<Person>(converted);
+
+                Assert.AreEqual(expectedValue.Id, converted.Id, "Id");
+                Assert.AreEqual(expectedValue.Name, converted.Name, "Name");
+                Assert.AreEqual(expectedValue.Age, converted.Age, "Age");
+                Assert.AreEqual(expectedValue.Length, converted.Length, "Length");
+                Assert.AreEqual(expectedValue.BirthDate, converted.BirthDate, "BirthDate");
+            }
+        }
+
+        [Test]
         public void CanConvertPersonStringDtoToPerson()
         {
             var expectedValue = new Person

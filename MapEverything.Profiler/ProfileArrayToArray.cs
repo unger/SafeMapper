@@ -41,7 +41,7 @@
             this.AddResult(this.Profile("Array.ConvertAll changetype", iterations, i => Array.ConvertAll(intArray, v => Convert.ChangeType(v, toElementType))));
             this.AddResult(this.Profile("Array.ConvertAll typemapper", iterations, i => Array.ConvertAll(intArray, v => elementConverter(v))));
             this.AddResult(this.Profile("FastMapper", iterations, i => TypeAdapter.Adapt(intArray, fromType, toType)));
-            this.AddResult(this.Profile("TypeMapper", iterations, i => typeMapper.Convert(intArray, toType)));
+            this.AddResult(this.Profile("TypeMapper", iterations, i => typeMapper.Convert(intArray, fromType, toType)));
             this.AddResult(this.Profile("TypeMapper delegate", iterations, i => typeMapper.Convert(intArray, typeMapperConverter)));
             this.AddResult(this.Profile("AutoMapper", iterations, i => Mapper.Map(intArray, fromType, toType)));
             this.AddResult(this.Profile("Manual forloop", iterations, i => ConvertArrayManual(intArray, toElementType, v => Convert.ToDecimal(v))));

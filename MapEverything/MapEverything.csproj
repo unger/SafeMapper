@@ -46,14 +46,21 @@
     <Compile Include="Converters\GenericTypeConverter.cs" />
     <Compile Include="Converters\GuidTypeConverter.cs" />
     <Compile Include="Converters\SQLDateTimeTypeConverter.cs" />
-    <Compile Include="MemberMap.cs" />
-    <Compile Include="IMemberMap.cs" />
+    <Compile Include="Generic\TypeDefinition.cs" />
+    <Compile Include="TypeMaps\FromStringTypeMap.cs" />
+    <Compile Include="TypeMaps\ITypeMap.cs" />
+    <Compile Include="TypeMaps\MemberMap.cs" />
+    <Compile Include="TypeMaps\IMemberMap.cs" />
     <Compile Include="ITypeMapper.cs" />
     <Compile Include="DictionaryMemberMap.cs" />
     <Compile Include="ReflectionTypeMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeDefinition.cs" />
-    <Compile Include="TypeMap.cs" />
+    <Compile Include="TypeMaps\ConvertibleTypeMap.cs" />
+    <Compile Include="TypeMaps\SimpleTypeMap.cs" />
+    <Compile Include="TypeMaps\ToStringTypeMap.cs" />
+    <Compile Include="TypeMaps\TypeMap.cs" />
+    <Compile Include="TypeMaps\TypeMapFactory.cs" />
     <Compile Include="TypeMapper.cs" />
     <Compile Include="Utils\StringParseHelpers.cs" />
   </ItemGroup>

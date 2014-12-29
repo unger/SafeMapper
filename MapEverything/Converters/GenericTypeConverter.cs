@@ -9,12 +9,14 @@
 
     using Fasterflect;
 
+    using MapEverything.TypeMaps;
+
     public class GenericTypeConverter<TFrom, TTo> : TypeConverter
     {
         private readonly ITypeMapper typeMapper;
 
-        private readonly TypeMap toFromTypeMap;
-        private readonly TypeMap fromToTypeMap;
+        private readonly ITypeMap toFromTypeMap;
+        private readonly ITypeMap fromToTypeMap;
 
         private Type toType;
         private Type fromType;
@@ -28,13 +30,10 @@
         {
             this.fromType = typeof(TFrom);
             this.toType = typeof(TTo);
-
-            TypeDefinition toTypeDef = typeMapper.GetTypeDefinition(this.toType);
-            TypeDefinition fromTypeDef = typeMapper.GetTypeDefinition(this.fromType);
             this.typeMapper = typeMapper;
 
-            this.fromToTypeMap = new TypeMap(fromTypeDef, toTypeDef, typeMapper);
-            this.toFromTypeMap = new TypeMap(toTypeDef, fromTypeDef, typeMapper);
+            this.fromToTypeMap = TypeMapFactory.Create(this.fromType, this.toType, formatProvider, typeMapper);
+            this.toFromTypeMap = TypeMapFactory.Create(this.toType, this.fromType, formatProvider, typeMapper);
         }
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

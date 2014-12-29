@@ -1,6 +1,7 @@
 ﻿namespace MapEverything
 {
     using System;
+    using System.Reflection;
 
     using Fasterflect;
 
@@ -15,6 +16,21 @@
         private MemberSetter toTypeSetDelegate;
 
         private Func<object, object> converter;
+
+        public MemberMap(
+            MemberInfo fromMember,
+            MemberInfo toMember,
+            MemberGetter fromMemberGetter,
+            MemberSetter toMemberSetter)
+            : this(
+                fromMember.DeclaringType,
+                toMember.DeclaringType,
+                fromMember.Type(),
+                toMember.Type(),
+                fromMemberGetter,
+                toMemberSetter)
+        {
+        }
 
         public MemberMap(Type fromType, Type toType, Type fromMemberType, Type toMemberType, MemberGetter fromMemberGetter, MemberSetter toMemberSetter)
         {

@@ -15,17 +15,15 @@
 
         Converter<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider formatProvider);
         
-        object Convert(object value, Type toType);
+        object Convert(object value, Type fromType, Type toType);
 
-        object Convert(object value, Type toType, IFormatProvider formatProvider);
+        object Convert(object value, Type fromType, Type toType, IFormatProvider formatProvider);
 
         object Convert(object value, Func<object, object> converter);
 
         Func<object, object> GetConverter(Type fromType, Type toType);
 
         Func<object, object> GetConverter(Type fromType, Type toType, IFormatProvider formatProvider);
-
-        void AddTypeConverter<TFrom, TTo>(TypeConverter typeConverter);
 
         TypeDefinition GetTypeDefinition(Type type);
     }

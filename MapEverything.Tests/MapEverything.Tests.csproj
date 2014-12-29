@@ -45,6 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeDefinitionTests.cs" />
     <Compile Include="TypeMapperCollectionTests.cs" />
+    <Compile Include="TypeMapperStringTests.cs" />
     <Compile Include="TypeMapperListTests.cs" />
     <Compile Include="TypeMapperArrayTests.cs" />
     <Compile Include="TypeMapperGuidTests.cs" />

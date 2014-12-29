@@ -8,6 +8,18 @@
     public class TypeMapperDecimalTests : TypeMapperTestsBase
     {
         [Test]
+        public void CanConvertDecimalToInt()
+        {
+            const decimal DecimalValue = 123m;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<decimal, int>(DecimalValue);
+                Assert.AreEqual(123, converted);
+            }
+        }
+
+        [Test]
         public void CanConvertStringToDecimalWithInvariantCulture()
         {
             const decimal DecimalValue = 123.45m;

@@ -1,15 +1,6 @@
-﻿using MapEverything.Tests.Model.Person;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MapEverything.Profiler
+﻿namespace MapEverything.Profiler
 {
-    using System.Data.SqlTypes;
-
-    using Fasterflect;
+    using System;
 
     public class ProfileTypeOf : ProfileBase
     {

@@ -11,6 +11,8 @@ namespace MapEverything.Profiler
 
     using Fasterflect;
 
+    using MapEverything.Generic;
+
     public class ProfileCreation : ProfileBase
     {
         protected override void Execute(int iterations)

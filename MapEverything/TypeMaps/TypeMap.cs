@@ -1,4 +1,4 @@
-﻿namespace MapEverything
+﻿namespace MapEverything.TypeMaps
 {
     using System;
     using System.Collections;
@@ -6,11 +6,13 @@
 
     using Fasterflect;
 
-    public class TypeMap
+    public class TypeMap : ITypeMap
     {
         private readonly TypeDefinition fromTypeDef;
 
         private readonly TypeDefinition toTypeDef;
+
+        private readonly IFormatProvider formatProvider;
 
         private readonly ITypeMapper typeMapper;
 
@@ -18,28 +20,29 @@
 
         private Dictionary<string, IMemberMap> memberMaps = new Dictionary<string, IMemberMap>();
 
-        public TypeMap(TypeDefinition fromTypeDef, TypeDefinition toTypeDef, ITypeMapper typeMapper)
+        public TypeMap(Type fromType, Type toType, IFormatProvider formatProvider, ITypeMapper typeMapper)
         {
-            this.fromTypeDef = fromTypeDef;
-            this.toTypeDef = toTypeDef;
+            this.fromTypeDef = typeMapper.GetTypeDefinition(fromType);
+            this.toTypeDef = typeMapper.GetTypeDefinition(toType);
+            this.formatProvider = formatProvider;
             this.typeMapper = typeMapper;
 
             this.Convert = this.GenerateConvertDelegate();
 
-            foreach (var key in fromTypeDef.MemberGetters.Keys)
+            foreach (var key in this.fromTypeDef.MemberGetters.Keys)
             {
-                if (toTypeDef.MemberSetters.ContainsKey(key))
+                if (this.toTypeDef.MemberSetters.ContainsKey(key))
                 {
-                    var fromMember = fromTypeDef.Members[key];
-                    var toMember = toTypeDef.Members[key];
+                    var fromMember = this.fromTypeDef.Members[key];
+                    var toMember = this.toTypeDef.Members[key];
 
                     var memberMap = new MemberMap(
-                        fromTypeDef.ActualType,
-                        toTypeDef.ActualType,
+                        this.fromTypeDef.ActualType,
+                        this.toTypeDef.ActualType,
                         fromMember.Type(),
                         toMember.Type(),
-                        fromTypeDef.MemberGetters[key],
-                        toTypeDef.MemberSetters[key]);
+                        this.fromTypeDef.MemberGetters[key],
+                        this.toTypeDef.MemberSetters[key]);
 
                     this.AddMemberMap(key, memberMap);
                 }
@@ -54,7 +57,7 @@
             {
                 var fromElementType = this.fromTypeDef.ElementType;
                 var toElementType = this.toTypeDef.ElementType;
-                this.elementConverter = this.typeMapper.GetConverter(fromElementType, toElementType);
+                this.elementConverter = this.typeMapper.GetConverter(fromElementType, toElementType, this.formatProvider);
 
                 if (this.toTypeDef.ActualType.IsArray)
                 {
@@ -154,7 +157,7 @@
         {
             if (memberMap.IsValid())
             {
-                memberMap.SetConverter(this.typeMapper.GetConverter(memberMap.FromMemberType, memberMap.ToMemberType));
+                memberMap.SetConverter(this.typeMapper.GetConverter(memberMap.FromMemberType, memberMap.ToMemberType, this.formatProvider));
                 this.memberMaps.Add(name, memberMap);
             }
         }

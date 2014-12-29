@@ -32,6 +32,7 @@
             var dateTimeArray = new DateTime[iterations];
             var customerArray = new Customer[iterations];
             var personArray = new Person[iterations];
+            var personStringArray = new PersonStringDto[iterations];
 
             for (int i = 0; i < iterations; i++)
             {
@@ -50,6 +51,13 @@
                     Name = "Test Name " + i,
                     Age = i % 85,
                     Length = 1.70m + ((i % 20) / 100m)
+                };
+                personStringArray[i] = new PersonStringDto
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Test Name " + i,
+                    Age = (i % 85).ToString(CultureInfo.CurrentCulture),
+                    Length = (1.70m + ((i % 20) / 100m)).ToString(CultureInfo.CurrentCulture)
                 };
                 customerArray[i] = CustomerFactory.CreateTestCustomer();
             }
@@ -79,9 +87,12 @@
 
             ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());*/
 
+            Mapper.CreateMap<Address, AddressDto>();
             this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
+
+            //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
@@ -114,7 +125,7 @@
                 this.Profile(
                     "TypeMapper",
                     input.Length,
-                    i => typeMapper.Convert(input[i], typeof(TDestination), formatProvider)));
+                    i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider)));
 
             this.AddResult(this.Profile("TypeMapper delegate", input.Length, i => typeMapper.Convert(input[i], typeMapperConverter)));
             /*

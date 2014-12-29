@@ -10,22 +10,6 @@
 
     using Fasterflect;
 
-    public class TypeDefinition<T> : TypeDefinition
-    {
-        public TypeDefinition()
-            : base(typeof(T))
-        {
-        }
-
-        public Func<T, TProperty> GetPropertyGetter<TProperty>(string propertyName)
-        {
-            ParameterExpression paramExpression = Expression.Parameter(typeof(T), "value");
-            Expression propertyGetterExpression = Expression.Property(paramExpression, propertyName);
-
-            return Expression.Lambda<Func<T, TProperty>>(propertyGetterExpression, paramExpression).Compile();
-        }
-    }
-
     public class TypeDefinition
     {
         private Dictionary<string, MemberInfo> members = new Dictionary<string, MemberInfo>();
@@ -51,9 +35,7 @@
             {
                 this.ElementType = currentType.GetGenericArguments()[0];
                 this.AddElementDelegate = this.ConcreteType.DelegateForCallMethod("Add", new[] { this.ElementType });
-
             }
-
 
             if (!(currentType.IsPrimitive || this.IsCollection))
             {
@@ -115,7 +97,8 @@
             {
                 return Expression.Lambda<Func<object>>(Expression.New(currentType)).Compile();
             }
-            else if (currentType.IsGenericType)
+            
+            if (currentType.IsGenericType)
             {
                 var genericType = currentType.GetGenericTypeDefinition();
                 var elementTypes = currentType.GetGenericArguments();
