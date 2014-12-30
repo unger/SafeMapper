@@ -44,8 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\GenericTypeConverter.cs" />
-    <Compile Include="Converters\GuidTypeConverter.cs" />
-    <Compile Include="Converters\SQLDateTimeTypeConverter.cs" />
     <Compile Include="Generic\TypeDefinition.cs" />
     <Compile Include="TypeMaps\FromStringTypeMap.cs" />
     <Compile Include="TypeMaps\ITypeMap.cs" />

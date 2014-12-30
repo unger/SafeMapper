@@ -1,25 +1,17 @@
 ﻿namespace MapEverything.Converters
 {
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Globalization;
-    using System.Linq;
-
-    using Fasterflect;
 
     using MapEverything.TypeMaps;
 
     public class GenericTypeConverter<TFrom, TTo> : TypeConverter
     {
-        private readonly ITypeMapper typeMapper;
-
         private readonly ITypeMap toFromTypeMap;
         private readonly ITypeMap fromToTypeMap;
 
-        private Type toType;
-        private Type fromType;
+        private readonly Type toType;
 
         public GenericTypeConverter(ITypeMapper typeMapper) 
             : this(typeMapper, CultureInfo.CurrentCulture)
@@ -28,12 +20,11 @@
 
         public GenericTypeConverter(ITypeMapper typeMapper, IFormatProvider formatProvider)
         {
-            this.fromType = typeof(TFrom);
+            Type fromType = typeof(TFrom);
             this.toType = typeof(TTo);
-            this.typeMapper = typeMapper;
 
-            this.fromToTypeMap = TypeMapFactory.Create(this.fromType, this.toType, formatProvider, typeMapper);
-            this.toFromTypeMap = TypeMapFactory.Create(this.toType, this.fromType, formatProvider, typeMapper);
+            this.fromToTypeMap = TypeMapFactory.Create(fromType, this.toType, formatProvider, typeMapper);
+            this.toFromTypeMap = TypeMapFactory.Create(this.toType, fromType, formatProvider, typeMapper);
         }
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
