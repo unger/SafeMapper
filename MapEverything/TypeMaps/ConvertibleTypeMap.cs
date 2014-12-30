@@ -10,8 +10,10 @@
             {
                 this.Convert = o => System.Convert.ToDecimal(o, formatProvider);
             }
-
-            this.Convert = o => System.Convert.ChangeType(o, toType, formatProvider);
+            else
+            {
+                this.Convert = o => System.Convert.ChangeType(o, toType, formatProvider);
+            }
         }
 
         public Func<object, object> Convert { get; private set; }
