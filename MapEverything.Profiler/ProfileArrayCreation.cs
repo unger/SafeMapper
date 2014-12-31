@@ -14,7 +14,7 @@ namespace MapEverything.Profiler
 
     public class ProfileArrayCreation : ProfileBase
     {
-        protected override void Execute(int iterations)
+        public override void Execute()
         {
             var elementType = typeof(int);
 
@@ -23,11 +23,12 @@ namespace MapEverything.Profiler
 
             Func<object, object> dummyFunc = c => c;
 
+            this.WriteHeader();
 
-            this.AddResult(this.Profile("new int[]", iterations, i => dummyFunc(new int[1000])));
-            this.AddResult(this.Profile("fasterflect cctor", iterations, i => dummyFunc(fasterflectCctor(1000))));
-            this.AddResult(this.Profile("Array.CreateInstance", iterations, i => dummyFunc(Array.CreateInstance(elementType, 1000))));
-            this.AddResult(this.Profile("Reflection", iterations, i => dummyFunc(cctor.Invoke(new object[] { 1000 }))));
+            this.AddResult("new int[]", i => dummyFunc(new int[1000]));
+            this.AddResult("fasterflect cctor", i => dummyFunc(fasterflectCctor(1000)));
+            this.AddResult("Array.CreateInstance", i => dummyFunc(Array.CreateInstance(elementType, 1000)));
+            this.AddResult("Reflection", i => dummyFunc(cctor.Invoke(new object[] { 1000 })));
         }
     }
 }

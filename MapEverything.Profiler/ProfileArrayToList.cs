@@ -10,7 +10,7 @@
 
     public class ProfileArrayToList : ProfileBase
     {
-        protected override void Execute(int iterations)
+        public override void Execute()
         {
             var rand = new Random();
             var typeMapper = new TypeMapper();
@@ -27,13 +27,16 @@
             var elementConverter = typeMapper.GetConverter(typeof(int), typeof(decimal));
             var toElementType = typeof(decimal);
 
-            this.AddResult(this.Profile("Array.ConvertAll todecimal", iterations, i => new List<decimal>(Array.ConvertAll(intArray, Convert.ToDecimal))));
-            this.AddResult(this.Profile("Array.ConvertAll changetype", iterations, i => new List<decimal>(Array.ConvertAll(intArray, v => (decimal)Convert.ChangeType(v, toElementType)))));
-            this.AddResult(this.Profile("Array.ConvertAll typemapper", iterations, i => new List<decimal>(Array.ConvertAll(intArray, v => (decimal)elementConverter(v)))));
-            this.AddResult(this.Profile("FastMapper", iterations, i => TypeAdapter.Adapt(intArray, fromType, toType)));
-            this.AddResult(this.Profile("TypeMapper", iterations, i => typeMapper.Convert(intArray, fromType, toType)));
-            this.AddResult(this.Profile("TypeMapper delegate", iterations, i => typeMapper.Convert(intArray, typeMapperConverter)));
-            this.AddResult(this.Profile("AutoMapper", iterations, i => Mapper.Map(intArray, fromType, toType)));
+            this.WriteHeader();
+
+
+            this.AddResult("Array.ConvertAll todecimal", i => new List<decimal>(Array.ConvertAll(intArray, Convert.ToDecimal)));
+            this.AddResult("Array.ConvertAll changetype", i => new List<decimal>(Array.ConvertAll(intArray, v => (decimal)Convert.ChangeType(v, toElementType))));
+            this.AddResult("Array.ConvertAll typemapper", i => new List<decimal>(Array.ConvertAll(intArray, v => (decimal)elementConverter(v))));
+            this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
+            this.AddResult("TypeMapper", i => typeMapper.Convert(intArray, fromType, toType));
+            this.AddResult("TypeMapper delegate", i => typeMapper.Convert(intArray, typeMapperConverter));
+            this.AddResult("AutoMapper", i => Mapper.Map(intArray, fromType, toType));
         }
     }
 }

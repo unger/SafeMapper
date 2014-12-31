@@ -15,17 +15,20 @@ namespace MapEverything.Profiler
 
     public class ProfileCreation : ProfileBase
     {
-        protected override void Execute(int iterations)
+        public override void Execute()
         {
             var td = new TypeDefinition<Person>();
             var fasterflectCctor = typeof(Person).DelegateForCreateInstance(Type.EmptyTypes);
             var cctor = typeof(Person).GetConstructor(Type.EmptyTypes);
+            
+            this.WriteHeader();
 
-            this.AddResult(this.Profile("new Person()", iterations, i => new Person()));
-            this.AddResult(this.Profile("fasterflect cctor", iterations, i => fasterflectCctor()));
-            this.AddResult(this.Profile("compiled expression", iterations, i => td.CreateInstanceDelegate()));
-            this.AddResult(this.Profile("Activator.CreateInstance", iterations, i => Activator.CreateInstance<Person>()));
-            this.AddResult(this.Profile("Reflection", iterations, i => cctor.Invoke(new object[] { })));
+
+            this.AddResult("new Person()", i => new Person());
+            this.AddResult("fasterflect cctor", i => fasterflectCctor());
+            this.AddResult("compiled expression", i => td.CreateInstanceDelegate());
+            this.AddResult("Activator.CreateInstance", i => Activator.CreateInstance<Person>());
+            this.AddResult("Reflection", i => cctor.Invoke(new object[] { }));
 
 
         }

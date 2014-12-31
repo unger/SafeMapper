@@ -17,24 +17,25 @@
 
     public class ProfileConversion : ProfileBase
     {
-        protected override void Execute(int iterations)
+        public override void Execute()
         {
             var formatProvider = CultureInfo.CurrentCulture;
+            var maxIterations = this.MaxIterations;
 
-            var stringIntArray = new string[iterations];
-            var stringInvalidArray = new string[iterations];
-            var stringDecimalArray = new string[iterations];
-            var stringGuidArray = new string[iterations];
-            var stringDateTimeArray = new string[iterations];
-            var guidArray = new Guid[iterations];
-            var intArray = new int[iterations];
-            var decimalArray = new decimal[iterations];
-            var dateTimeArray = new DateTime[iterations];
-            var customerArray = new Customer[iterations];
-            var personArray = new Person[iterations];
-            var personStringArray = new PersonStringDto[iterations];
+            var stringIntArray = new string[maxIterations];
+            var stringInvalidArray = new string[maxIterations];
+            var stringDecimalArray = new string[maxIterations];
+            var stringGuidArray = new string[maxIterations];
+            var stringDateTimeArray = new string[maxIterations];
+            var guidArray = new Guid[maxIterations];
+            var intArray = new int[maxIterations];
+            var decimalArray = new decimal[maxIterations];
+            var dateTimeArray = new DateTime[maxIterations];
+            var customerArray = new Customer[maxIterations];
+            var personArray = new Person[maxIterations];
+            var personStringArray = new PersonStringDto[maxIterations];
 
-            for (int i = 0; i < iterations; i++)
+            for (int i = 0; i < maxIterations; i++)
             {
                 stringIntArray[i] = i.ToString(formatProvider);
                 stringInvalidArray[i] = System.Web.Security.Membership.GeneratePassword((i % 10) + 1, i % 5);
@@ -62,7 +63,7 @@
                 customerArray[i] = CustomerFactory.CreateTestCustomer();
             }
             
-            /*
+            
             ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
 
             //ProfileConvert<string, int>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
@@ -85,14 +86,13 @@
             
             ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
 
-            ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());*/
+            ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
 
-            Mapper.CreateMap<Address, AddressDto>();
             this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
@@ -113,50 +113,42 @@
                     Mapper.CreateMap<TSource, TDestination>();
                 }
             }
+            Mapper.CreateMap<Address, AddressDto>();
 
-            Console.WriteLine("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length);
+
+            this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
 
             if (compareFunc != null)
             {
-                this.AddResult(this.Profile("Native", input.Length, compareFunc));
+                this.AddResult("Native", compareFunc);
             }
 
             this.AddResult(
-                this.Profile(
                     "TypeMapper",
-                    input.Length,
-                    i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider)));
+                    i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider));
 
-            this.AddResult(this.Profile("TypeMapper delegate", input.Length, i => typeMapper.Convert(input[i], typeMapperConverter)));
+            this.AddResult("TypeMapper delegate", i => typeMapper.Convert(input[i], typeMapperConverter));
             /*
             this.AddResult(
-                this.Profile(
                     "SimpleTypeConverter",
-                    input.Length,
-                    i => SimpleTypeConverter.ConvertTo(input[i], typeof(TDestination), formatProvider)));
+                    i => SimpleTypeConverter.ConvertTo(input[i], typeof(TDestination), formatProvider));
 
 
             this.AddResult(
-                this.Profile(
                     "UniversalTypeConverter",
-                    input.Length,
-                    i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider)));
+                    i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider));
 
             */
             this.AddResult(
-                this.Profile(
                     "FastMapper generic",
-                    input.Length,
-                    i => TypeAdapter.Adapt<TSource, TDestination>(input[i])));
+                    i => TypeAdapter.Adapt<TSource, TDestination>(input[i]));
 
             this.AddResult(
-                this.Profile(
                     "FastMapper",
-                    input.Length,
-                    i => TypeAdapter.Adapt(input[i], sourceType, destinationType)));
+                    i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
 
 
-            this.AddResult(this.Profile("AutoMapper", input.Length, i => Mapper.Map<TSource, TDestination>(input[i])));
+            this.AddResult("AutoMapper", i => Mapper.Map<TSource, TDestination>(input[i]));
 
         }
     }

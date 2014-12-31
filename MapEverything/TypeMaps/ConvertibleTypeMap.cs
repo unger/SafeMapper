@@ -14,7 +14,7 @@
             {
                 this.Convert = o => System.Convert.ChangeType(o, toType, formatProvider);
             }
-        }
+          }
 
         public Func<object, object> Convert { get; private set; }
     }

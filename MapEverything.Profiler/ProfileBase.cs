@@ -3,45 +3,48 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
 
     public abstract class ProfileBase
     {
-        private List<Tuple<string, double>> results = new List<Tuple<string, double>>();
+        private readonly int[] iterations = { 100, 1000, 10000, 100000 };
 
-        public void Execute()
+        protected int MaxIterations 
         {
-            this.ExecuteWrapper(100);
-            this.ExecuteWrapper(1000);
-            this.ExecuteWrapper(10000);
-            this.ExecuteWrapper(100000);
-            //this.ExecuteWrapper(1000000);
+            get
+            {
+                return this.iterations.Last();
+            }
         }
 
-        protected virtual void ExecuteWrapper(int iterations)
+        public abstract void Execute();
+
+        protected void AddResult(string description, Action<int> func)
         {
-            this.results.Clear();
-
-            Console.WriteLine("Iterations {0}", iterations);
-            Console.WriteLine("========================================================");
-            this.Execute(iterations);
-            this.results.Sort((t1, t2) => t1.Item2.CompareTo(t2.Item2));
-
-            foreach (var result in this.results)
+            Console.Write("{0, -30}", description);
+            foreach (var iteration in this.iterations)
             {
-                Console.WriteLine(result.Item1);
+                var result = this.Profile(description, iteration, func);
+                Console.Write("{0, 12}", result.Item2);
             }
 
             Console.WriteLine();
         }
 
-        protected abstract void Execute(int iterations);
-
-        protected void AddResult(Tuple<string, double> result)
+        protected void WriteHeader(string headline = "")
         {
-            this.results.Add(result);
+            Console.WriteLine();
+            Console.WriteLine(headline);
+            Console.Write("{0, -30}", string.Empty);
+            foreach (var iteration in this.iterations)
+            {
+                Console.Write("{0, 12}", iteration);
+            }
+
+            Console.WriteLine();
         }
 
-        protected Tuple<string, double> Profile(string description, int iterations, Action<int> func)
+        private Tuple<string, double> Profile(string description, int iterations, Action<int> func)
         {
             try
             {

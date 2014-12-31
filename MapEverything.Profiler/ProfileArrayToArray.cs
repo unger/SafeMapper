@@ -12,9 +12,8 @@
 
     public class ProfileArrayToArray : ProfileBase
     {
-        protected override void Execute(int iterations)
+        public override void Execute()
         {
-            
             var rand = new Random();
             var typeMapper = new TypeMapper();
             var fromType = typeof(int[]);
@@ -30,6 +29,8 @@
             var elementConverter = typeMapper.GetConverter(typeof(int), typeof(decimal));
             var toElementType = typeof(decimal);
 
+            this.WriteHeader();
+
             /*
             var genericConvertType = typeof(Converter<,>).MakeGenericType(typeof(int), typeof(decimal));
             var fasterflectConvertAll = typeof(Array).DelegateForCallMethod(
@@ -37,14 +38,14 @@
                 "ConvertAll",
                 new Type[] { fromType, genericConvertType });*/
 
-            this.AddResult(this.Profile("Array.ConvertAll todecimal", iterations, i => Array.ConvertAll(intArray, Convert.ToDecimal)));
-            this.AddResult(this.Profile("Array.ConvertAll changetype", iterations, i => Array.ConvertAll(intArray, v => Convert.ChangeType(v, toElementType))));
-            this.AddResult(this.Profile("Array.ConvertAll typemapper", iterations, i => Array.ConvertAll(intArray, v => elementConverter(v))));
-            this.AddResult(this.Profile("FastMapper", iterations, i => TypeAdapter.Adapt(intArray, fromType, toType)));
-            this.AddResult(this.Profile("TypeMapper", iterations, i => typeMapper.Convert(intArray, fromType, toType)));
-            this.AddResult(this.Profile("TypeMapper delegate", iterations, i => typeMapper.Convert(intArray, typeMapperConverter)));
-            this.AddResult(this.Profile("AutoMapper", iterations, i => Mapper.Map(intArray, fromType, toType)));
-            this.AddResult(this.Profile("Manual forloop", iterations, i => ConvertArrayManual(intArray, toElementType, v => Convert.ToDecimal(v))));
+            this.AddResult("Array.ConvertAll todecimal", i => Array.ConvertAll(intArray, Convert.ToDecimal));
+            this.AddResult("Array.ConvertAll changetype", i => Array.ConvertAll(intArray, v => Convert.ChangeType(v, toElementType)));
+            this.AddResult("Array.ConvertAll typemapper", i => Array.ConvertAll(intArray, v => elementConverter(v)));
+            this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
+            this.AddResult("TypeMapper", i => typeMapper.Convert(intArray, fromType, toType));
+            this.AddResult("TypeMapper delegate", i => typeMapper.Convert(intArray, typeMapperConverter));
+            this.AddResult("AutoMapper", i => Mapper.Map(intArray, fromType, toType));
+            this.AddResult("Manual forloop", i => ConvertArrayManual(intArray, toElementType, v => Convert.ToDecimal(v)));
         }
 
         private object ConvertArrayManual(object input, Type elementType, Func<object, object> converter)

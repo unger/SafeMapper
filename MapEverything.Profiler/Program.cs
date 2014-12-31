@@ -12,9 +12,9 @@
 
             //new ProfileArrayToArray().Execute();
 
-            new ProfileArrayToList().Execute();
+            //new ProfileArrayToList().Execute();
 
-            //new ProfileConversion().Execute();
+            new ProfileConversion().Execute();
 
             //new ProfileStringConcat().Execute();
 

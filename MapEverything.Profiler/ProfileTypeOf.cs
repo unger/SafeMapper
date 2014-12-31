@@ -4,15 +4,16 @@
 
     public class ProfileTypeOf : ProfileBase
     {
-        protected override void Execute(int iterations)
+        public override void Execute()
         {
 
             Func<object, object> dummyFunc = o => o;
+            this.WriteHeader();
 
-            this.AddResult(this.Profile("typeof(int)", iterations, i => dummyFunc(typeof(int))));
-            this.AddResult(this.Profile("GetType", iterations, i => dummyFunc(i.GetType())));
-            this.AddResult(this.Profile("GetType.FullName", iterations, i => dummyFunc(i.GetType().FullName)));
-            this.AddResult(this.Profile("GetTypeCode", iterations, i => dummyFunc(i.GetTypeCode())));
+            this.AddResult("typeof(int)", i => dummyFunc(typeof(int)));
+            this.AddResult("GetType", i => dummyFunc(i.GetType()));
+            this.AddResult("GetType.FullName", i => dummyFunc(i.GetType().FullName));
+            this.AddResult("GetTypeCode", i => dummyFunc(i.GetTypeCode()));
 
         }
     }

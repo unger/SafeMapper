@@ -7,7 +7,7 @@
 
     public class ProfilePropertyGetSet : ProfileBase
     {
-        protected override void Execute(int iterations)
+        public override void Execute()
         {
             var td = new TypeDefinition<Person>();
 
@@ -18,10 +18,12 @@
             var typedCompiledGetter = td.GetPropertyGetter<string>("Name");
             var compiledGetter = td.GetPropertyGetter(propertyInfo);
 
-            this.AddResult(this.Profile("Reflection PropertyInfo.GetValue", iterations, i => propertyInfo.GetValue(person)));
-            this.AddResult(this.Profile("FasterFlect DelegateForGetPropertyValue", iterations, i => memberGetter(person)));
-            this.AddResult(this.Profile("compiled getter", iterations, i => compiledGetter(person)));
-            this.AddResult(this.Profile("Typed compiled getter", iterations, i => typedCompiledGetter(person)));
+            this.WriteHeader();
+
+            this.AddResult("Reflection PropertyInfo.GetValue", i => propertyInfo.GetValue(person));
+            this.AddResult("FasterFlect DelegateForGetPropertyValue", i => memberGetter(person));
+            this.AddResult("compiled getter", i => compiledGetter(person));
+            this.AddResult("Typed compiled getter", i => typedCompiledGetter(person));
         }
     
     }
