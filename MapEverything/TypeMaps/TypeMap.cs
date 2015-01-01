@@ -37,8 +37,6 @@
                     var toMember = this.toTypeDef.Members[key];
 
                     var memberMap = new MemberMap(
-                        this.fromTypeDef.ActualType,
-                        this.toTypeDef.ActualType,
                         fromMember.Type(),
                         toMember.Type(),
                         this.fromTypeDef.MemberGetters[key],
