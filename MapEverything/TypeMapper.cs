@@ -98,15 +98,11 @@
 
         public ITypeMap GetTypeMap(Type fromType, Type toType, IFormatProvider formatProvider)
         {
-            //var key = string.Format("{0}{1}", fromType.FullName, toType.FullName);
-            //var key = string.Concat(fromType.FullName, toType.FullName);
             return this.typeMappers.GetOrAdd(string.Concat(fromType.FullName, toType.FullName), t => TypeMapFactory.Create(fromType, toType, formatProvider, this));
         }
 
         public ITypeMap AddTypeMap(Type fromType, Type toType, Func<object, object> converter)
         {
-            //var key = string.Format("{0}{1}", fromType.FullName, toType.FullName);
-            //var key = string.Concat(fromType.FullName, toType.FullName);
             return this.typeMappers.GetOrAdd(string.Concat(fromType.FullName, toType.FullName), t => TypeMapFactory.Create(converter));
         }
 

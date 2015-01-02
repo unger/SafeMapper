@@ -55,9 +55,44 @@
                 return value => StringParser.TryParseInt32((string)value, formatProvider);
             }
 
+            if (toType == this.ConvertTypes[(int)TypeCode.UInt32])
+            {
+                return value => StringParser.TryParseUInt32((string)value, formatProvider);
+            }
+
             if (toType == this.ConvertTypes[(int)TypeCode.Int64])
             {
                 return value => StringParser.TryParseInt64((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.UInt64])
+            {
+                return value => StringParser.TryParseUInt64((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.Single])
+            {
+                return value => StringParser.TryParseSingle((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.Double])
+            {
+                return value => StringParser.TryParseDouble((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.Byte])
+            {
+                return value => StringParser.TryParseByte((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.SByte])
+            {
+                return value => StringParser.TryParseSByte((string)value, formatProvider);
+            }
+
+            if (toType == this.ConvertTypes[(int)TypeCode.Boolean])
+            {
+                return value => StringParser.TryParseBoolean((string)value);
             }
 
             if (toType == this.ConvertTypes[(int)TypeCode.Decimal])
