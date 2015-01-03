@@ -1,4 +1,4 @@
-﻿namespace MapEverything
+﻿namespace MapEverything.TypeMaps
 {
     using System;
     using System.Reflection;
@@ -7,10 +7,6 @@
 
     public class MemberMap : IMemberMap
     {
-        private readonly Type fromType;
-
-        private readonly Type toType;
-
         private MemberGetter fromTypeGetDelegate;
 
         private MemberSetter toTypeSetDelegate;
@@ -23,8 +19,6 @@
             MemberGetter fromMemberGetter,
             MemberSetter toMemberSetter)
             : this(
-                fromMember.DeclaringType,
-                toMember.DeclaringType,
                 fromMember.Type(),
                 toMember.Type(),
                 fromMemberGetter,
@@ -32,10 +26,8 @@
         {
         }
 
-        public MemberMap(Type fromType, Type toType, Type fromMemberType, Type toMemberType, MemberGetter fromMemberGetter, MemberSetter toMemberSetter)
+        public MemberMap(Type fromMemberType, Type toMemberType, MemberGetter fromMemberGetter, MemberSetter toMemberSetter)
         {
-            this.fromType = fromType;
-            this.toType = toType;
             this.fromTypeGetDelegate = fromMemberGetter;
             this.toTypeSetDelegate = toMemberSetter;
 
@@ -63,51 +55,7 @@
         {
             this.toTypeSetDelegate(
                 toObject, 
-                this.converter(this.fromTypeGetDelegate(fromObject)));
+                this.converter(this.fromTypeGetDelegate(fromObject.WrapIfValueType())));
         }
-        /*
-        protected MemberGetter FindMemberGetter(Type type, string propertyName)
-        {
-            var pi = type.GetProperty(propertyName);
-            if (pi != null)
-            {
-                this.FromPropertyType = pi.PropertyType;
-                return pi.DelegateForGetPropertyValue();
-            }
-
-            var fi = type.GetField(propertyName);
-            if (fi != null)
-            {
-                this.FromPropertyType = fi.FieldType;
-                return fi.DelegateForGetFieldValue();
-            }
-
-            return null;
-        }
-
-        protected MemberSetter FindMemberSetter(Type type, string propertyName)
-        {
-            var pi = type.GetProperty(propertyName);
-            if (pi != null)
-            {
-                if (pi.IsWritable())
-                {
-                    this.ToPropertyType = pi.PropertyType;
-                    return pi.DelegateForSetPropertyValue();
-                }
-            }
-
-            var fi = type.GetField(propertyName);
-            if (fi != null)
-            {
-                if (fi.IsWritable())
-                {
-                    this.ToPropertyType = fi.FieldType;
-                    return fi.DelegateForSetFieldValue();
-                }
-            }
-
-            return null;
-        }*/
     }
 }

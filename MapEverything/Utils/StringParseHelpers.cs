@@ -59,6 +59,18 @@
             return double.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider, out d) ? d : 0;
         }
 
+        public static byte TryParseByte(string s, IFormatProvider provider)
+        {
+            byte b;
+            return byte.TryParse(s, NumberStyles.Integer, NumberFormatInfo.CurrentInfo, out b) ? b : (byte)0;
+        }
+
+        public static sbyte TryParseSByte(string s, IFormatProvider provider)
+        {
+            sbyte b;
+            return sbyte.TryParse(s, NumberStyles.Integer, NumberFormatInfo.CurrentInfo, out b) ? b : (sbyte)0;
+        }
+
         public static Guid TryParseGuid(string s, IFormatProvider provider)
         {
             Guid g;
@@ -69,6 +81,12 @@
         {
             DateTime d;
             return DateTime.TryParse(s, provider, DateTimeStyles.None, out d) ? d : DateTime.MinValue;
+        }
+
+        public static bool TryParseBoolean(string s)
+        {
+            bool b;
+            return bool.TryParse(s, out b) ? b : false;
         }
     }
 }
