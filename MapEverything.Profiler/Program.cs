@@ -14,7 +14,9 @@
 
             //new ProfileArrayToList().Execute();
 
-            new ProfileConversion().Execute();
+            //new ProfileConversion().Execute();
+
+            new ProfileInvalidConversion().Execute();
 
             //new ProfileStringConcat().Execute();
 

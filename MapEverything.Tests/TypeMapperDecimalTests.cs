@@ -20,6 +20,31 @@
         }
 
         [Test]
+        public void ConvertDecimalWithDecimalsToInt_ShouldReturnIntPart()
+        {
+            const decimal DecimalValue = 123.45m;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<decimal, int>(DecimalValue);
+                Assert.AreEqual(123, converted);
+            }
+        }
+
+        [Test]
+        public void CanConvertDecimalToDouble()
+        {
+            const decimal DecimalValue = 123.45m;
+
+            foreach (var mapper in this.Mappers)
+            {
+                var converted = mapper.Convert<decimal, double>(DecimalValue);
+                Assert.AreEqual(123.45, converted);
+            }
+        }
+
+
+        [Test]
         public void CanConvertStringToDecimalWithInvariantCulture()
         {
             const decimal DecimalValue = 123.45m;

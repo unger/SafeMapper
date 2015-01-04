@@ -51,7 +51,8 @@
                     Id = Guid.NewGuid(),
                     Name = "Test Name " + i,
                     Age = i % 85,
-                    Length = 1.70m + ((i % 20) / 100m)
+                    Length = 1.70m + ((i % 20) / 100m),
+                    BirthDate = DateTime.Now.AddDays(i)
                 };
                 personStringArray[i] = new PersonStringDto
                 {
@@ -65,11 +66,11 @@
             }
 
             // FromString conversions
-            this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
-            this.ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
-            this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
-            this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
-            this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
+            //this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
+            //this.ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
+            //this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
+            //this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
+            //this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
             this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
 
             // Invalid
@@ -93,6 +94,7 @@
 
             //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
+            //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
@@ -117,7 +119,7 @@
 
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
-
+            /*
             if (compareFunc != null)
             {
                 this.AddResult("Native", compareFunc);
@@ -126,12 +128,13 @@
             this.AddResult(
                     "FastMapper",
                     i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
-
+            
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(input[i], typeMapperConverter));
-
+            */
+            
             this.AddResult(
-                    "TypeMapper",
-                    i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider));
+                  "TypeMapper",
+                  i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider));
 
             /*
             this.AddResult(
