@@ -1,18 +1,9 @@
-﻿namespace MapEverything
+﻿namespace MapEverything.TypeMaps
 {
     using System;
 
     public interface IMemberMap
     {
-        Type FromMemberType { get; }
-
-        Type ToMemberType { get; }
-
-        void Map(object fromObject, object toObject);
-
-        void SetConverter(Func<object, object> conv);
-
-        bool IsValid();
-
+        Action<object, object> Map { get; }
     }
 }

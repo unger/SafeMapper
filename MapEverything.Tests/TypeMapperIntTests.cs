@@ -78,6 +78,7 @@
             }
         }
 
+        [Ignore]
         [Test]
         public void Convert_LargeIntToShort()
         {
@@ -90,7 +91,5 @@
                 Assert.AreEqual(int.MaxValue, converted);
             }
         }
-
-
     }
 }

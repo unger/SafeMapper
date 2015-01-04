@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     using Fasterflect;
 
@@ -12,22 +13,19 @@
 
         private readonly TypeDefinition toTypeDef;
 
-        private readonly IFormatProvider formatProvider;
-
         private readonly ITypeMapper typeMapper;
 
         private Func<object, object> elementConverter;
 
-        private Dictionary<string, IMemberMap> memberMaps = new Dictionary<string, IMemberMap>();
+        private List<IMemberMap> memberMaps = new List<IMemberMap>();
 
         public TypeMap(Type fromType, Type toType, IFormatProvider formatProvider, ITypeMapper typeMapper)
         {
             this.fromTypeDef = typeMapper.GetTypeDefinition(fromType);
             this.toTypeDef = typeMapper.GetTypeDefinition(toType);
-            this.formatProvider = formatProvider;
             this.typeMapper = typeMapper;
 
-            this.Convert = this.GenerateConvertDelegate();
+            this.Convert = this.GenerateConvertDelegate(formatProvider);
 
             foreach (var key in this.fromTypeDef.MemberGetters.Keys)
             {
@@ -36,70 +34,75 @@
                     var fromMember = this.fromTypeDef.Members[key];
                     var toMember = this.toTypeDef.Members[key];
 
-                    var memberMap = new MemberMap(
-                        fromMember.Type(),
-                        toMember.Type(),
-                        this.fromTypeDef.MemberGetters[key],
-                        this.toTypeDef.MemberSetters[key]);
+                    var converter = typeMapper.GetConverter(fromMember.Type(), toMember.Type(), formatProvider);
 
-                    this.AddMemberMap(key, memberMap);
+                    var memberMap = new MemberMap(
+                        this.fromTypeDef.MemberGetters[key],
+                        this.toTypeDef.MemberSetters[key],
+                        converter);
+
+                    this.memberMaps.Add(memberMap);
                 }
             }
         }
 
         public Func<object, object> Convert { get; private set; }
 
-        private Func<object, object> GenerateConvertDelegate()
+        private Func<object, object> GenerateConvertDelegate(IFormatProvider formatProvider)
         {
             if (this.fromTypeDef.IsCollection && this.toTypeDef.IsCollection)
             {
                 var fromElementType = this.fromTypeDef.ElementType;
                 var toElementType = this.toTypeDef.ElementType;
-                this.elementConverter = this.typeMapper.GetConverter(fromElementType, toElementType, this.formatProvider);
 
-                if (this.toTypeDef.ActualType.IsArray)
+                // From Array to Array
+                if (this.fromTypeDef.ActualType.IsArray && this.toTypeDef.ActualType.IsArray)
                 {
-                    return this.ConvertArray;
+                    return this.ArrayConvertAllDelegate(this.fromTypeDef.ActualType, fromElementType, toElementType, formatProvider);
                 }
 
+                // From Array to Collection with IEnumerable<T> constructor
+                var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
+                var toConstructor = this.toTypeDef.ActualType.GetConstructor(new Type[] { toEnumerableType });
+                if (toConstructor != null && this.fromTypeDef.ActualType.IsArray)
+                {
+                    var fastToConstructor = toConstructor.DelegateForCreateInstance();
+                    var arrayConverter = this.ArrayConvertAllDelegate(this.fromTypeDef.ActualType, fromElementType, toElementType, formatProvider);
+                    return value => fastToConstructor(arrayConverter(value));
+                }
+
+                // From Generic collection to Array
+                this.elementConverter = this.typeMapper.GetConverter(fromElementType, toElementType, formatProvider);
+                
+                if (this.toTypeDef.ActualType.IsArray)
+                {
+                    return this.ConvertFromCollectionToArray;
+                }
+
+                // From Generic collection to Generic collection
                 if (this.toTypeDef.ActualType.IsGenericType)
                 {
-                    return this.ConvertGenericCollection;
+                    return this.ConvertToGenericCollection;
                 }
             }
 
             return this.ConvertClass;
-        }
+         }
 
         private object ConvertClass(object fromObject)
         {
             var toObject = this.toTypeDef.CreateInstanceDelegate();
-            foreach (var key in this.memberMaps.Keys)
+            foreach (var member in this.memberMaps)
             {
-                this.memberMaps[key].Map(fromObject, toObject);
+                member.Map(fromObject, toObject);
             }
 
             return toObject;
         }
 
-        private object ConvertGenericCollection(object fromObject)
+        private dynamic ConvertToGenericCollection(dynamic fromObject)
         {
             var toAddDelegate = this.toTypeDef.AddElementDelegate;
-
-            if (this.fromTypeDef.ActualType.IsArray)
-            {
-                var values = (Array)fromObject;
-                var newElements = this.toTypeDef.CreateInstanceDelegate();
-
-                for (int i = 0; i < values.Length; i++)
-                {
-                    toAddDelegate(
-                        newElements,
-                        this.elementConverter(values.GetElement(i)));
-                }
-
-                return newElements;
-            }
 
             var collection = fromObject as ICollection;
             if (collection != null)
@@ -116,27 +119,48 @@
                 return newElements;
             }
 
+            if (this.fromTypeDef.ActualType.IsArray)
+            {
+                var values = (Array)fromObject;
+                var newElements = this.toTypeDef.CreateInstanceDelegate();
+
+                for (int i = 0; i < values.Length; i++)
+                {
+                    toAddDelegate(
+                        newElements,
+                        this.elementConverter(values.GetElement(i)));
+                }
+
+                return newElements;
+            }
+
             return this.toTypeDef.CreateInstanceDelegate();
         }
 
-        private object ConvertArray(object fromObject)
+        private Func<object, object> ArrayConvertAllDelegate(Type fromType, Type fromElementType, Type toElementType, IFormatProvider formatProvider)
         {
-            if (this.fromTypeDef.ActualType.IsArray)
-            {
-                var array = (IList)fromObject;
-                var newArray = (IList)Array.CreateInstance(this.toTypeDef.ElementType ?? typeof(object), array.Count);
-                for (int i = 0; i < array.Count; i++)
-                {
-                    newArray[i] = this.elementConverter(array[i]);
-                }
+            var genericConvertType = typeof(Converter<,>).MakeGenericType(fromElementType, toElementType);
+            var fasterflectConvertAll = typeof(Array).DelegateForCallMethod(
+                new Type[] { fromElementType, toElementType },
+                "ConvertAll",
+                new Type[] { fromType, genericConvertType });
 
-                return newArray;
-            }
+            var getConverterDelegate = this.typeMapper.GetType().DelegateForCallMethod(
+                new Type[] { fromElementType, toElementType },
+                "GetConverter",
+                new Type[] { typeof(IFormatProvider) });
 
+            var genericConverter = getConverterDelegate(this.typeMapper, formatProvider);
+
+            return value => fasterflectConvertAll(null, value, genericConverter);
+        } 
+
+        private object ConvertFromCollectionToArray(object fromObject)
+        {
             var collection = fromObject as ICollection;
             if (collection != null)
             {
-                var newElements = Array.CreateInstance(this.toTypeDef.ElementType ?? typeof(object), collection.Count);
+                var newElements = Array.CreateInstance(this.toTypeDef.ElementType, collection.Count);
 
                 var i = 0;
                 foreach (var elementValue in collection)
@@ -148,21 +172,7 @@
                 return newElements;
             }
 
-            return Array.CreateInstance(this.toTypeDef.ElementType ?? typeof(object), 0);
-        }
-
-        private void AddMemberMap(string name, IMemberMap memberMap)
-        {
-            if (memberMap.IsValid())
-            {
-                memberMap.SetConverter(this.typeMapper.GetConverter(memberMap.FromMemberType, memberMap.ToMemberType, this.formatProvider));
-                this.memberMaps.Add(name, memberMap);
-            }
-        }
-
-        private bool IsStringDictionary(Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>) && type.GetGenericArguments()[0] == typeof(string);
+            return Array.CreateInstance(this.toTypeDef.ElementType, 0);
         }
     }
 }

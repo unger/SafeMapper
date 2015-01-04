@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoMapperHelpers\AutoMapperDateTimeTypeConverter.cs" />
+    <Compile Include="ProfileListToList.cs" />
+    <Compile Include="ProfileListToArray.cs" />
     <Compile Include="ProfileArrayToList.cs" />
     <Compile Include="ProfileBase.cs" />
     <Compile Include="ProfileInvalidConversion.cs" />

@@ -13,7 +13,7 @@
         {
             if (toType.IsAssignableFrom(fromType))
             {
-                return Create(value => System.Convert.ChangeType(value, toType, formatProvider));
+                return Create(value => value);
             }
             
             if (fromType == StringType)
@@ -43,7 +43,7 @@
                     v => (DateTime)v < (DateTime)SqlDateTime.MinValue ? SqlDateTime.MinValue : (SqlDateTime)(DateTime)v);
             }
 
-            // Use legacy TypeMap until all types are converted own classes
+            // Use legacy TypeMap until all types are converted to own classes
             return new TypeMap(fromType, toType, formatProvider, typeMapper);
         }
 

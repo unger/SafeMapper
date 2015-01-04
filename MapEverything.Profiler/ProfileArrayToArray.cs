@@ -31,16 +31,27 @@
 
             this.WriteHeader();
 
-            /*
+            
             var genericConvertType = typeof(Converter<,>).MakeGenericType(typeof(int), typeof(decimal));
             var fasterflectConvertAll = typeof(Array).DelegateForCallMethod(
                 new Type[] { typeof(int), typeof(decimal) },
                 "ConvertAll",
-                new Type[] { fromType, genericConvertType });*/
+                new Type[] { fromType, genericConvertType });
+
+            var getConverterDelegate = typeMapper.GetType().DelegateForCallMethod(
+                new Type[] { typeof(int), typeof(decimal) },
+                "GetConverter",
+                new Type[0]);
+
+            var genericConverter = getConverterDelegate(typeMapper);
+
+
+
 
             this.AddResult("Array.ConvertAll todecimal", i => Array.ConvertAll(intArray, Convert.ToDecimal));
             this.AddResult("Array.ConvertAll changetype", i => Array.ConvertAll(intArray, v => Convert.ChangeType(v, toElementType)));
             this.AddResult("Array.ConvertAll typemapper", i => Array.ConvertAll(intArray, v => elementConverter(v)));
+            this.AddResult("fasterflect", i => fasterflectConvertAll(null, intArray, genericConverter));
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
             this.AddResult("TypeMapper", i => typeMapper.Convert(intArray, fromType, toType));
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(intArray, typeMapperConverter));

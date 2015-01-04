@@ -23,7 +23,6 @@
             var maxIterations = this.MaxIterations;
 
             var stringIntArray = new string[maxIterations];
-            var stringInvalidArray = new string[maxIterations];
             var stringDecimalArray = new string[maxIterations];
             var stringGuidArray = new string[maxIterations];
             var stringDateTimeArray = new string[maxIterations];
@@ -38,7 +37,6 @@
             for (int i = 0; i < maxIterations; i++)
             {
                 stringIntArray[i] = i.ToString(formatProvider);
-                stringInvalidArray[i] = System.Web.Security.Membership.GeneratePassword((i % 10) + 1, i % 5);
                 stringDecimalArray[i] = (i * 0.9m).ToString(formatProvider);
                 stringGuidArray[i] = Guid.NewGuid().ToString();
                 intArray[i] = i;
@@ -71,16 +69,7 @@
             //this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
             //this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
             //this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
-            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
-
-            // Invalid
-            /*
-            this.ProfileConvert<string, int>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
-            this.ProfileConvert<string, decimal>(stringInvalidArray, formatProvider, i => StringParser.TryParseDecimal(stringInvalidArray[i], formatProvider));
-            this.ProfileConvert<string, Guid>(stringInvalidArray, formatProvider, i => new Guid(stringInvalidArray[i]));
-            this.ProfileConvert<string, DateTime>(stringInvalidArray, formatProvider, i => Convert.ToDateTime(stringInvalidArray[i]));
-             */ 
-
+            //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
 
@@ -90,11 +79,11 @@
 
             //this.ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
 
-            //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
@@ -119,7 +108,7 @@
 
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
-            /*
+            
             if (compareFunc != null)
             {
                 this.AddResult("Native", compareFunc);
@@ -130,7 +119,7 @@
                     i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
             
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(input[i], typeMapperConverter));
-            */
+            
             
             this.AddResult(
                   "TypeMapper",
