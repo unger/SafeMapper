@@ -78,21 +78,23 @@
 
             //this.ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
 
-            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
+/*            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
 
             this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
 
             this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);*/
+
+            this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
+
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
-            var typeMapperEx = new TypeMapperEx();
-
             var typeMapper = new TypeMapper();
             var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
+            var typeMapperExConverter = (Converter<TSource, TDestination>)TypeMapperEx.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
 
@@ -126,10 +128,14 @@
             this.AddResult(
                   "TypeMapper",
                   i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider));
-            
+
+            this.AddResult(
+                  "TypeMapperEx delegate",
+                  i => TypeMapperEx.Convert<TSource, TDestination>(input[i], typeMapperExConverter));
+
             this.AddResult(
                   "TypeMapperEx",
-                  i => typeMapperEx.Convert<TSource, TDestination>(input[i], formatProvider));
+                  i => TypeMapperEx.Convert<TSource, TDestination>(input[i], formatProvider));
 
 
             /*

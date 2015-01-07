@@ -2,13 +2,13 @@
 {
     using System;
 
-    using MapEverything.TypeMaps;
-
     public class TypeMap<TFrom, TTo>
     {
-        public TypeMap(IFormatProvider formatProvider, ITypeMapper typeMapper)
+        private readonly Type toType = typeof(TTo);
+
+        public TypeMap(IFormatProvider formatProvider)
         {
-            this.Convert = value => (TTo)TypeMapFactory.Create(typeof(TFrom), typeof(TTo), formatProvider, typeMapper).Convert(value);
+            this.Convert = value => (TTo)System.Convert.ChangeType(value, this.toType, formatProvider);
         }
 
         public Converter<TFrom, TTo> Convert { get; private set; }

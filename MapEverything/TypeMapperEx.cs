@@ -6,44 +6,46 @@
 
     using Fasterflect;
 
-    using MapEverything.Generic;
-    using MapEverything.TypeMaps;
-
-    public class TypeMapperEx : TypeMapper
+    public class TypeMapperEx
     {
-        private readonly ConcurrentDictionary<Type, dynamic> typeConvertInvokers;
+        private static readonly ConcurrentDictionary<string, object> TypeConvertInvokers = new ConcurrentDictionary<string, object>();
 
-        private Type genericTypeMap = typeof(TypeMap<,>);
-
-        public TypeMapperEx()
+        public static TTo Convert<TFrom, TTo>(TFrom value)
         {
-            this.typeConvertInvokers = new ConcurrentDictionary<Type, dynamic>();
+            return Convert<TFrom, TTo>(value, GetConverter<TFrom, TTo>(CultureInfo.CurrentCulture));
         }
 
-        public new TTo Convert<TFrom, TTo>(TFrom value)
+        public static TTo Convert<TFrom, TTo>(TFrom value, IFormatProvider formatProvider)
         {
-            return this.typeConvertInvokers.GetOrAdd(typeof(TypeMap<TFrom, TTo>), type => new TypeMap<TFrom, TTo>(CultureInfo.CurrentCulture, this).Convert)(value);
+            return Convert<TFrom, TTo>(value, GetConverter<TFrom, TTo>(formatProvider));
         }
 
-        public new TTo Convert<TFrom, TTo>(TFrom value, IFormatProvider formatProvider)
-        {
-            return this.typeConvertInvokers.GetOrAdd(typeof(TypeMap<TFrom, TTo>), type => new TypeMap<TFrom, TTo>(formatProvider, this).Convert)(value);
-        }
-
-        public new TTo Convert<TFrom, TTo>(TFrom value, Converter<TFrom, TTo> converter)
+        public static TTo Convert<TFrom, TTo>(TFrom value, Converter<TFrom, TTo> converter)
         {
             return converter(value);
         }
 
-        public new Converter<TFrom, TTo> GetConverter<TFrom, TTo>()
+        public static Converter<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider formatProvider)
         {
-            return this.typeConvertInvokers.GetOrAdd(typeof(TypeMap<TFrom, TTo>), type => new TypeMap<TFrom, TTo>(CultureInfo.CurrentCulture, this).Convert);
+            return (Converter<TFrom, TTo>)TypeConvertInvokers.GetOrAdd(
+                string.Concat(typeof(TFrom).FullName, typeof(TTo).FullName),
+                k => CreateConverter<TFrom, TTo>(formatProvider));
         }
 
-        public new Converter<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider formatProvider)
+        public static object GetConverter(Type fromType, Type toType, IFormatProvider formatProvider)
         {
-            return this.typeConvertInvokers.GetOrAdd(typeof(TypeMap<TFrom, TTo>), type => new TypeMap<TFrom, TTo>(formatProvider, this).Convert);
+            return TypeConvertInvokers.GetOrAdd(
+                string.Concat(fromType.FullName, toType.FullName),
+                k =>
+                typeof(TypeMapperEx).DelegateForCallMethod(
+                    new[] { fromType, toType },
+                    "CreateConverter",
+                    new[] { typeof(IFormatProvider) })(null, formatProvider));
         }
 
-    }
+        private static Converter<TFrom, TTo> CreateConverter<TFrom, TTo>(IFormatProvider formatProvider)
+        {
+            return value => (TTo)System.Convert.ChangeType(value, typeof(TTo), formatProvider);
+        }
+   }
 }
