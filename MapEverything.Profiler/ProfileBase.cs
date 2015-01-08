@@ -7,7 +7,7 @@
 
     public abstract class ProfileBase
     {
-        private readonly int[] iterations = { 100, 1000, 10000, 100000 };
+        protected int[] iterations = { 100, 1000, 10000, 100000 };
 
         protected int MaxIterations 
         {

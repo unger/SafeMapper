@@ -55,8 +55,9 @@
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
             this.AddResult("TypeMapper", i => typeMapper.Convert(intArray, fromType, toType));
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(intArray, typeMapperConverter));
-            this.AddResult("AutoMapper", i => Mapper.Map(intArray, fromType, toType));
-            this.AddResult("Manual forloop", i => ConvertArrayManual(intArray, toElementType, v => Convert.ToDecimal(v)));
+            //this.AddResult("AutoMapper", i => Mapper.Map(intArray, fromType, toType));
+            this.AddResult("Manual forloop", i => this.ConvertArrayManual(intArray, toElementType, v => Convert.ToDecimal(v)));
+            this.AddResult("Manual forloop rev", i => this.ConvertArrayManualReverse(intArray, toElementType, v => Convert.ToDecimal(v)));
         }
 
         private object ConvertArrayManual(object input, Type elementType, Func<object, object> converter)
@@ -65,11 +66,23 @@
             var newArray = (IList)Array.CreateInstance(elementType, array.Count);
             for (int i = 0; i < array.Count; i++)
             {
-                //newArray.SetValue(converter(array.GetValue(i)), i);
                 newArray[i] = converter(array[i]);
             }
 
             return newArray;
         }
+
+        private object ConvertArrayManualReverse(object input, Type elementType, Func<object, object> converter)
+        {
+            var array = (IList)input;
+            var newArray = (IList)Array.CreateInstance(elementType, array.Count);
+            for (int i = array.Count - 1; i >= 0; i--)
+            {
+                newArray[i] = converter(array[i]);
+            }
+
+            return newArray;
+        }
+
     }
 }
