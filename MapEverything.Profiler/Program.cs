@@ -10,7 +10,7 @@
 
             //new ProfilePropertyGetSet().Execute();
 
-            //new ProfileArrayToArray().Execute();
+            new ProfileArrayToArray().Execute();
 
             //new ProfileArrayToList().Execute();
 
@@ -26,7 +26,7 @@
 
             //new ProfileTypeOf().Execute();
 
-            new ProfileIntParse().Execute();
+            //new ProfileIntParse().Execute();
         }
     }
 }

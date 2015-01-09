@@ -58,6 +58,7 @@
             //this.AddResult("AutoMapper", i => Mapper.Map(intArray, fromType, toType));
             this.AddResult("Manual forloop", i => this.ConvertArrayManual(intArray, toElementType, v => Convert.ToDecimal(v)));
             this.AddResult("Manual forloop rev", i => this.ConvertArrayManualReverse(intArray, toElementType, v => Convert.ToDecimal(v)));
+            this.AddResult("Manual foreachloop", i => this.ConvertArrayManualForEach(intArray, toElementType, v => Convert.ToDecimal(v)));
         }
 
         private object ConvertArrayManual(object input, Type elementType, Func<object, object> converter)
@@ -71,6 +72,20 @@
 
             return newArray;
         }
+
+        private object ConvertArrayManualForEach(object input, Type elementType, Func<object, object> converter)
+        {
+            var array = (IList)input;
+            var newArray = (IList)Array.CreateInstance(elementType, array.Count);
+            int i = 0;
+            foreach (var elem in array)
+            {
+                newArray[i++] = converter(elem);
+            }
+
+            return newArray;
+        }
+
 
         private object ConvertArrayManualReverse(object input, Type elementType, Func<object, object> converter)
         {
