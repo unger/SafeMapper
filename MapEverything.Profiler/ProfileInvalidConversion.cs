@@ -66,8 +66,8 @@
                     Mapper.CreateMap<TSource, TDestination>();
                 }
             }
-            Mapper.CreateMap<Address, AddressDto>();
 
+            Mapper.CreateMap<Address, AddressDto>();
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
 

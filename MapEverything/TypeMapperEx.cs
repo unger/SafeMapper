@@ -45,6 +45,11 @@
 
         private static Converter<TFrom, TTo> CreateConverter<TFrom, TTo>(IFormatProvider formatProvider)
         {
+            var fromType = typeof(TFrom);
+            var toType = typeof(TTo);
+
+            
+
             return value => (TTo)System.Convert.ChangeType(value, typeof(TTo), formatProvider);
         }
    }
