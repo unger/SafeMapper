@@ -31,6 +31,7 @@
             var decimalArray = new decimal[maxIterations];
             var dateTimeArray = new DateTime[maxIterations];
             var customerArray = new Customer[maxIterations];
+            var customerDtoArray = new CustomerDto[maxIterations];
             var personArray = new Person[maxIterations];
             var personStringArray = new PersonStringDto[maxIterations];
 
@@ -61,6 +62,7 @@
                     BirthDate = DateTime.Now.AddDays(i).ToString(CultureInfo.CurrentCulture)
                 };
                 customerArray[i] = CustomerFactory.CreateTestCustomer();
+                customerDtoArray[i] = TypeAdapter.Adapt<CustomerDto>(customerArray[i]);
             }
 
             // FromString conversions
@@ -80,7 +82,9 @@
 
             //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
+            
+            this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
