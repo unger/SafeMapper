@@ -1,6 +1,7 @@
 ﻿namespace MapEverything.TypeMaps
 {
     using System;
+    using System.Collections;
     using System.Data.SqlTypes;
     using System.Linq;
 
@@ -43,6 +44,11 @@
                     v => (DateTime)v < (DateTime)SqlDateTime.MinValue ? SqlDateTime.MinValue : (SqlDateTime)(DateTime)v);
             }
 
+            if (IsCollectionType(fromType) && IsCollectionType(toType))
+            {
+                return new CollectionTypeMap(fromType, toType, formatProvider, typeMapper);
+            }
+
             // Use legacy TypeMap until all types are converted to own classes
             return new TypeMap(fromType, toType, formatProvider, typeMapper);
         }
@@ -50,6 +56,12 @@
         public static ITypeMap Create(Func<object, object> converter)
         {
             return new SimpleTypeMap(converter);
+        }
+
+        private static bool IsCollectionType(Type type)
+        {
+            return type.IsArray
+                || (!type.IsAssignableFrom(typeof(string)) && type.GetInterfaces().Any(t => t == typeof(IEnumerable)));
         }
     }
 }
