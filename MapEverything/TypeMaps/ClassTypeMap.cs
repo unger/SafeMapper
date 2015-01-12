@@ -1,13 +1,11 @@
 ﻿namespace MapEverything.TypeMaps
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
 
     using Fasterflect;
 
-    public class TypeMap : ITypeMap
+    public class ClassTypeMap : ITypeMap
     {
         private readonly TypeDefinition fromTypeDef;
 
@@ -15,7 +13,7 @@
 
         private List<IMemberMap> memberMaps = new List<IMemberMap>();
 
-        public TypeMap(Type fromType, Type toType, IFormatProvider formatProvider, ITypeMapper typeMapper)
+        public ClassTypeMap(Type fromType, Type toType, IFormatProvider formatProvider, ITypeMapper typeMapper)
         {
             this.toTypeDef = typeMapper.GetTypeDefinition(toType);
             this.fromTypeDef = typeMapper.GetTypeDefinition(fromType);

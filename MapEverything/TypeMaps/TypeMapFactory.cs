@@ -50,7 +50,7 @@
             }
 
             // Use legacy TypeMap until all types are converted to own classes
-            return new TypeMap(fromType, toType, formatProvider, typeMapper);
+            return new ClassTypeMap(fromType, toType, formatProvider, typeMapper);
         }
 
         public static ITypeMap Create(Func<object, object> converter)

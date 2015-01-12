@@ -60,7 +60,7 @@
     <Compile Include="TypeMaps\ConvertibleTypeMap.cs" />
     <Compile Include="TypeMaps\SimpleTypeMap.cs" />
     <Compile Include="TypeMaps\ToStringTypeMap.cs" />
-    <Compile Include="TypeMaps\TypeMap.cs" />
+    <Compile Include="TypeMaps\ClassTypeMap.cs" />
     <Compile Include="TypeMaps\TypeMapFactory.cs" />
     <Compile Include="TypeMapper.cs" />
     <Compile Include="Utils\StringParseHelpers.cs" />

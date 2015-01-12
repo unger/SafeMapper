@@ -4,8 +4,6 @@
     using System.Collections.Concurrent;
     using System.Globalization;
 
-    using Fasterflect;
-
     using MapEverything.TypeMaps;
 
     public class TypeMapper : ITypeMapper
