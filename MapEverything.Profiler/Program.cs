@@ -14,11 +14,11 @@
 
             //new ProfileArrayToList().Execute();
 
-            new ProfileListToArray().Execute();
+            //new ProfileListToArray().Execute();
 
             //new ProfileListToList().Execute();
 
-            //new ProfileConversion().Execute();
+            new ProfileConversion().Execute();
 
             //new ProfileInvalidConversion().Execute();
 

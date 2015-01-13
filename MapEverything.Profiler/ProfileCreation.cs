@@ -18,8 +18,8 @@ namespace MapEverything.Profiler
         public override void Execute()
         {
             var td = new TypeDefinition<Person>();
-            var fasterflectCctor = typeof(Person).DelegateForCreateInstance(Type.EmptyTypes);
             var cctor = typeof(Person).GetConstructor(Type.EmptyTypes);
+            var fasterflectCctor = cctor.DelegateForCreateInstance();
             
             this.WriteHeader();
 

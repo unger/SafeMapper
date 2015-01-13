@@ -53,6 +53,21 @@
 
             if (toType.IsArray)
             {
+                // Try to execute ToArray and ConvertAll
+                var toArrayMethod = fromType.GetMethod("ToArray", new Type[0]);
+                if (toArrayMethod != null)
+                {
+                    var fastToArrayMethod = toArrayMethod.DelegateForCallMethod();
+
+                    if (fromElementType == toElementType)
+                    {
+                        return value => fastToArrayMethod(value);
+                    }
+
+                    var arrayConverter = this.ArrayConvertAllDelegate(fromType, fromElementType, toElementType, formatProvider);
+                    return value => arrayConverter(fastToArrayMethod(value));
+                }
+
                 return this.ConvertFromCollectionToArray;
             }
 

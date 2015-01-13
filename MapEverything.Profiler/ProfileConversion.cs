@@ -34,6 +34,7 @@
             var customerDtoArray = new CustomerDto[maxIterations];
             var personArray = new Person[maxIterations];
             var personStringArray = new PersonStringDto[maxIterations];
+            var addressArray = new Address[maxIterations];
 
             for (int i = 0; i < maxIterations; i++)
             {
@@ -63,6 +64,13 @@
                 };
                 customerArray[i] = CustomerFactory.CreateTestCustomer();
                 customerDtoArray[i] = TypeAdapter.Adapt<CustomerDto>(customerArray[i]);
+                addressArray[i] = new Address
+                                      {
+                                          Id = i, 
+                                          City = "Gbg",
+                                          Country = "Sweden",
+                                          Street = "Street 1"
+                                      };
             }
 
             // FromString conversions
@@ -84,11 +92,13 @@
 
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
-            this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
+
+            //this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
 
