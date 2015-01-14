@@ -41,11 +41,22 @@
             // From Array to Collection with IEnumerable<T> constructor
             var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
             var toConstructor = toType.GetConstructor(new Type[] { toEnumerableType });
+            var toArrayMethod = fromType.GetMethod("ToArray", new Type[0]);
+
             if (toConstructor != null && fromType.IsArray)
             {
                 var fastToConstructor = toConstructor.DelegateForCreateInstance();
                 var arrayConverter = this.ArrayConvertAllDelegate(fromType, fromElementType, toElementType, formatProvider);
                 return value => fastToConstructor(arrayConverter(value));
+            }
+
+            // Generic collection with toArray method to generic collection with IEnumerable<T> constructor
+            if (toConstructor != null && toArrayMethod != null)
+            {
+                var fastToConstructor = toConstructor.DelegateForCreateInstance();
+                var fastToArrayMethod = toArrayMethod.DelegateForCallMethod();
+                var arrayConverter = this.ArrayConvertAllDelegate(fromType, fromElementType, toElementType, formatProvider);
+                return value => fastToConstructor(arrayConverter(fastToArrayMethod(value)));
             }
 
             // From Generic collection to Array
@@ -54,7 +65,6 @@
             if (toType.IsArray)
             {
                 // Try to execute ToArray and ConvertAll
-                var toArrayMethod = fromType.GetMethod("ToArray", new Type[0]);
                 if (toArrayMethod != null)
                 {
                     var fastToArrayMethod = toArrayMethod.DelegateForCallMethod();
