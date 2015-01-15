@@ -118,8 +118,10 @@
 
         private void CacheMembers()
         {
-            foreach (var member in this.ActualType.GetMembers())
+            var localMembers = this.ActualType.GetMembers();
+            for (int i = 0; i < localMembers.Length; i++)
             {
+                var member = localMembers[i];
                 var propInfo = member as PropertyInfo;
                 if (propInfo != null)
                 {

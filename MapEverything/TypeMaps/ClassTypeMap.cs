@@ -11,10 +11,11 @@
 
         private readonly TypeDefinition toTypeDef;
 
-        private List<IMemberMap> memberMaps = new List<IMemberMap>();
+        private MemberMap[] properties;
 
         public ClassTypeMap(Type fromType, Type toType, IFormatProvider formatProvider, ITypeMapper typeMapper)
         {
+            var memberMaps = new List<MemberMap>();
             this.toTypeDef = typeMapper.GetTypeDefinition(toType);
             this.fromTypeDef = typeMapper.GetTypeDefinition(fromType);
 
@@ -34,9 +35,11 @@
                         this.toTypeDef.MemberSetters[key],
                         converter);
 
-                    this.memberMaps.Add(memberMap);
+                    memberMaps.Add(memberMap);
                 }
             }
+
+            this.properties = memberMaps.ToArray();
         }
 
         public Func<object, object> Convert { get; private set; }
@@ -44,9 +47,9 @@
         private object ConvertClass(object fromObject)
         {
             var toObject = this.toTypeDef.CreateInstanceDelegate();
-            foreach (var member in this.memberMaps)
+            for (int i = 0; i < this.properties.Length; i++)
             {
-                member.Map(fromObject, toObject);
+                this.properties[i].Map(fromObject, toObject);
             }
 
             return toObject;
