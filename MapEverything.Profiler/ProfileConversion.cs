@@ -81,6 +81,7 @@
             //this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
 
             //this.ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
+            //this.ProfileConvert<int, int>(intArray, formatProvider, i => Convert.ChangeType(i, typeof(int)));
 
             //this.ProfileConvert<decimal, string>(decimalArray, formatProvider, i => decimalArray[i].ToString(formatProvider));
 
@@ -101,7 +102,6 @@
             //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
-
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)

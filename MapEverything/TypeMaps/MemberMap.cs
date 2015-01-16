@@ -21,13 +21,13 @@
                     (fromObject, toObject) =>
                     toMemberSetter(
                         toObject,
-                        converter(fromMemberGetter(ValueTypeExtensions.WrapIfValueType(fromObject))));
+                        converter(fromMemberGetter(fromObject)));
             }
 
             return (fromObject, toObject) =>
                     toMemberSetter(
                         toObject,
-                        fromMemberGetter(ValueTypeExtensions.WrapIfValueType(fromObject)));
+                        fromMemberGetter(fromObject));
         }
     }
 }
