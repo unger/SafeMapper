@@ -47,7 +47,6 @@
     <Compile Include="Converters\GenericTypeConverter.cs" />
     <Compile Include="Generic\TypeDefinition.cs" />
     <Compile Include="Generic\TypeMap.cs" />
-    <Compile Include="TypeMapperEx.cs" />
     <Compile Include="TypeMaps\CollectionTypeMap.cs" />
     <Compile Include="TypeMaps\FromStringTypeMap.cs" />
     <Compile Include="TypeMaps\ITypeMap.cs" />
