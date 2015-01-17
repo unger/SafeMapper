@@ -6,6 +6,8 @@
 
     using AutoMapper;
 
+    using EmitMapper;
+
     using FastMapper;
 
     using MapEverything.Profiler.AutoMapperHelpers;
@@ -13,7 +15,7 @@
     using MapEverything.Tests.Model.Person;
     using MapEverything.Utils;
 
-    using TB.ComponentModel;
+    using ServiceStack;
 
     public class ProfileConversion : ProfileBase
     {
@@ -74,7 +76,7 @@
             }
 
             // FromString conversions
-            this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
+            /*this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
             this.ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
             this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
             this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
@@ -90,8 +92,8 @@
             this.ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
 
             this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
-
-            this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
+            */
+            //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
             this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
 
@@ -110,6 +112,8 @@
             var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
+
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>();
 
             if (typeof(TDestination) != typeof(string))
             {
@@ -132,6 +136,8 @@
                 this.AddResult("Native", compareFunc);
             }
 
+            this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
+
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(input[i], typeMapperConverter));
 
             this.AddResult(
@@ -141,7 +147,13 @@
             this.AddResult(
                     "FastMapper",
                     i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
-            /*
+
+
+
+            /*this.AddResult(
+                    "ServiceStack",
+                    i => input[i].ConvertTo<TDestination>());
+            
             this.AddResult(
                     "SimpleTypeConverter",
                     i => SimpleTypeConverter.ConvertTo(input[i], typeof(TDestination), formatProvider));

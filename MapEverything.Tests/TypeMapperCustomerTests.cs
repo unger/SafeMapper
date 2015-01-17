@@ -1,9 +1,5 @@
 ﻿namespace MapEverything.Tests
 {
-    using System;
-    using System.Data.SqlTypes;
-
-    using MapEverything.Converters;
     using MapEverything.Tests.Model;
 
     using NUnit.Framework;

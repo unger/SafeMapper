@@ -2,8 +2,6 @@
 {
     using System;
 
-    using MapEverything.Converters;
-
     using NUnit.Framework;
 
     public class TypeMapperGuidTests : TypeMapperTestsBase

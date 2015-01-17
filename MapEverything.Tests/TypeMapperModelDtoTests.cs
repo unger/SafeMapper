@@ -3,8 +3,6 @@
     using System;
     using System.Data.SqlTypes;
 
-    using MapEverything.Converters;
-    using MapEverything.Tests.Model;
     using MapEverything.Tests.Model.Person;
 
     using NUnit.Framework;
