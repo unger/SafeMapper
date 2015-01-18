@@ -95,15 +95,18 @@
             */
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
-            this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
-
-            this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
+            
+            //this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
 
             this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
             this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
 
+            /*this.ProfileConvert<Person, PersonStruct>(personArray, CultureInfo.CurrentCulture, null);
+
             this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
+            */
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
@@ -126,8 +129,8 @@
                     Mapper.CreateMap<TSource, TDestination>();
                 }
             }
-            Mapper.CreateMap<Address, AddressDto>();
 
+            Mapper.CreateMap<Address, AddressDto>();
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
             
