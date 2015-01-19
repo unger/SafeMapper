@@ -75,11 +75,10 @@
 
         private Func<object, object> CreateCompiledExpression(Type fromType, Type toType)
         {
-            ParameterExpression fromObjectExpression = Expression.Parameter(typeof(object), "fromObject");
+            ParameterExpression fromObjectExpression = Expression.Parameter(typeof(object));
 
-            LabelTarget returnTarget = Expression.Label(toType);
             var expressions = new List<Expression>();
-            var toObjectVariable = Expression.Variable(toType, "toObject");
+            var toObjectVariable = Expression.Variable(toType);
 
             expressions.Add(Expression.Assign(toObjectVariable, Expression.New(toType)));
 
@@ -89,7 +88,6 @@
                 {
                     var fromMember = this.fromTypeDef.Members[key];
                     var toMember = this.toTypeDef.Members[key];
-
 
                     MemberExpression leftExpression = Expression.Property(toObjectVariable, toMember.Name);
                     MemberExpression rightExpression = Expression.Property(Expression.TypeAs(fromObjectExpression, fromType), fromMember.Name);
@@ -120,8 +118,7 @@
                 }
             }
 
-            expressions.Add(Expression.Return(returnTarget, toObjectVariable));
-            expressions.Add(Expression.Label(returnTarget, toObjectVariable));
+            expressions.Add(toObjectVariable);
 
             return Expression.Lambda<Func<object, object>>(
                 Expression.Block(new[] { toObjectVariable }, expressions.ToArray()),
