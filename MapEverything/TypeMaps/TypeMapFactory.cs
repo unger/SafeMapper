@@ -4,6 +4,7 @@
     using System.Collections;
     using System.Data.SqlTypes;
     using System.Linq;
+    using System.Runtime.InteropServices;
 
     public class TypeMapFactory
     {
