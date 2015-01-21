@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MapEverything.Tests
+﻿namespace MapEverything.Tests
 {
     using System.Globalization;
 
@@ -168,7 +162,10 @@ namespace MapEverything.Tests
         {
             string value = "1 234";
 
-            var result = SafeConvert.ToInt32(value);
+            var cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            cultureInfo.NumberFormat.NumberGroupSeparator = " ";
+
+            var result = SafeConvert.ToInt32(value, cultureInfo);
 
             Assert.AreEqual(1234, result);
         }
@@ -184,11 +181,41 @@ namespace MapEverything.Tests
         }
 
         [Test]
-        public void ToInt32_FromStringWithDecimalsLessThanZeroPointFive_ShouldReturnTruncatedValue()
+        public void ToInt32_FromStringWithDecimals_ShouldReturnZero()
         {
-            string value = "1234.000";
+            string value = "1234.1";
 
-            var result = SafeConvert.ToInt32(value);
+            var cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+
+            var result = SafeConvert.ToInt32(value, cultureInfo);
+
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        public void ToInt32_FromStringWithDecimalPartZero_ShouldReturnValue()
+        {
+            string value = "1234.0";
+
+            var cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+
+            var result = SafeConvert.ToInt32(value, cultureInfo);
+
+            Assert.AreEqual(1234, result);
+        }
+
+        [Test]
+        public void ToInt32_FromStringWithDecimalPartZeroAndThousandSeperator_ShouldReturnIntValue()
+        {
+            string value = "1 234.00";
+
+            var cultureInfo = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+            cultureInfo.NumberFormat.NumberGroupSeparator = " ";
+
+            var result = SafeConvert.ToInt32(value, cultureInfo);
 
             Assert.AreEqual(1234, result);
         }
