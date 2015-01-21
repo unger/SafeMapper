@@ -61,7 +61,8 @@
 
         public static int ToInt32(string value)
         {
-            return ToInt32(value, CultureInfo.CurrentCulture);
+            int i;
+            return int.TryParse(value, NumberStyles.Integer, CultureInfo.CurrentCulture, out i) ? i : 0;
         }
 
         public static int ToInt32(string value, IFormatProvider provider)
@@ -70,10 +71,23 @@
             return int.TryParse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint, provider, out i) ? i : 0;
         }
 
-
         public static string ToString(IFormattable formattable, IFormatProvider formatProvider)
         {
             return formattable.ToString(null, formatProvider);
         }
+
+        private static int IntParseFast(string value)
+        {
+            // An optimized int parse method.
+            int result = 0;
+            bool neg = value[0] == '-';
+            for (int i = neg ? 1 : 0; i < value.Length; i++)
+            {
+                result = (10 * result) + (value[i] - 48);
+            }
+
+            return neg ? result * -1 : result;
+        }
+
     }
 }

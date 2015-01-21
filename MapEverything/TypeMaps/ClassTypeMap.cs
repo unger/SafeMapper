@@ -3,8 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Reflection.Emit;
 
     using Fasterflect;
+
+    using MapEverything.Utils;
 
     public class ClassTypeMap : ITypeMap
     {
@@ -21,7 +24,7 @@
 
             this.properties = this.CreateMemberMaps(formatProvider, typeMapper);
 
-            this.Convert = this.CreateConvert(fromType, toType);
+            this.Convert = this.CreateConvert(fromType, toType, formatProvider);
         }
 
         public Func<object, object> Convert { get; private set; }
@@ -51,8 +54,9 @@
             return memberMaps.ToArray();
         }
 
-        private Func<object, object> CreateConvert(Type fromType, Type toType)
+        private Func<object, object> CreateConvert(Type fromType, Type toType, IFormatProvider formatProvider)
         {
+            //return ConverterFactory.Create(fromType, toType, formatProvider);
             //return this.CreateCompiledExpression(fromType, toType);
 
             if (fromType.IsValueType && toType.IsValueType)
@@ -72,6 +76,7 @@
 
             return this.ConvertClassToClass;
         }
+
 
         private Func<object, object> CreateCompiledExpression(Type fromType, Type toType)
         {

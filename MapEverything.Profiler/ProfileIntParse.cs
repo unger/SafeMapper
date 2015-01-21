@@ -25,8 +25,6 @@ namespace MapEverything.Profiler
 
             this.WriteHeader();
 
-
-
             this.AddResult("int.Parse", i => int.Parse("12345"));
             this.AddResult("int.TryParse", i => this.TryParse("12345"));
             this.AddResult("int.TryParse cond", i => this.TryParseCond("12345"));

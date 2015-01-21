@@ -60,6 +60,7 @@
     <Compile Include="TypeMaps\ClassTypeMap.cs" />
     <Compile Include="TypeMaps\TypeMapFactory.cs" />
     <Compile Include="TypeMapper.cs" />
+    <Compile Include="Utils\ConverterFactory.cs" />
     <Compile Include="Utils\StringParseHelpers.cs" />
   </ItemGroup>
   <ItemGroup>

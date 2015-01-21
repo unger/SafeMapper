@@ -76,9 +76,9 @@
             }
 
             // FromString conversions
-            /*this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
+            //this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
             this.ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
-            this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
+            /*this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
             this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
             this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
 
@@ -99,9 +99,9 @@
             
             //this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
 
             /*this.ProfileConvert<Person, PersonStruct>(personArray, CultureInfo.CurrentCulture, null);
 
@@ -111,6 +111,7 @@
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
+            var dynamicConverter = ConverterFactory.Create<TSource, TDestination>();
             var typeMapper = new TypeMapper();
             var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var sourceType = typeof(TSource);
@@ -138,6 +139,8 @@
             {
                 this.AddResult("Native", compareFunc);
             }
+
+            this.AddResult("DynamicConverter", i => dynamicConverter(input[i]));
 
             this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
 
