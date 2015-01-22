@@ -76,6 +76,12 @@
             return formattable.ToString(null, formatProvider);
         }
 
+        public static Guid ToGuid(string s)
+        {
+            Guid g;
+            return Guid.TryParse(s, out g) ? g : Guid.Empty;
+        }
+
         private static int IntParseFast(string value)
         {
             // An optimized int parse method.
