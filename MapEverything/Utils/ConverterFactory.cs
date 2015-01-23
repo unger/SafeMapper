@@ -23,7 +23,7 @@
             var convertDynamicMethod = new DynamicMethod(
                 "ConvertFrom" + fromType.Name + "To" + toType.Name,
                 toType,
-                new[] { fromType },
+                new[] { typeof(IFormatProvider), fromType },
                 typeof(ConverterFactory).Module);
 
             var il = convertDynamicMethod.GetILGenerator();
@@ -31,27 +31,57 @@
             var local = il.DeclareLocal(toType);
             il.NewObject(toType, local);
 
-            var methodInfo = GetConvertMethod(fromType, toType);
-            if (methodInfo != null)
+            if (toType == typeof(string) && fromType != typeof(string))
             {
-                il.Emit(OpCodes.Ldarg_0);
-                il.EmitCall(OpCodes.Call, methodInfo, null);
-                il.Emit(OpCodes.Stloc, local);
+                var toStringMethod = fromType.GetMethod("ToString", new[] { typeof(IFormatProvider) });
+                if (toStringMethod != null)
+                {
+                    il.Emit(OpCodes.Ldarga, 1); // fromObject
+                    il.Emit(OpCodes.Ldarg_0); // IFormatProvider
+                    il.EmitCall(OpCodes.Call, toStringMethod, null);
+                    il.Emit(OpCodes.Stloc, local);
+                }
+                else
+                {
+                    toStringMethod = fromType.GetMethod("ToString", new Type[0]);
+                    if (toStringMethod != null)
+                    {
+                        il.Emit(OpCodes.Ldarga, 1); // fromObject
+                        il.EmitCall(OpCodes.Call, toStringMethod, null);
+                        il.Emit(OpCodes.Stloc, local);
+                    }
+                }
             }
             else
             {
-                var memberMaps = GetMemberMaps(fromType, toType);
-
-                foreach (var memberMap in memberMaps)
+                var methodInfo = GetConvertMethod(fromType, toType);
+                if (methodInfo != null)
                 {
-                    il.MemberMap(local, memberMap.Item1, memberMap.Item2);
+                    il.Emit(OpCodes.Ldarg_1);
+
+                    // Load IFormatProvider as second argument
+                    if (methodInfo.Parameters().Count == 2)
+                    {
+                        il.Emit(OpCodes.Ldarg_0);
+                    }
+
+                    il.EmitCall(OpCodes.Call, methodInfo, null);
+                    il.Emit(OpCodes.Stloc, local);
+                }
+                else
+                {
+                    var memberMaps = GetMemberMaps(fromType, toType);
+                    foreach (var memberMap in memberMaps)
+                    {
+                        il.MemberMap(local, memberMap.Item1, memberMap.Item2);
+                    }
                 }
             }
 
             il.Emit(OpCodes.Ldloc, local);
             il.Emit(OpCodes.Ret);
 
-            return (Converter<TFrom, TTo>)convertDynamicMethod.CreateDelegate(typeof(Converter<TFrom, TTo>));
+            return (Converter<TFrom, TTo>)convertDynamicMethod.CreateDelegate(typeof(Converter<TFrom, TTo>), provider);
         }
 
         private static IEnumerable<Tuple<MemberInfo, MemberInfo>> GetMemberMaps(Type fromType, Type toType)
@@ -83,24 +113,43 @@
 
         private static MethodInfo GetConvertMethod(Type fromType, Type toType)
         {
+            if (toType.IsAssignableFrom(fromType))
+            {
+                return null;
+            }
+
             var convertTypes = new[] { typeof(SafeConvert), typeof(Convert) };
 
             foreach (var convertType in convertTypes)
             {
+                MethodInfo methodInfoWithoutFormatProvider = null;
                 var methods = convertType.GetMethods();
                 foreach (var method in methods)
                 {
                     if (method.ReturnType == toType)
                     {
                         var parameters = method.Parameters();
-                        if (parameters.Count == 1)
+                        if (parameters.Count >= 1)
                         {
                             if (parameters[0].ParameterType == fromType)
                             {
-                                return method;
+                                if (parameters.Count == 2 && parameters[0].ParameterType == typeof(IFormatProvider))
+                                {
+                                    return method;
+                                }
+
+                                if (parameters.Count == 1)
+                                {
+                                    methodInfoWithoutFormatProvider = method;
+                                }
                             }
                         }
                     }
+                }
+
+                if (methodInfoWithoutFormatProvider != null)
+                {
+                    return methodInfoWithoutFormatProvider;
                 }
             }
 
@@ -122,21 +171,51 @@
             var fromMemberType = fromMember.Type();
             var toMemberType = toMember.Type();
 
-
             il.Emit(OpCodes.Ldloc, local);
 
             var fromMemberProperty = fromMember as PropertyInfo;
             if (fromMemberProperty != null)
             {
                 var getter = fromMemberProperty.GetGetMethod();
-                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldarg_1);
                 il.Emit(OpCodes.Callvirt, getter);
             }
 
-            var memberConverter = GetConvertMethod(fromMemberType, toMemberType);
-            if (memberConverter != null)
+            if (toMemberType == typeof(string) && fromMemberType != typeof(string))
             {
-                il.EmitCall(OpCodes.Call, memberConverter, null);
+                if (fromMemberType.IsValueType)
+                {
+                    il.Emit(OpCodes.Box, fromMemberType);
+                }
+
+                var toStringMethod = typeof(object).GetMethod("ToString", new[] { typeof(IFormatProvider) });
+                if (toStringMethod != null)
+                {
+                    il.Emit(OpCodes.Ldarg_0); // IFormatProvider
+                    il.EmitCall(OpCodes.Callvirt, toStringMethod, null);
+                }
+                else
+                {
+                    toStringMethod = typeof(object).GetMethod("ToString", new Type[0]);
+                    if (toStringMethod != null)
+                    {
+                        il.EmitCall(OpCodes.Callvirt, toStringMethod, null);
+                    }
+                }
+            }
+            else
+            {
+                var memberConverter = GetConvertMethod(fromMemberType, toMemberType);
+                if (memberConverter != null)
+                {
+                    // Load IFormatProvider as second argument
+                    if (memberConverter.Parameters().Count == 2)
+                    {
+                        il.Emit(OpCodes.Ldarg_0);
+                    }
+
+                    il.EmitCall(OpCodes.Call, memberConverter, null);
+                }
             }
 
             var toMemberProperty = toMember as PropertyInfo;
