@@ -1,6 +1,7 @@
 ﻿namespace MapEverything.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
 
     using MapEverything.Tests.Model.Person;
@@ -11,25 +12,102 @@
     [TestFixture]
     public class ConverterFactoryTests
     {
-        [Test]
-        public void CreateConverter_ConvertStringToInt_ShouldReturnInstanceOfToType()
+        [TestCase("0", Result = 0)]
+        [TestCase("10", Result = 10)]
+        [TestCase("10.5", Result = 0)]
+        [TestCase("10,5", Result = 0)]
+        [TestCase("-10", Result = -10)]
+        [TestCase("1 000", Result = 0)]
+        [TestCase("1,000", Result = 0)]
+        [TestCase("1.000", Result = 0)]
+        [TestCase("2147483647", Result = 2147483647)]
+        [TestCase("2147483648", Result = 0)]
+        [TestCase("-2147483648", Result = -2147483648)]
+        [TestCase("-2147483649", Result = 0)]
+        public int CreateConverter_StringToInt(string input)
         {
             var converter = ConverterFactory.Create<string, int>();
 
-            var result = converter("10");
-
-            Assert.IsInstanceOf<int>(result);
+            return converter(input);
         }
 
-        [Test]
-        public void CreateConverter_ConvertIntToLong_ShouldReturnInstanceOfLong()
+        [TestCase(0, Result = "0")]
+        [TestCase(2147483647, Result = "2147483647")]
+        [TestCase(-2147483648, Result = "-2147483648")]
+        public string CreateConverter_IntToString(int input)
+        {
+            var converter = ConverterFactory.Create<int, string>();
+
+            return converter(input);
+        }
+
+        public IEnumerable<TestCaseData> GuidToStringData
+        {
+            get
+            {
+                var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
+                var guidStr2 = "0cb6c00ffc44484f8ddd823709b74601";
+
+                yield return new TestCaseData(Guid.Empty).Returns("00000000-0000-0000-0000-000000000000");
+                yield return new TestCaseData(new Guid(guidStr)).Returns(guidStr);
+                yield return new TestCaseData(new Guid(guidStr2)).Returns(guidStr);
+            }
+        }
+        
+        [TestCaseSource("GuidToStringData")]
+        public string CreateConverter_GuidToString(Guid input)
+        {
+            var converter = ConverterFactory.Create<Guid, string>();
+
+            return converter(input);
+        }
+
+        public IEnumerable<TestCaseData> StringToGuidData
+        {
+            get
+            {
+                var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
+                var guidStr2 = "0cb6c00ffc44484f8ddd823709b74601";
+
+                yield return new TestCaseData("00000000-0000-0000-0000-000000000000").Returns(Guid.Empty);
+                yield return new TestCaseData(guidStr).Returns(new Guid(guidStr));
+                yield return new TestCaseData(guidStr2).Returns(new Guid(guidStr));
+                yield return new TestCaseData("abc").Returns(Guid.Empty);
+                yield return new TestCaseData("123").Returns(Guid.Empty);
+            }
+        }
+
+        [TestCaseSource("StringToGuidData")]
+        public Guid CreateConverter_StringToGuid(string input)
+        {
+            var converter = ConverterFactory.Create<string, Guid>();
+
+            return converter(input);
+        }
+
+
+        [TestCase(0, Result = 0)]
+        [TestCase(int.MaxValue, Result = int.MaxValue)]
+        [TestCase(int.MinValue, Result = int.MinValue)]
+        public long CreateConverter_IntToLong(int input)
         {
             var converter = ConverterFactory.Create<int, long>();
 
-            var result = converter(1234);
+            return converter(input);
+        }
 
-            Assert.IsInstanceOf<long>(result);
-            Assert.AreEqual(1234, result);
+        [TestCase(0, Result = 0)]
+        [TestCase(long.MaxValue, Result = 0)]
+        [TestCase(long.MinValue, Result = 0)]
+        [TestCase(2147483647, Result = 2147483647)]
+        [TestCase(2147483648, Result = 0)]
+        [TestCase(-2147483648, Result = -2147483648)]
+        [TestCase(-2147483649, Result = 0)]
+        public int CreateConverter_LongToInt(long input)
+        {
+            var converter = ConverterFactory.Create<long, int>();
+
+            return converter(input);
         }
 
         [Test]
@@ -40,17 +118,6 @@
             var result = converter(new Person());
 
             Assert.IsInstanceOf<PersonDto>(result);
-        }
-
-        [Test]
-        public void CreateConverter_ConvertStringToInt_ShouldReturnCorrectValue()
-        {
-            var expected = 10;
-            var converter = ConverterFactory.Create<string, int>();
-
-            var result = converter(expected.ToString());
-
-            Assert.AreEqual(expected, result);
         }
 
         [Test]
