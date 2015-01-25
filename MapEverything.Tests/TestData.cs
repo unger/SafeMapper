@@ -6,6 +6,13 @@
 
     public class TestData
     {
+        public TestCaseData[] StringToStringData =
+            {
+                new TestCaseData(string.Empty).Returns(string.Empty),
+                new TestCaseData(null).Returns(null),
+                new TestCaseData("foo").Returns("foo"),
+            };
+
         public TestCaseData[] StringToIntData =
             {
                 new TestCaseData("0").Returns(0),
