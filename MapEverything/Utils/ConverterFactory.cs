@@ -91,20 +91,40 @@
 
             foreach (var fromMember in fromMembers)
             {
+                MemberInfo validFromMember = null;
                 var fromMemberProperty = fromMember as PropertyInfo;
                 if (fromMemberProperty != null)
                 {
                     if (fromMemberProperty.CanRead)
                     {
-                        var toMemberProperty = toType.GetProperty(fromMember.Name);
-                        if (toMemberProperty != null)
+                        validFromMember = fromMemberProperty;
+                    }
+                }
+                else
+                {
+                    var fromMemberField = fromMember as FieldInfo;
+                    if (fromMemberField != null)
+                    {
+                        validFromMember = fromMemberField;
+                    }
+                }
+
+                if (validFromMember != null)
+                {
+                    var toMemberProperty = toType.GetProperty(validFromMember.Name);
+                    if (toMemberProperty != null)
+                    {
+                        if (toMemberProperty.CanWrite)
                         {
-                            if (toMemberProperty.CanWrite)
-                            {
-                                result.Add(new Tuple<MemberInfo, MemberInfo>(fromMemberProperty, toMemberProperty));
-                            }
+                            result.Add(new Tuple<MemberInfo, MemberInfo>(validFromMember, toMemberProperty));
                         }
-                    }    
+                    }
+
+                    var toMemberField = toType.GetField(validFromMember.Name);
+                    if (toMemberField != null)
+                    {
+                        result.Add(new Tuple<MemberInfo, MemberInfo>(validFromMember, toMemberField));
+                    }
                 }
             }
 
@@ -180,6 +200,15 @@
                 il.Emit(OpCodes.Ldarg_1);
                 il.Emit(OpCodes.Callvirt, getter);
             }
+            else
+            {
+                var fromMemberField = fromMember as FieldInfo;
+                if (fromMemberField != null)
+                {
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Ldfld, fromMemberField);
+                }
+            }
 
             if (toMemberType == typeof(string) && fromMemberType != typeof(string))
             {
@@ -223,6 +252,14 @@
             {
                 var setter = toMemberProperty.GetSetMethod();
                 il.Emit(OpCodes.Callvirt, setter);
+            }
+            else
+            {
+                var toMemberField = toMember as FieldInfo;
+                if (toMemberField != null)
+                {
+                    il.Emit(OpCodes.Stfld, toMemberField);
+                }
             }
         }
     }

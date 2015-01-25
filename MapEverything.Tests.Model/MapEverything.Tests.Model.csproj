@@ -42,6 +42,10 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="AddressDto.cs" />
+    <Compile Include="Classes\StringFieldClass.cs" />
+    <Compile Include="Classes\IntFieldClass.cs" />
+    <Compile Include="Classes\StringPropertyClass.cs" />
+    <Compile Include="Classes\IntPropertyClass.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerDto.cs" />
     <Compile Include="CustomerFactory.cs" />

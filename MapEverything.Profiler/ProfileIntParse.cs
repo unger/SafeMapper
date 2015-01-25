@@ -30,6 +30,7 @@ namespace MapEverything.Profiler
             this.AddResult("int.TryParse cond", i => this.TryParseCond("12345"));
             this.AddResult("int.TryParse static", i => TryParseStatic("12345"));
             this.AddResult("IntParseFast", i => IntParseFast("12345"));
+            this.AddResult("SafeIntParseFast", i => SafeIntParseFast("12345"));
             
         }
 
@@ -52,6 +53,33 @@ namespace MapEverything.Profiler
 
             return neg ? result * -1 : result;
         }
+
+        private static long LongParseFast(string value)
+        {
+            long result = 0;
+            bool neg = value[0] == '-';
+            for (int i = neg ? 1 : 0; i < value.Length; i++)
+            {
+                if ((value[i] >= 48) && (value[i] <= 57))
+                {
+                    result = (10 * result) + (value[i] - 48);
+                }
+                else
+                {
+                    result = 0;
+                    break;
+                }
+            }
+
+            return neg ? result * -1 : result;
+        }
+
+        private static int SafeIntParseFast(string value)
+        {
+            long result = LongParseFast(value);
+            return (result <= int.MaxValue && result >= int.MinValue) ? (int)result : 0;
+        }
+
 
         private int TryParse(string str)
         {

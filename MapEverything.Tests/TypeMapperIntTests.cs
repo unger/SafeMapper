@@ -77,19 +77,5 @@
                 Assert.AreEqual(123, converted);
             }
         }
-
-        [Ignore]
-        [Test]
-        public void Convert_LargeIntToShort()
-        {
-            var value = int.MaxValue;
-
-            foreach (var mapper in this.Mappers)
-            {
-                var converted = mapper.Convert<int, short>(value);
-                Assert.IsInstanceOf(typeof(short), converted);
-                Assert.AreEqual(int.MaxValue, converted);
-            }
-        }
     }
 }

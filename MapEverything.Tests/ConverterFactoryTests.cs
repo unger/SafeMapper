@@ -1,9 +1,8 @@
 ﻿namespace MapEverything.Tests
 {
     using System;
-    using System.Collections.Generic;
-    using System.Globalization;
 
+    using MapEverything.Tests.Model.Classes;
     using MapEverything.Tests.Model.Person;
     using MapEverything.Utils;
 
@@ -12,18 +11,7 @@
     [TestFixture]
     public class ConverterFactoryTests
     {
-        [TestCase("0", Result = 0)]
-        [TestCase("10", Result = 10)]
-        [TestCase("10.5", Result = 0)]
-        [TestCase("10,5", Result = 0)]
-        [TestCase("-10", Result = -10)]
-        [TestCase("1 000", Result = 0)]
-        [TestCase("1,000", Result = 0)]
-        [TestCase("1.000", Result = 0)]
-        [TestCase("2147483647", Result = 2147483647)]
-        [TestCase("2147483648", Result = 0)]
-        [TestCase("-2147483648", Result = -2147483648)]
-        [TestCase("-2147483649", Result = 0)]
+        [TestCaseSource(typeof(TestData), "StringToIntData")]
         public int CreateConverter_StringToInt(string input)
         {
             var converter = ConverterFactory.Create<string, int>();
@@ -31,30 +19,51 @@
             return converter(input);
         }
 
-        [TestCase(0, Result = "0")]
-        [TestCase(2147483647, Result = "2147483647")]
-        [TestCase(-2147483648, Result = "-2147483648")]
+        [TestCaseSource(typeof(TestData), "IntToIntData")]
+        public int CreateConverter_IntPropertyToIntProperty(int input)
+        {
+            var converter = ConverterFactory.Create<IntPropertyClass, IntPropertyClass>();
+            var value = new IntPropertyClass { Value = input };
+
+            return converter(value).Value;
+        }
+
+        [TestCaseSource(typeof(TestData), "StringToIntData")]
+        public int CreateConverter_StringPropertyToIntProperty(string input)
+        {
+            var converter = ConverterFactory.Create<StringPropertyClass, IntPropertyClass>();
+            var value = new StringPropertyClass { Value = input };
+
+            return converter(value).Value;
+        }
+
+        [TestCaseSource(typeof(TestData), "StringToIntData")]
+        public int CreateConverter_StringFieldToIntField(string input)
+        {
+            var converter = ConverterFactory.Create<StringFieldClass, IntFieldClass>();
+            var value = new StringFieldClass { Value = input };
+
+            return converter(value).Value;
+        }
+
+        [TestCaseSource(typeof(TestData), "StringToIntData")]
+        public int CreateConverter_StringFieldToIntProperty(string input)
+        {
+            var converter = ConverterFactory.Create<StringFieldClass, IntPropertyClass>();
+            var value = new StringFieldClass { Value = input };
+
+            return converter(value).Value;
+        }
+
+        [TestCaseSource(typeof(TestData), "IntToStringData")]
         public string CreateConverter_IntToString(int input)
         {
             var converter = ConverterFactory.Create<int, string>();
 
             return converter(input);
         }
-
-        public IEnumerable<TestCaseData> GuidToStringData
-        {
-            get
-            {
-                var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-                var guidStr2 = "0cb6c00ffc44484f8ddd823709b74601";
-
-                yield return new TestCaseData(Guid.Empty).Returns("00000000-0000-0000-0000-000000000000");
-                yield return new TestCaseData(new Guid(guidStr)).Returns(guidStr);
-                yield return new TestCaseData(new Guid(guidStr2)).Returns(guidStr);
-            }
-        }
         
-        [TestCaseSource("GuidToStringData")]
+        [TestCaseSource(typeof(TestData), "GuidToStringData")]
         public string CreateConverter_GuidToString(Guid input)
         {
             var converter = ConverterFactory.Create<Guid, string>();
@@ -62,22 +71,7 @@
             return converter(input);
         }
 
-        public IEnumerable<TestCaseData> StringToGuidData
-        {
-            get
-            {
-                var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-                var guidStr2 = "0cb6c00ffc44484f8ddd823709b74601";
-
-                yield return new TestCaseData("00000000-0000-0000-0000-000000000000").Returns(Guid.Empty);
-                yield return new TestCaseData(guidStr).Returns(new Guid(guidStr));
-                yield return new TestCaseData(guidStr2).Returns(new Guid(guidStr));
-                yield return new TestCaseData("abc").Returns(Guid.Empty);
-                yield return new TestCaseData("123").Returns(Guid.Empty);
-            }
-        }
-
-        [TestCaseSource("StringToGuidData")]
+        [TestCaseSource(typeof(TestData), "StringToGuidData")]
         public Guid CreateConverter_StringToGuid(string input)
         {
             var converter = ConverterFactory.Create<string, Guid>();
@@ -85,10 +79,7 @@
             return converter(input);
         }
 
-
-        [TestCase(0, Result = 0)]
-        [TestCase(int.MaxValue, Result = int.MaxValue)]
-        [TestCase(int.MinValue, Result = int.MinValue)]
+        [TestCaseSource(typeof(TestData), "IntToLongData")]
         public long CreateConverter_IntToLong(int input)
         {
             var converter = ConverterFactory.Create<int, long>();
@@ -96,13 +87,7 @@
             return converter(input);
         }
 
-        [TestCase(0, Result = 0)]
-        [TestCase(long.MaxValue, Result = 0)]
-        [TestCase(long.MinValue, Result = 0)]
-        [TestCase(2147483647, Result = 2147483647)]
-        [TestCase(2147483648, Result = 0)]
-        [TestCase(-2147483648, Result = -2147483648)]
-        [TestCase(-2147483649, Result = 0)]
+        [TestCaseSource(typeof(TestData), "LongToIntData")]
         public int CreateConverter_LongToInt(long input)
         {
             var converter = ConverterFactory.Create<long, int>();

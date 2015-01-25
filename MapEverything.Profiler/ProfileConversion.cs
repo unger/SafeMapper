@@ -78,12 +78,12 @@
             }
 
             // FromString conversions
-            /*this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
+            //this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
             this.ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
-            this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
-            this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
-            this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
-            */
+            //this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
+            //this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
+            //this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
+            /*
             this.ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
             this.ProfileConvert<int, int>(intArray, formatProvider, i => Convert.ChangeType(i, typeof(int)));
 
@@ -92,7 +92,7 @@
             this.ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
 
             this.ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
-            
+            */
             //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
             
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);

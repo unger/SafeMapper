@@ -61,14 +61,8 @@
 
         public static int ToInt32(string value)
         {
-            int i;
-            return int.TryParse(value, NumberStyles.Integer, CultureInfo.CurrentCulture, out i) ? i : 0;
-        }
-
-        public static int ToInt32(string value, IFormatProvider provider)
-        {
-            int i;
-            return int.TryParse(value, NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint, provider, out i) ? i : 0;
+            long result = ToLong(value);
+            return (result <= int.MaxValue && result >= int.MinValue) ? (int)result : 0;
         }
 
         public static string ToString(IFormattable formattable, IFormatProvider formatProvider)
@@ -82,18 +76,24 @@
             return Guid.TryParse(s, out g) ? g : Guid.Empty;
         }
 
-        private static int IntParseFast(string value)
+        public static long ToLong(string value)
         {
-            // An optimized int parse method.
-            int result = 0;
+            long result = 0;
             bool neg = value[0] == '-';
             for (int i = neg ? 1 : 0; i < value.Length; i++)
             {
-                result = (10 * result) + (value[i] - 48);
+                if ((value[i] >= 48) && (value[i] <= 57))
+                {
+                    result = (10 * result) + (value[i] - 48);
+                }
+                else
+                {
+                    result = 0;
+                    break;
+                }
             }
 
             return neg ? result * -1 : result;
         }
-
     }
 }
