@@ -6,6 +6,12 @@
 
     public class TestData
     {
+        /************************************************************************/
+        /*                                                                      
+        /*   String                                                              
+        /*                                                                      
+        /************************************************************************/
+
         public TestCaseData[] StringToStringData =
             {
                 new TestCaseData(string.Empty).Returns(string.Empty),
@@ -44,7 +50,9 @@
                 new TestCaseData("10.5").Returns(10.5m),
                 new TestCaseData("10,5").Returns(0m),
                 new TestCaseData("-10").Returns(-10m),
+                new TestCaseData("1000").Returns(1000m),
                 new TestCaseData("1 000").Returns(1000m),
+                new TestCaseData("1 000 000").Returns(1000000m),
                 new TestCaseData("1,000").Returns(0m),
                 new TestCaseData("1.000").Returns(1.000m),
                 new TestCaseData("1 000.00").Returns(1000.00m),
@@ -66,6 +74,27 @@
                 new TestCaseData("123").Returns(Guid.Empty),
             };
 
+        public TestCaseData[] StringToDateTimeData =
+            {
+                new TestCaseData("1977-03-04").Returns(new DateTime(1977, 03, 04)),
+                new TestCaseData("1977-03-04 13:37").Returns(new DateTime(1977, 03, 04, 13, 37, 00)),
+            };
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Decimal                                                              
+        /*                                                                      
+        /************************************************************************/
+
+        public TestCaseData[] DecimalToDecimalData =
+            {
+                new TestCaseData(0m).Returns(0m),
+                new TestCaseData(1.000m).Returns(1.000m),
+                new TestCaseData(1000m).Returns(1000m),
+                new TestCaseData(decimal.MaxValue).Returns(decimal.MaxValue),
+                new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
+            };
+
         public TestCaseData[] DecimalToIntData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
@@ -73,6 +102,34 @@
                 new TestCaseData(123.5m).Returns(124),
                 new TestCaseData(123.49m).Returns(123),
             };
+
+        public TestCaseData[] DecimalToStringData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns("79228162514264337593543950335"),
+                new TestCaseData(decimal.MinValue).Returns("-79228162514264337593543950335"),
+                new TestCaseData(0m).Returns("0"),
+                new TestCaseData(123.5m).Returns("123.5"),
+                new TestCaseData(123.49m).Returns("123.49"),
+                new TestCaseData(1.00m).Returns("1.00"),
+                new TestCaseData(1000m).Returns("1000"),
+                new TestCaseData(1000000m).Returns("1000000"),
+            };
+
+        public TestCaseData[] DecimalToDoubleData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28d),
+                new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28d),
+                new TestCaseData(123.5m).Returns(123.5),
+                new TestCaseData(123.49m).Returns(123.49),
+            };
+
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Double                                                              
+        /*                                                                      
+        /************************************************************************/
+
 
         public TestCaseData[] DoubleToIntData =
             {
@@ -82,6 +139,23 @@
                 new TestCaseData(123.49d).Returns(123),
             };
 
+        public TestCaseData[] DoubleToDecimalData =
+            {
+                new TestCaseData(double.MaxValue).Returns(0m),
+                new TestCaseData(double.MinValue).Returns(0m),
+                new TestCaseData((double)decimal.MaxValue).Returns(decimal.MaxValue),
+                new TestCaseData((double)decimal.MinValue).Returns(decimal.MinValue),
+                new TestCaseData(0.0).Returns(0.0m),
+                new TestCaseData(123.5).Returns(123.5m),
+                new TestCaseData(123.49).Returns(123.49m),
+            };
+
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Long                                                              
+        /*                                                                      
+        /************************************************************************/
 
         public TestCaseData[] LongToIntData =
             {
@@ -92,6 +166,12 @@
                 new TestCaseData(long.MinValue).Returns(0),
             };
 
+        /************************************************************************/
+        /*                                                                      
+        /*   Int                                                              
+        /*                                                                      
+        /************************************************************************/
+        
         public TestCaseData[] IntToLongData =
             {
                 new TestCaseData(0).Returns(0),
@@ -106,6 +186,20 @@
                 new TestCaseData(int.MinValue).Returns(int.MinValue),
             };
 
+        public TestCaseData[] IntToStringData =
+            {
+                new TestCaseData(0).Returns("0"),
+                new TestCaseData(int.MaxValue).Returns(int.MaxValue.ToString()),
+                new TestCaseData(int.MinValue).Returns(int.MinValue.ToString()),
+            };
+
+        /************************************************************************/
+        /*                                                                      
+        /*   UInt                                                              
+        /*                                                                      
+        /************************************************************************/
+
+
         public TestCaseData[] UIntToIntData =
             {
                 new TestCaseData((uint)0).Returns(0),
@@ -114,12 +208,11 @@
                 new TestCaseData(uint.MinValue).Returns(0),
             };
 
-        public TestCaseData[] IntToStringData =
-            {
-                new TestCaseData(0).Returns("0"),
-                new TestCaseData(int.MaxValue).Returns(int.MaxValue.ToString()),
-                new TestCaseData(int.MinValue).Returns(int.MinValue.ToString()),
-            };
+        /************************************************************************/
+        /*                                                                      
+        /*   Guid                                                              
+        /*                                                                      
+        /************************************************************************/
 
         public TestCaseData[] GuidToStringData =
             {
@@ -128,9 +221,17 @@
                 new TestCaseData(new Guid("0cb6c00ffc44484f8ddd823709b74601")).Returns("0cb6c00f-fc44-484f-8ddd-823709b74601"),
             };
 
+        /************************************************************************/
+        /*                                                                      
+        /*   DateTime                                                              
+        /*                                                                      
+        /************************************************************************/
 
-
-
+        public TestCaseData[] DateTimeToStringData =
+            {
+                new TestCaseData(new DateTime(1977, 03, 04)).Returns("1977-03-04 00:00:00"),
+                new TestCaseData(new DateTime(1977, 03, 04, 13, 37, 00)).Returns("1977-03-04 13:37:00"),
+            };
 
     }
 }

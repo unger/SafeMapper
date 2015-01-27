@@ -5,6 +5,9 @@
 
     public class SafeConvert
     {
+        private const double MaxDecimalAsDouble = (double)decimal.MaxValue;
+        private const double MinDecimalAsDouble = (double)decimal.MinValue;
+
         public static int ToInt32(long value)
         {
             return (value < int.MinValue || value > int.MaxValue) ? 0 : (int)value;
@@ -74,12 +77,28 @@
         public static decimal ToDecimal(string s, IFormatProvider provider)
         {
             decimal d;
-            return decimal.TryParse(s, NumberStyles.Number, provider, out d) ? d : 0m;
+            return decimal.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider, out d) ? d : 0m;
         }
 
-        public static string ToString(IFormattable formattable, IFormatProvider formatProvider)
+        public static double ToDouble(string s)
         {
-            return formattable.ToString(null, formatProvider);
+            double d;
+            return double.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out d) ? d : 0d;
+        }
+
+        public static double ToDouble(string s, IFormatProvider provider)
+        {
+            double d;
+            return double.TryParse(s, NumberStyles.Number, provider, out d) ? d : 0d;
+        }
+
+        public static decimal ToDecimal(double d)
+        {
+            return d == MaxDecimalAsDouble ? Decimal.MaxValue
+                 : d == MinDecimalAsDouble ? Decimal.MinValue
+                 : d > MaxDecimalAsDouble ? 0m
+                 : d < MinDecimalAsDouble ? 0m
+                 : (decimal)d;
         }
 
         public static Guid ToGuid(string s)

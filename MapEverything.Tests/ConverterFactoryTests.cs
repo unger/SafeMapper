@@ -26,6 +26,13 @@
             this.numberFormatProvider = numberFormat;
         }
 
+        /************************************************************************/
+        /*                                                                      
+        /*   String                                                              
+        /*                                                                      
+        /************************************************************************/
+
+
         [TestCaseSource(typeof(TestData), "StringToStringData")]
         public string CreateConverter_StringToString(string input)
         {
@@ -62,6 +69,12 @@
             return converter(input);
         }
 
+        [TestCaseSource(typeof(TestData), "StringToGuidData")]
+        public Guid CreateConverter_StringMemberToGuidMember(string input)
+        {
+            return this.AssertConverterOutput<string, Guid>(input);
+        }
+
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
         public decimal CreateConverter_StringToDecimal(string input)
         {
@@ -76,12 +89,25 @@
             return this.AssertConverterOutput<string, decimal>(input, this.numberFormatProvider);
         }
 
-
-        [TestCaseSource(typeof(TestData), "StringToGuidData")]
-        public Guid CreateConverter_StringMemberToGuidMember(string input)
+        [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
+        public DateTime CreateConverter_StringToDateTime(string input)
         {
-            return this.AssertConverterOutput<string, Guid>(input);
+            var converter = ConverterFactory.Create<string, DateTime>();
+
+            return converter(input);
         }
+
+        [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
+        public DateTime CreateConverter_StringMemberToDateTimeMember(string input)
+        {
+            return this.AssertConverterOutput<string, DateTime>(input);
+        }
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Int                                                              
+        /*                                                                      
+        /************************************************************************/
 
 
         [TestCaseSource(typeof(TestData), "IntToIntData")]
@@ -113,6 +139,23 @@
             return this.AssertConverterOutput<int, string>(input);
         }
 
+
+        [TestCaseSource(typeof(TestData), "IntToLongData")]
+        public long CreateConverter_IntToLong(int input)
+        {
+            var converter = ConverterFactory.Create<int, long>();
+
+            return converter(input);
+        }
+
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Guid                                                              
+        /*                                                                      
+        /************************************************************************/
+
+
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
         public string CreateConverter_GuidToString(Guid input)
         {
@@ -127,13 +170,99 @@
             return this.AssertConverterOutput<Guid, string>(input);
         }
 
-        [TestCaseSource(typeof(TestData), "IntToLongData")]
-        public long CreateConverter_IntToLong(int input)
+        /************************************************************************/
+        /*                                                                      
+        /*   Decimal                                                              
+        /*                                                                      
+        /************************************************************************/
+
+
+        [TestCaseSource(typeof(TestData), "DecimalToDecimalData")]
+        public decimal CreateConverter_DecimalToDecimal(decimal input)
         {
-            var converter = ConverterFactory.Create<int, long>();
+            var converter = ConverterFactory.Create<decimal, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
+
+        [TestCaseSource(typeof(TestData), "DecimalToStringData")]
+        public string CreateConverter_DecimalToString(decimal input)
+        {
+            var converter = ConverterFactory.Create<decimal, string>(this.numberFormatProvider);
+
+            return converter(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToStringData")]
+        public string CreateConverter_DecimalMemberToStringMember(decimal input)
+        {
+            return this.AssertConverterOutput<decimal, string>(input, this.numberFormatProvider);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
+        public double CreateConverter_DecimalToDouble(decimal input)
+        {
+            var converter = ConverterFactory.Create<decimal, double>(this.numberFormatProvider);
+
+            return converter(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
+        public double CreateConverter_DecimalMemberToDoubleMember(decimal input)
+        {
+            return this.AssertConverterOutput<decimal, double>(input, this.numberFormatProvider);
+        }
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Double                                                              
+        /*                                                                      
+        /************************************************************************/
+
+        [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
+        public decimal CreateConverter_DoubleToDecimal(double input)
+        {
+            var converter = ConverterFactory.Create<double, decimal>(this.numberFormatProvider);
+
+            return converter(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
+        public decimal CreateConverter_DoubleMemberToDecimalMember(double input)
+        {
+            return this.AssertConverterOutput<double, decimal>(input, this.numberFormatProvider);
+        }
+
+
+
+        /************************************************************************/
+        /*                                                                      
+        /*   DateTime                                                              
+        /*                                                                      
+        /************************************************************************/
+
+
+        [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
+        public string CreateConverter_DateTimeToString(DateTime input)
+        {
+            var converter = ConverterFactory.Create<DateTime, string>(this.numberFormatProvider);
+
+            return converter(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
+        public string CreateConverter_DateTimeMemberToStringMember(DateTime input)
+        {
+            return this.AssertConverterOutput<DateTime, string>(input, this.numberFormatProvider);
+        }
+
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Long                                                              
+        /*                                                                      
+        /************************************************************************/
+
 
         [TestCaseSource(typeof(TestData), "LongToIntData")]
         public int CreateConverter_LongToInt(long input)
@@ -142,6 +271,13 @@
 
             return converter(input);
         }
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Misc                                                              
+        /*                                                                      
+        /************************************************************************/
+
 
         [Test]
         public void CreateConverter_ConvertPersonToPersonDto_ShouldReturnInstanceOfToTypeWithCorrectValues()

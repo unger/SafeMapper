@@ -33,6 +33,7 @@
             var guidArray = new Guid[maxIterations];
             var intArray = new int[maxIterations];
             var decimalArray = new decimal[maxIterations];
+            var doubleArray = new double[maxIterations];
             var dateTimeArray = new DateTime[maxIterations];
             var customerArray = new Customer[maxIterations];
             var customerDtoArray = new CustomerDto[maxIterations];
@@ -47,6 +48,7 @@
                 stringGuidArray[i] = Guid.NewGuid().ToString();
                 intArray[i] = i;
                 decimalArray[i] = i * 0.9m;
+                doubleArray[i] = i * 0.9d;
                 guidArray[i] = Guid.NewGuid();
                 stringDateTimeArray[i] = DateTime.Now.ToString(formatProvider);
                 dateTimeArray[i] = DateTime.Now;
@@ -83,8 +85,10 @@
             //this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
             //this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
             //this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
-            
-            this.ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
+
+            //this.ProfileConvert<double, decimal>(doubleArray, formatProvider, i => Convert.ToDecimal(doubleArray[i]));
+            //this.ProfileConvert<decimal, double>(decimalArray, formatProvider, i => Convert.ToDouble(decimalArray[i]));
+            //this.ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
             /*this.ProfileConvert<int, int>(intArray, formatProvider, i => Convert.ChangeType(i, typeof(int)));
 
             this.ProfileConvert<decimal, string>(decimalArray, formatProvider, i => decimalArray[i].ToString(formatProvider));
@@ -93,7 +97,7 @@
 
             this.ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
             */
-            //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
             
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
