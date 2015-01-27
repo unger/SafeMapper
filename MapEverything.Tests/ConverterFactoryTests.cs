@@ -1,6 +1,7 @@
 ﻿namespace MapEverything.Tests
 {
     using System;
+    using System.Globalization;
 
     using MapEverything.Tests.Model.Classes;
     using MapEverything.Tests.Model.Person;
@@ -11,12 +12,32 @@
     [TestFixture]
     public class ConverterFactoryTests
     {
+        private IFormatProvider numberFormatProvider;
+
+        [TestFixtureSetUp]
+        public void SetUpFixture()
+        {
+            var numberFormat = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+
+            numberFormat.NumberDecimalSeparator = ".";
+            numberFormat.CurrencyDecimalSeparator = ".";
+            numberFormat.NumberGroupSeparator = " ";
+            numberFormat.CurrencyGroupSeparator = " ";
+            this.numberFormatProvider = numberFormat;
+        }
+
         [TestCaseSource(typeof(TestData), "StringToStringData")]
         public string CreateConverter_StringToString(string input)
         {
             var converter = ConverterFactory.Create<string, string>();
 
             return converter(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "StringToStringData")]
+        public string CreateConverter_StringMemberToStringMember(string input)
+        {
+            return this.AssertConverterOutput<string, string>(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToIntData")]
@@ -28,40 +49,55 @@
         }
 
         [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int CreateConverter_StringPropertyToIntProperty(string input)
+        public int CreateConverter_StringMemberToIntMember(string input)
         {
-            var converter = ConverterFactory.Create<StringPropertyClass, IntPropertyClass>();
-            var value = new StringPropertyClass { Value = input };
-
-            return converter(value).Value;
+            return this.AssertConverterOutput<string, int>(input);
         }
 
-        [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int CreateConverter_StringPropertyToIntField(string input)
+        [TestCaseSource(typeof(TestData), "StringToGuidData")]
+        public Guid CreateConverter_StringToGuid(string input)
         {
-            var converter = ConverterFactory.Create<StringPropertyClass, IntFieldClass>();
-            var value = new StringPropertyClass { Value = input };
+            var converter = ConverterFactory.Create<string, Guid>();
 
-            return converter(value).Value;
+            return converter(input);
         }
 
-        [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int CreateConverter_StringFieldToIntField(string input)
+        [TestCaseSource(typeof(TestData), "StringToDecimalData")]
+        public decimal CreateConverter_StringToDecimal(string input)
         {
-            var converter = ConverterFactory.Create<StringFieldClass, IntFieldClass>();
-            var value = new StringFieldClass { Value = input };
+            var converter = ConverterFactory.Create<string, decimal>(this.numberFormatProvider);
 
-            return converter(value).Value;
+            return converter(input);
         }
 
-        [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int CreateConverter_StringFieldToIntProperty(string input)
+        [TestCaseSource(typeof(TestData), "StringToDecimalData")]
+        public decimal CreateConverter_StringMemberToDecimalMember(string input)
         {
-            var converter = ConverterFactory.Create<StringFieldClass, IntPropertyClass>();
-            var value = new StringFieldClass { Value = input };
-
-            return converter(value).Value;
+            return this.AssertConverterOutput<string, decimal>(input, this.numberFormatProvider);
         }
+
+
+        [TestCaseSource(typeof(TestData), "StringToGuidData")]
+        public Guid CreateConverter_StringMemberToGuidMember(string input)
+        {
+            return this.AssertConverterOutput<string, Guid>(input);
+        }
+
+
+        [TestCaseSource(typeof(TestData), "IntToIntData")]
+        public int CreateConverter_IntToInt(int input)
+        {
+            var converter = ConverterFactory.Create<int, int>();
+
+            return converter(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "IntToIntData")]
+        public int CreateConverter_IntMemberToIntMember(int input)
+        {
+            return this.AssertConverterOutput<int, int>(input);
+        }
+
 
         [TestCaseSource(typeof(TestData), "IntToStringData")]
         public string CreateConverter_IntToString(int input)
@@ -72,39 +108,9 @@
         }
 
         [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string CreateConverter_IntPropertyToStringProperty(int input)
+        public string CreateConverter_IntMemberToStringMember(int input)
         {
-            var converter = ConverterFactory.Create<IntPropertyClass, StringPropertyClass>();
-            var value = new IntPropertyClass { Value = input };
-
-            return converter(value).Value;
-        }
-
-        [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string CreateConverter_IntPropertyToStringField(int input)
-        {
-            var converter = ConverterFactory.Create<IntPropertyClass, StringFieldClass>();
-            var value = new IntPropertyClass { Value = input };
-
-            return converter(value).Value;
-        }
-
-        [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string CreateConverter_IntFieldToStringProperty(int input)
-        {
-            var converter = ConverterFactory.Create<IntFieldClass, StringPropertyClass>();
-            var value = new IntFieldClass { Value = input };
-
-            return converter(value).Value;
-        }
-
-        [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string CreateConverter_IntFieldToStringField(int input)
-        {
-            var converter = ConverterFactory.Create<IntFieldClass, StringFieldClass>();
-            var value = new IntFieldClass { Value = input };
-
-            return converter(value).Value;
+            return this.AssertConverterOutput<int, string>(input);
         }
 
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
@@ -115,12 +121,10 @@
             return converter(input);
         }
 
-        [TestCaseSource(typeof(TestData), "StringToGuidData")]
-        public Guid CreateConverter_StringToGuid(string input)
+        [TestCaseSource(typeof(TestData), "GuidToStringData")]
+        public string CreateConverter_GuidMemberToStringMember(Guid input)
         {
-            var converter = ConverterFactory.Create<string, Guid>();
-
-            return converter(input);
+            return this.AssertConverterOutput<Guid, string>(input);
         }
 
         [TestCaseSource(typeof(TestData), "IntToLongData")]
@@ -249,6 +253,52 @@
             Assert.AreEqual("37", result.Age);
             Assert.AreEqual(expectedDecimal.ToString(), result.Length);
             Assert.AreEqual("1977-03-04 00:00:00", result.BirthDate);
+        }
+
+        private TTo AssertConverterOutput<TFrom, TTo>(TFrom input)
+        {
+            return this.AssertConverterOutput<TFrom, TTo>(input, CultureInfo.CurrentCulture);
+        }
+
+        private TTo AssertConverterOutput<TFrom, TTo>(TFrom input, IFormatProvider provider)
+        {
+            var converter = ConverterFactory.Create<TFrom, TTo>(provider);
+            var expected = converter(input);
+            var converter1 = ConverterFactory.Create<ClassProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter2 = ConverterFactory.Create<ClassProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter3 = ConverterFactory.Create<ClassProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter4 = ConverterFactory.Create<ClassProperty<TFrom>, StructField<TTo>>(provider);
+            var converter5 = ConverterFactory.Create<ClassField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter6 = ConverterFactory.Create<ClassField<TFrom>, ClassField<TTo>>(provider);
+            var converter7 = ConverterFactory.Create<ClassField<TFrom>, StructProperty<TTo>>(provider);
+            var converter8 = ConverterFactory.Create<ClassField<TFrom>, StructField<TTo>>(provider);
+            var converter9 = ConverterFactory.Create<StructProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter10 = ConverterFactory.Create<StructProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter11 = ConverterFactory.Create<StructProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter12 = ConverterFactory.Create<StructProperty<TFrom>, StructField<TTo>>(provider);
+            var converter13 = ConverterFactory.Create<StructField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter14 = ConverterFactory.Create<StructField<TFrom>, ClassField<TTo>>(provider);
+            var converter15 = ConverterFactory.Create<StructField<TFrom>, StructProperty<TTo>>(provider);
+            var converter16 = ConverterFactory.Create<StructField<TFrom>, StructField<TTo>>(provider);
+
+            Assert.AreEqual(expected, converter1(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter2(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter3(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to StructProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter4(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to StructField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter5(new ClassField<TFrom> { Value = input }).Value, string.Format("ClassField<{0}> to ClassProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter6(new ClassField<TFrom> { Value = input }).Value, string.Format("ClassField<{0}> to ClassField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter7(new ClassField<TFrom> { Value = input }).Value, string.Format("ClassField<{0}> to StructProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter8(new ClassField<TFrom> { Value = input }).Value, string.Format("ClassField<{0}> to StructField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter9(new StructProperty<TFrom> { Value = input }).Value, string.Format("StructProperty<{0}> to ClassProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter10(new StructProperty<TFrom> { Value = input }).Value, string.Format("StructProperty<{0}> to ClassField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter11(new StructProperty<TFrom> { Value = input }).Value, string.Format("StructProperty<{0}> to StructProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter12(new StructProperty<TFrom> { Value = input }).Value, string.Format("StructProperty<{0}> to StructField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter13(new StructField<TFrom> { Value = input }).Value, string.Format("StructField<{0}> to ClassProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter14(new StructField<TFrom> { Value = input }).Value, string.Format("StructField<{0}> to ClassField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter15(new StructField<TFrom> { Value = input }).Value, string.Format("StructField<{0}> to StructProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+            Assert.AreEqual(expected, converter16(new StructField<TFrom> { Value = input }).Value, string.Format("StructField<{0}> to StructField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
+
+            return expected;
         }
     }
 }

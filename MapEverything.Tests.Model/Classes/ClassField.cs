@@ -1,7 +1,7 @@
 ﻿namespace MapEverything.Tests.Model.Classes
 {
-    public class IntFieldClass
+    public class ClassField<T>
     {
-        public int Value;
+        public T Value;
     }
 }

@@ -170,7 +170,7 @@
                         {
                             if (parameters[0].ParameterType == fromType)
                             {
-                                if (parameters.Count == 2 && parameters[0].ParameterType == typeof(IFormatProvider))
+                                if (parameters.Count == 2 && parameters[1].ParameterType == typeof(IFormatProvider))
                                 {
                                     return method;
                                 }

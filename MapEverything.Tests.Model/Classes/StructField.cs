@@ -1,7 +1,7 @@
 ﻿namespace MapEverything.Tests.Model.Classes
 {
-    public class StringFieldClass
+    public struct StructField<T>
     {
-        public string Value;
+        public T Value;
     }
 }

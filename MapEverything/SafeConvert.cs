@@ -65,6 +65,18 @@
             return (result <= int.MaxValue && result >= int.MinValue) ? (int)result : 0;
         }
 
+        public static decimal ToDecimal(string s)
+        {
+            decimal d;
+            return decimal.TryParse(s, NumberStyles.Number, CultureInfo.CurrentCulture, out d) ? d : 0m;
+        }
+
+        public static decimal ToDecimal(string s, IFormatProvider provider)
+        {
+            decimal d;
+            return decimal.TryParse(s, NumberStyles.Number, provider, out d) ? d : 0m;
+        }
+
         public static string ToString(IFormattable formattable, IFormatProvider formatProvider)
         {
             return formattable.ToString(null, formatProvider);

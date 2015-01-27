@@ -34,6 +34,38 @@
                 new TestCaseData("123a").Returns(0),
             };
 
+        // Use with decimalseperator = . and thousandseperator = [space]
+        public TestCaseData[] StringToDecimalData =
+            {
+                new TestCaseData("0").Returns(0m),
+                new TestCaseData("10").Returns(10m),
+                new TestCaseData("10.0").Returns(10.0m),
+                new TestCaseData("10,0").Returns(0m),
+                new TestCaseData("10.5").Returns(10.5m),
+                new TestCaseData("10,5").Returns(0m),
+                new TestCaseData("-10").Returns(-10m),
+                new TestCaseData("1 000").Returns(1000m),
+                new TestCaseData("1,000").Returns(0m),
+                new TestCaseData("1.000").Returns(1.000m),
+                new TestCaseData("1 000.00").Returns(1000.00m),
+                new TestCaseData("79228162514264337593543950335").Returns(decimal.MaxValue),
+                new TestCaseData("79228162514264337593543950336").Returns(0m),
+                new TestCaseData("-79228162514264337593543950335").Returns(decimal.MinValue),
+                new TestCaseData("-79228162514264337593543950336").Returns(0m),
+                new TestCaseData("abc").Returns(0m),
+                new TestCaseData("123a").Returns(0m),
+                new TestCaseData("123m").Returns(0m),
+            };
+
+        public TestCaseData[] StringToGuidData =
+            {
+                new TestCaseData("00000000-0000-0000-0000-000000000000").Returns(Guid.Empty),
+                new TestCaseData("0cb6c00f-fc44-484f-8ddd-823709b74601").Returns(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")),
+                new TestCaseData("0cb6c00ffc44484f8ddd823709b74601").Returns(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")),
+                new TestCaseData("abc").Returns(Guid.Empty),
+                new TestCaseData("123").Returns(Guid.Empty),
+            };
+
         public TestCaseData[] DecimalToIntData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
@@ -96,14 +128,6 @@
                 new TestCaseData(new Guid("0cb6c00ffc44484f8ddd823709b74601")).Returns("0cb6c00f-fc44-484f-8ddd-823709b74601"),
             };
 
-        public TestCaseData[] StringToGuidData =
-            {
-                new TestCaseData("00000000-0000-0000-0000-000000000000").Returns(Guid.Empty),
-                new TestCaseData("0cb6c00f-fc44-484f-8ddd-823709b74601").Returns(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")),
-                new TestCaseData("0cb6c00ffc44484f8ddd823709b74601").Returns(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")),
-                new TestCaseData("abc").Returns(Guid.Empty),
-                new TestCaseData("123").Returns(Guid.Empty),
-            };
 
 
 
