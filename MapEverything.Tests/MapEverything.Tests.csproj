@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ConverterFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionUtilsTests.cs" />
     <Compile Include="SafeConvertTests.cs" />
     <Compile Include="TestData.cs" />
     <Compile Include="TypeDefinitionTests.cs" />

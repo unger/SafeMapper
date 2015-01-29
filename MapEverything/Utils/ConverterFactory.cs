@@ -3,11 +3,16 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Globalization;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
     using Fasterflect;
+
+    using MapEverything.Reflection;
+    using MapEverything.TypeMaps;
 
     public static class ConverterFactory
     {
@@ -101,9 +106,30 @@
             }
         }
 
-        private static IEnumerable<Tuple<MemberInfo, MemberInfo>> GetMemberMaps(Type fromType, Type toType)
+        private static IEnumerable<Tuple<MemberWrapper, MemberWrapper>> GetMemberMaps(Type fromType, Type toType)
         {
-            var result = new List<Tuple<MemberInfo, MemberInfo>>();
+            var result = new List<Tuple<MemberWrapper, MemberWrapper>>();
+
+            var fromMembers = ReflectionUtils.GetMembers(fromType);
+            var toMembers = ReflectionUtils.GetMembers(toType).ToDictionary(m => m.Name);
+
+            foreach (var fromMember in fromMembers)
+            {
+                if (fromMember.CanRead)
+                {
+                    if (toMembers.ContainsKey(fromMember.Name))
+                    {
+                        var toMember = toMembers[fromMember.Name];
+                        if (toMember.CanWrite)
+                        {
+                            result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
+                        }
+                    }
+                }
+            }
+
+            /*
+
             var fromMembers = fromType.GetMembers();
 
             foreach (var fromMember in fromMembers)
@@ -133,7 +159,7 @@
                     {
                         if (toMemberProperty.CanWrite)
                         {
-                            result.Add(new Tuple<MemberInfo, MemberInfo>(validFromMember, toMemberProperty));
+                            result.Add(new Tuple<MemberMap, MemberMap>(validFromMember, toMemberProperty));
                         }
                     }
 
@@ -143,7 +169,7 @@
                         result.Add(new Tuple<MemberInfo, MemberInfo>(validFromMember, toMemberField));
                     }
                 }
-            }
+            }*/
 
             return result;
         }
@@ -203,42 +229,39 @@
             }
         }
 
-        private static void MemberMap(this ILGenerator il, LocalBuilder local, Type fromType, MemberInfo fromMember, MemberInfo toMember)
+        private static void MemberMap(this ILGenerator il, LocalBuilder local, Type fromType, MemberWrapper fromMember, MemberWrapper toMember)
         {
-            var fromMemberType = fromMember.Type();
-            var toMemberType = toMember.Type();
-
             // Load local as parameter for the setter
             il.Emit(local.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, local);
 
             // Load arg1 as parameter for the getter
             il.Emit(fromType.IsValueType ? OpCodes.Ldarga : OpCodes.Ldarg, 1);
 
-            if (fromMember is PropertyInfo)
+            if (fromMember.Member is PropertyInfo)
             {
-                var getter = (fromMember as PropertyInfo).GetGetMethod();
+                var getter = (fromMember.Member as PropertyInfo).GetGetMethod();
                 il.Emit(OpCodes.Callvirt, getter);
             }
-            else if (fromMember is FieldInfo)
+            else if (fromMember.Member is FieldInfo)
             {
-                il.Emit(OpCodes.Ldfld, fromMember as FieldInfo);
+                il.Emit(OpCodes.Ldfld, fromMember.Member as FieldInfo);
             }
 
-            if (toMemberType == typeof(string) && fromMemberType != typeof(string))
+            if (toMember.Type == typeof(string) && fromMember.Type != typeof(string))
             {
-                if (fromMemberType.IsValueType)
+                if (fromMember.Type.IsValueType)
                 {
                     // Put property/field value in a local variable to be able to call instance method on it
-                    LocalBuilder localReturnType = il.DeclareLocal(fromMemberType);
+                    LocalBuilder localReturnType = il.DeclareLocal(fromMember.Type);
                     il.Emit(OpCodes.Stloc, localReturnType);
                     il.Emit(OpCodes.Ldloca, localReturnType);
                 }
 
-                il.CallToString(fromMemberType);
+                il.CallToString(fromMember.Type);
             }
             else
             {
-                var memberConverter = GetConvertMethod(fromMemberType, toMemberType);
+                var memberConverter = GetConvertMethod(fromMember.Type, toMember.Type);
                 if (memberConverter != null)
                 {
                     // Load IFormatProvider as second argument
@@ -251,14 +274,14 @@
                 }
             }
 
-            if (toMember is PropertyInfo)
+            if (toMember.Member is PropertyInfo)
             {
-                var setter = (toMember as PropertyInfo).GetSetMethod();
+                var setter = (toMember.Member as PropertyInfo).GetSetMethod();
                 il.Emit(OpCodes.Callvirt, setter);
             }
-            else if (toMember is FieldInfo)
+            else if (toMember.Member is FieldInfo)
             {
-                il.Emit(OpCodes.Stfld, toMember as FieldInfo);
+                il.Emit(OpCodes.Stfld, toMember.Member as FieldInfo);
             }
         }
     }

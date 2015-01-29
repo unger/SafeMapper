@@ -45,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Generic\TypeDefinition.cs" />
+    <Compile Include="Reflection\MemberWrapper.cs" />
+    <Compile Include="Reflection\ReflectionUtils.cs" />
     <Compile Include="SafeConvert.cs" />
     <Compile Include="TypeMaps\CollectionTypeMap.cs" />
     <Compile Include="TypeMaps\FromStringTypeMap.cs" />
