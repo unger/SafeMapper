@@ -55,7 +55,7 @@
             else
             {
                 var local = il.DeclareLocal(toType);
-                il.NewObject(toType, local);
+                il.NewObject(fromType, toType, local);
 
                 var methodInfo = GetConvertMethod(fromType, toType);
                 if (methodInfo != null)
@@ -73,10 +73,32 @@
                 }
                 else
                 {
-                    var memberMaps = GetMemberMaps(fromType, toType);
-                    foreach (var memberMap in memberMaps)
+                    if (fromType.IsArray && toType.IsArray)
                     {
-                        il.MemberMap(local, fromType, memberMap.Item1, memberMap.Item2);
+                        var fromElementType = fromType.GetElementType();
+                        var toElementType = fromType.GetElementType();
+
+                        if (toElementType == typeof(string) && fromElementType != typeof(string))
+                        {
+                        }
+                        else
+                        {
+                            var elementConverter = GetConvertMethod(fromType, toType);
+                            if (elementConverter != null)
+                            {
+
+                            }
+                        }
+
+
+                    }
+                    else
+                    {
+                        var memberMaps = GetMemberMaps(fromType, toType);
+                        foreach (var memberMap in memberMaps)
+                        {
+                            il.MemberMap(local, fromType, memberMap.Item1, memberMap.Item2);
+                        }
                     }
                 }
 
@@ -128,49 +150,6 @@
                 }
             }
 
-            /*
-
-            var fromMembers = fromType.GetMembers();
-
-            foreach (var fromMember in fromMembers)
-            {
-                MemberInfo validFromMember = null;
-                var fromMemberProperty = fromMember as PropertyInfo;
-                if (fromMemberProperty != null)
-                {
-                    if (fromMemberProperty.CanRead)
-                    {
-                        validFromMember = fromMemberProperty;
-                    }
-                }
-                else
-                {
-                    var fromMemberField = fromMember as FieldInfo;
-                    if (fromMemberField != null)
-                    {
-                        validFromMember = fromMemberField;
-                    }
-                }
-
-                if (validFromMember != null)
-                {
-                    var toMemberProperty = toType.GetProperty(validFromMember.Name);
-                    if (toMemberProperty != null)
-                    {
-                        if (toMemberProperty.CanWrite)
-                        {
-                            result.Add(new Tuple<MemberMap, MemberMap>(validFromMember, toMemberProperty));
-                        }
-                    }
-
-                    var toMemberField = toType.GetField(validFromMember.Name);
-                    if (toMemberField != null)
-                    {
-                        result.Add(new Tuple<MemberInfo, MemberInfo>(validFromMember, toMemberField));
-                    }
-                }
-            }*/
-
             return result;
         }
 
@@ -219,13 +198,32 @@
             return null;
         }
 
-        private static void NewObject(this ILGenerator il, Type type, LocalBuilder local)
+        private static void NewObject(this ILGenerator il, Type fromType, Type toType, LocalBuilder local)
         {
-            var ctor = type.GetConstructor(Type.EmptyTypes);
-            if (ctor != null)
+            if (toType.IsArray)
             {
-                il.Emit(OpCodes.Newobj, ctor);
+                if (fromType.IsArray)
+                {
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.Emit(OpCodes.Ldlen);
+                }
+                else
+                {
+                    // Fallback to create zero length array
+                    il.Emit(OpCodes.Ldc_I4_0);
+                }
+
+                il.Emit(OpCodes.Newarr, toType.GetElementType());
                 il.Emit(OpCodes.Stloc, local);
+            } 
+            else
+            {
+                var ctor = toType.GetConstructor(Type.EmptyTypes);
+                if (ctor != null)
+                {
+                    il.Emit(OpCodes.Newobj, ctor);
+                    il.Emit(OpCodes.Stloc, local);
+                }
             }
         }
 

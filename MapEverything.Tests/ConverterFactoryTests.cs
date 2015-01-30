@@ -272,6 +272,35 @@
             return converter(input);
         }
 
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Array to array                                                              
+        /*                                                                      
+        /************************************************************************/
+
+        [Test]
+        public void CreateConverter_IntArrayToAIntArray()
+        {
+            var converter = ConverterFactory.Create<int[], int[]>();
+            var input = new int[] { 1, 2, 3, 4, 5 };
+            var result = converter(input);
+
+            Assert.AreEqual(input, result);
+        }
+
+        [Test]
+        public void CreateConverter_IntArrayToAStringArray()
+        {
+            var converter = ConverterFactory.Create<int[], string[]>();
+            var expected = new string[] { "1", "2", "3", "4", "5" };
+            var input = new int[] { 1, 2, 3, 4, 5 };
+            var result = converter(input);
+
+            Assert.AreEqual(expected, result);
+        }
+
+
         /************************************************************************/
         /*                                                                      
         /*   Misc                                                              
