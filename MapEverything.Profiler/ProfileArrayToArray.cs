@@ -6,9 +6,13 @@
 
     using AutoMapper;
 
+    using EmitMapper;
+
     using Fasterflect;
 
     using FastMapper;
+
+    using MapEverything.Utils;
 
     public class ProfileArrayToArray : ProfileBase
     {
@@ -45,6 +49,8 @@
 
             var genericConverter = getConverterDelegate(typeMapper);
 
+            var dynamicConverter = ConverterFactory.Create<int[], decimal[]>();
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<int[], decimal[]>();
 
 
 
@@ -52,6 +58,8 @@
             this.AddResult("Array.ConvertAll changetype", i => Array.ConvertAll(intArray, v => Convert.ChangeType(v, toElementType)));
             this.AddResult("Array.ConvertAll typemapper", i => Array.ConvertAll(intArray, v => elementConverter(v)));
             this.AddResult("fasterflect", i => fasterflectConvertAll(null, intArray, genericConverter));
+            this.AddResult("EmitMapper", i => emitMapper.Map(intArray));
+            this.AddResult("DynamicMapper", i => dynamicConverter(intArray));
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
             this.AddResult("TypeMapper", i => typeMapper.Convert(intArray, fromType, toType));
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(intArray, typeMapperConverter));

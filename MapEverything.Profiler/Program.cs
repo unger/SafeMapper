@@ -10,7 +10,7 @@
 
             //new ProfilePropertyGetSet().Execute();
 
-            //new ProfileArrayToArray().Execute();
+            new ProfileArrayToArray().Execute();
 
             //new ProfileArrayToList().Execute();
 
@@ -18,7 +18,7 @@
 
             //new ProfileListToList().Execute();
 
-            new ProfileConversion().Execute();
+            //new ProfileConversion().Execute();
 
             //new ProfileInvalidConversion().Execute();
 

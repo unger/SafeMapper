@@ -76,21 +76,67 @@
                     if (fromType.IsArray && toType.IsArray)
                     {
                         var fromElementType = fromType.GetElementType();
-                        var toElementType = fromType.GetElementType();
+                        var toElementType = toType.GetElementType();
+
+                        Label startLoop = il.DefineLabel();
+                        Label afterLoop = il.DefineLabel();
+                        LocalBuilder arrayIndex = il.DeclareLocal(typeof(int));
+
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldlen);
+                        il.Emit(OpCodes.Stloc, arrayIndex);
+
+                        il.MarkLabel(startLoop);
+                        il.Emit(OpCodes.Ldloc, arrayIndex);
+                        il.Emit(OpCodes.Brfalse, afterLoop);
+                        
+                        il.Emit(OpCodes.Ldloc, arrayIndex);
+                        il.Emit(OpCodes.Ldc_I4_1);
+                        il.Emit(OpCodes.Sub);
+                        il.Emit(OpCodes.Stloc, arrayIndex);
+
+                        // Ladda in toarray på stacken
+                        il.Emit(OpCodes.Ldloc, local);
+                        il.Emit(OpCodes.Ldloc, arrayIndex);
+
+                        // Ladda in fromarray på stacken
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldloc, arrayIndex);
+                        il.Emit(OpCodes.Ldelem, fromElementType);
 
                         if (toElementType == typeof(string) && fromElementType != typeof(string))
                         {
+                            if (fromElementType.IsValueType)
+                            {
+                                // Put property/field value in a local variable to be able to call instance method on it
+                                LocalBuilder localReturnType = il.DeclareLocal(fromElementType);
+                                il.Emit(OpCodes.Stloc, localReturnType);
+                                il.Emit(OpCodes.Ldloca, localReturnType);
+                            }
+
+                            il.CallToString(fromElementType);
                         }
                         else
                         {
-                            var elementConverter = GetConvertMethod(fromType, toType);
+                            var elementConverter = GetConvertMethod(fromElementType, toElementType);
                             if (elementConverter != null)
                             {
+                                // Load IFormatProvider as second argument
+                                if (elementConverter.Parameters().Count == 2)
+                                {
+                                    il.Emit(OpCodes.Ldarg_0);
+                                }
 
+                                il.EmitCall(OpCodes.Call, elementConverter, null);
                             }
                         }
 
+                        // Store the converted value
+                        il.Emit(OpCodes.Stelem, toElementType);
 
+                        // End loop
+                        il.Emit(OpCodes.Br, startLoop);
+                        il.MarkLabel(afterLoop);
                     }
                     else
                     {

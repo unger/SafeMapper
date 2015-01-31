@@ -280,7 +280,7 @@
         /************************************************************************/
 
         [Test]
-        public void CreateConverter_IntArrayToAIntArray()
+        public void CreateConverter_IntArrayToIntArray()
         {
             var converter = ConverterFactory.Create<int[], int[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
@@ -290,7 +290,7 @@
         }
 
         [Test]
-        public void CreateConverter_IntArrayToAStringArray()
+        public void CreateConverter_IntArrayToStringArray()
         {
             var converter = ConverterFactory.Create<int[], string[]>();
             var expected = new string[] { "1", "2", "3", "4", "5" };
@@ -299,6 +299,29 @@
 
             Assert.AreEqual(expected, result);
         }
+
+        [Test]
+        public void CreateConverter_StringArrayToIntArray()
+        {
+            var converter = ConverterFactory.Create<string[], int[]>();
+            var input = new string[] { "1", "2", "3", "4", "5" };
+            var expected = new int[] { 1, 2, 3, 4, 5 };
+            var result = converter(input);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_IntArrayToDecimalArray()
+        {
+            var converter = ConverterFactory.Create<int[], decimal[]>();
+            var input = new int[] { 1, 2, 3, 4, 5 };
+            var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
+            var result = converter(input);
+
+            Assert.AreEqual(expected, result);
+        }
+
 
 
         /************************************************************************/
