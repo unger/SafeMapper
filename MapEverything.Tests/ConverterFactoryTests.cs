@@ -322,6 +322,13 @@
             Assert.AreEqual(expected, result);
         }
 
+        [Test]
+        public void CreateConverter_IntArrayMemberToStringArrayMember()
+        {
+            var input = new int[] { 1, 2, 3, 4, 5 };
+
+            this.AssertConverterOutput<int[], string[]>(input);
+        }
 
 
         /************************************************************************/
@@ -329,6 +336,18 @@
         /*   Misc                                                              
         /*                                                                      
         /************************************************************************/
+
+        [Test]
+        public void CreateConverter_IntToStringNonGeneric()
+        {
+            var converter = ConverterFactory.Create(typeof(int), typeof(string));
+            var input = 10;
+            var expected = "10";
+            var result = converter(input);
+
+            Assert.AreEqual(expected, result);
+        }
+
 
 
         [Test]

@@ -98,7 +98,7 @@
 
             this.ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
             */
-            //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
             
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
@@ -106,23 +106,25 @@
             
             //this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonDto>(personArray, CultureInfo.CurrentCulture, null);
 
-            /*this.ProfileConvert<Person, PersonStruct>(personArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Person, PersonStruct>(personArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
-            */
+            //this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
+            
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
             var dynamicConverter = ConverterFactory.Create<TSource, TDestination>();
+            var dynamicConverterNonGeneric = ConverterFactory.Create(typeof(TSource), typeof(TDestination));
             var typeMapper = new TypeMapper();
             var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
+
 
             var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>();
 
@@ -149,6 +151,12 @@
 
             this.AddResult("DynamicConverter", i => dynamicConverter(input[i]));
 
+            /*this.AddResult("DynamicConverterNonGeneric", i => dynamicConverterNonGeneric(input[i]));
+
+            this.AddResult("DynamicConverter.Convert", i => ConverterFactory.Convert<TSource, TDestination>(input[i]));
+
+            this.AddResult("DynamicConverter.Convert NonGen", i => ConverterFactory.Convert(input[i], sourceType, destinationType));
+            */
             this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
 
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(input[i], typeMapperConverter));
