@@ -6,7 +6,11 @@
 
     using AutoMapper;
 
+    using EmitMapper;
+
     using FastMapper;
+
+    using MapEverything.Utils;
 
     public class ProfileArrayToList : ProfileBase
     {
@@ -27,12 +31,17 @@
             var elementConverter = typeMapper.GetConverter(typeof(int), typeof(decimal));
             var toElementType = typeof(decimal);
 
+            var dynamicConverter = ConverterFactory.Create<int[], List<decimal>>();
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<int[], List<decimal>>();
+
             this.WriteHeader();
 
 
             this.AddResult("Array.ConvertAll todecimal", i => new List<decimal>(Array.ConvertAll(intArray, Convert.ToDecimal)));
             this.AddResult("Array.ConvertAll changetype", i => new List<decimal>(Array.ConvertAll(intArray, v => (decimal)Convert.ChangeType(v, toElementType))));
             this.AddResult("Array.ConvertAll typemapper", i => new List<decimal>(Array.ConvertAll(intArray, v => (decimal)elementConverter(v))));
+            this.AddResult("EmitMapper", i => emitMapper.Map(intArray));
+            this.AddResult("DynamicConverter", i => dynamicConverter(intArray));
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
             this.AddResult("TypeMapper", i => typeMapper.Convert(intArray, fromType, toType));
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(intArray, typeMapperConverter));

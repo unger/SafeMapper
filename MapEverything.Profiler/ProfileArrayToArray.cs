@@ -59,7 +59,7 @@
             this.AddResult("Array.ConvertAll typemapper", i => Array.ConvertAll(intArray, v => elementConverter(v)));
             this.AddResult("fasterflect", i => fasterflectConvertAll(null, intArray, genericConverter));
             this.AddResult("EmitMapper", i => emitMapper.Map(intArray));
-            this.AddResult("DynamicMapper", i => dynamicConverter(intArray));
+            this.AddResult("DynamicConverter", i => dynamicConverter(intArray));
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
             this.AddResult("TypeMapper", i => typeMapper.Convert(intArray, fromType, toType));
             this.AddResult("TypeMapper delegate", i => typeMapper.Convert(intArray, typeMapperConverter));

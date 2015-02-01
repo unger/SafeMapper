@@ -1,6 +1,7 @@
 ﻿namespace MapEverything.Tests
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
 
     using MapEverything.Tests.Model.Classes;
@@ -330,7 +331,100 @@
             this.AssertConverterOutput<int[], string[]>(input);
         }
 
+        /************************************************************************/
+        /*                                                                      
+        /*   Array and collections                                                              
+        /*                                                                      
+        /************************************************************************/
 
+        [Test]
+        public void CreateConverter_StringListToStringArray()
+        {
+            var converter = ConverterFactory.Create<List<string>, string[]>();
+            var input = new List<string> { "1", "2", "3", "4", "5" };
+            var expected = new string[] { "1", "2", "3", "4", "5" };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<string[]>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_StringListToIntArray()
+        {
+            var converter = ConverterFactory.Create<List<string>, int[]>();
+            var input = new List<string> { "1", "2", "3", "4", "5" };
+            var expected = new int[] { 1, 2, 3, 4, 5 };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<int[]>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_StringListToIntList()
+        {
+            var converter = ConverterFactory.Create<List<string>, List<int>>();
+            var expected = new List<int> { 1, 2, 3, 4, 5 };
+            var input = new List<string> { "1", "2", "3", "4", "5" };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<List<int>>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_StringArrayToIntList()
+        {
+            var converter = ConverterFactory.Create<string[], List<int>>();
+            var expected = new List<int> { 1, 2, 3, 4, 5 };
+            var input = new string[] { "1", "2", "3", "4", "5" };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<List<int>>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_IntListToDecimalArray()
+        {
+            var converter = ConverterFactory.Create<List<int>, decimal[]>();
+            var input = new List<int> { 1, 2, 3, 4, 5 };
+            var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<decimal[]>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_IntListToDecimalList()
+        {
+            var converter = ConverterFactory.Create<List<int>, List<decimal>>();
+            var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
+            var input = new List<int> { 1, 2, 3, 4, 5 };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<List<decimal>>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_IntArrayToDecimalList()
+        {
+            var converter = ConverterFactory.Create<int[], List<decimal>>();
+            var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
+            var input = new int[] { 1, 2, 3, 4, 5 };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<List<decimal>>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+
+
+        
+        
         /************************************************************************/
         /*                                                                      
         /*   Misc                                                              

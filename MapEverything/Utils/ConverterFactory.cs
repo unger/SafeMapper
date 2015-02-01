@@ -160,35 +160,6 @@
             return null;
         }
 
-        private static void EmitNewObject(this ILGenerator il, LocalBuilder fromLocal, LocalBuilder toLocal)
-        {
-            if (toLocal.LocalType.IsArray)
-            {
-                if (fromLocal.LocalType.IsArray)
-                {
-                    il.Emit(OpCodes.Ldloc, fromLocal);
-                    il.Emit(OpCodes.Ldlen);
-                }
-                else
-                {
-                    // Fallback to create zero length array
-                    il.Emit(OpCodes.Ldc_I4_0);
-                }
-
-                il.Emit(OpCodes.Newarr, toLocal.LocalType.GetElementType());
-                il.Emit(OpCodes.Stloc, toLocal);
-            } 
-            else
-            {
-                var ctor = toLocal.LocalType.GetConstructor(Type.EmptyTypes);
-                if (ctor != null)
-                {
-                    il.Emit(OpCodes.Newobj, ctor);
-                    il.Emit(OpCodes.Stloc, toLocal);
-                }
-            }
-        }
-
         private static void EmitConvertValue(this ILGenerator il, Type fromType, Type toType)
         {
             if (toType.IsAssignableFrom(fromType))
@@ -215,66 +186,130 @@
                 }
                 else
                 {
-                    var fromLocal = il.DeclareLocal(fromType);
-                    var toLocal = il.DeclareLocal(toType);
+                    var fromArrayType = fromType;
+                    var toArrayType = toType;
+                    var fromElementType = ReflectionUtils.GetElementType(fromType);
+                    var toElementType = ReflectionUtils.GetElementType(toType);
 
-                    // Store value on top of stack into fromLocal
-                    il.Emit(OpCodes.Stloc, fromLocal);
-                    il.EmitNewObject(fromLocal, toLocal);
-
-                    if (fromType.IsArray && toType.IsArray)
+                    if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
                     {
-                        var fromElementType = fromType.GetElementType();
-                        var toElementType = toType.GetElementType();
+                        if (!fromType.IsArray)
+                        {
+                            var toArrayMethod = fromType.GetMethod("ToArray", Type.EmptyTypes);
+                            if (toArrayMethod != null)
+                            {
+                                il.EmitCall(OpCodes.Call, toArrayMethod, null);
+                                fromArrayType = fromElementType.MakeArrayType();
+                            }
+                        }
 
-                        Label startLoop = il.DefineLabel();
-                        Label afterLoop = il.DefineLabel();
-                        LocalBuilder arrayIndex = il.DeclareLocal(typeof(int));
+                        if (!toType.IsArray)
+                        {
+                            toArrayType = toElementType.MakeArrayType();
+                        }
 
-                        il.Emit(OpCodes.Ldloc, fromLocal);
-                        il.Emit(OpCodes.Ldlen);
-                        il.Emit(OpCodes.Stloc, arrayIndex);
+                        il.EmitConvertArray(fromArrayType, toArrayType);
 
-                        il.MarkLabel(startLoop);
-                        il.Emit(OpCodes.Ldloc, arrayIndex);
-                        il.Emit(OpCodes.Brfalse, afterLoop);
+                        if (!toType.IsArray)
+                        {
+                            var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
+                            var toConstructor = toType.GetConstructor(new Type[] { toEnumerableType });
 
-                        il.Emit(OpCodes.Ldloc, arrayIndex);
-                        il.Emit(OpCodes.Ldc_I4_1);
-                        il.Emit(OpCodes.Sub);
-                        il.Emit(OpCodes.Stloc, arrayIndex);
-
-                        // Ladda in toarray på stacken
-                        il.Emit(OpCodes.Ldloc, toLocal);
-                        il.Emit(OpCodes.Ldloc, arrayIndex);
-
-                        // Ladda in fromarray på stacken
-                        il.Emit(OpCodes.Ldloc, fromLocal);
-                        il.Emit(OpCodes.Ldloc, arrayIndex);
-                        il.Emit(OpCodes.Ldelem, fromElementType);
-
-                        // Convert the element at the top of the stack to toElementType
-                        il.EmitConvertValue(fromElementType, toElementType);
-
-                        // Store the converted value
-                        il.Emit(OpCodes.Stelem, toElementType);
-
-                        // End loop
-                        il.Emit(OpCodes.Br, startLoop);
-                        il.MarkLabel(afterLoop);
+                            if (toConstructor != null)
+                            {
+                                il.Emit(OpCodes.Newobj, toConstructor);
+                            }
+                        }
                     }
                     else
                     {
-                        var memberMaps = GetMemberMaps(fromType, toType);
-                        foreach (var memberMap in memberMaps)
-                        {
-                            il.EmitMemberMap(fromLocal, toLocal, memberMap.Item1, memberMap.Item2);
-                        }
+                        il.EmitConvertClass(fromType, toType);
                     }
-
-                    il.Emit(OpCodes.Ldloc, toLocal);
                 }
             }
+        }
+
+        private static void EmitConvertClass(this ILGenerator il, Type fromType, Type toType)
+        {
+            var fromLocal = il.DeclareLocal(fromType);
+            var toLocal = il.DeclareLocal(toType);
+
+            // Store value on top of stack into fromLocal
+            il.Emit(OpCodes.Stloc, fromLocal);
+
+            var ctor = toLocal.LocalType.GetConstructor(Type.EmptyTypes);
+            if (ctor != null)
+            {
+                il.Emit(OpCodes.Newobj, ctor);
+                il.Emit(OpCodes.Stloc, toLocal);
+            }
+
+            var memberMaps = GetMemberMaps(fromType, toType);
+            foreach (var memberMap in memberMaps)
+            {
+                il.EmitMemberMap(fromLocal, toLocal, memberMap.Item1, memberMap.Item2);
+            }
+
+            il.Emit(OpCodes.Ldloc, toLocal);
+        }
+
+
+        private static void EmitConvertArray(this ILGenerator il, Type fromType, Type toType)
+        {
+            var fromLocal = il.DeclareLocal(fromType);
+            var toLocal = il.DeclareLocal(toType);
+
+            // Store value on top of stack into fromLocal
+            il.Emit(OpCodes.Stloc, fromLocal);
+
+            // Load length from fromLocal
+            il.Emit(OpCodes.Ldloc, fromLocal);
+            il.Emit(OpCodes.Ldlen);
+
+            // Create new array and store it in toLocal
+            il.Emit(OpCodes.Newarr, toLocal.LocalType.GetElementType());
+            il.Emit(OpCodes.Stloc, toLocal);
+
+            var fromElementType = fromType.GetElementType();
+            var toElementType = toType.GetElementType();
+
+            Label startLoop = il.DefineLabel();
+            Label afterLoop = il.DefineLabel();
+            LocalBuilder arrayIndex = il.DeclareLocal(typeof(int));
+
+            il.Emit(OpCodes.Ldloc, fromLocal);
+            il.Emit(OpCodes.Ldlen);
+            il.Emit(OpCodes.Stloc, arrayIndex);
+
+            il.MarkLabel(startLoop);
+            il.Emit(OpCodes.Ldloc, arrayIndex);
+            il.Emit(OpCodes.Brfalse, afterLoop);
+
+            il.Emit(OpCodes.Ldloc, arrayIndex);
+            il.Emit(OpCodes.Ldc_I4_1);
+            il.Emit(OpCodes.Sub);
+            il.Emit(OpCodes.Stloc, arrayIndex);
+
+            // Ladda in toarray på stacken
+            il.Emit(OpCodes.Ldloc, toLocal);
+            il.Emit(OpCodes.Ldloc, arrayIndex);
+
+            // Ladda in fromarray på stacken
+            il.Emit(OpCodes.Ldloc, fromLocal);
+            il.Emit(OpCodes.Ldloc, arrayIndex);
+            il.Emit(OpCodes.Ldelem, fromElementType);
+
+            // Convert the element at the top of the stack to toElementType
+            il.EmitConvertValue(fromElementType, toElementType);
+
+            // Store the converted value
+            il.Emit(OpCodes.Stelem, toElementType);
+
+            // End loop
+            il.Emit(OpCodes.Br, startLoop);
+            il.MarkLabel(afterLoop);
+
+            il.Emit(OpCodes.Ldloc, toLocal);
         }
 
         private static void EmitMemberMap(this ILGenerator il, LocalBuilder fromLocal, LocalBuilder toLocal, MemberWrapper fromMember, MemberWrapper toMember)

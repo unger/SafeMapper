@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.Linq;
 
@@ -59,6 +60,50 @@
             }
 
             return null;
+        }
+
+        public static bool IsCollection(Type type)
+        {
+            return type.IsArray || type.GetInterfaces().Any(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        }
+
+        public static Type GetElementType(Type type)
+        {
+            if (type.IsArray)
+            {
+                return type.GetElementType();
+            }
+
+            if (IsCollection(type) && type.IsGenericType)
+            {
+                var types = type.GetGenericArguments();
+                return types.Length > 0 ? types[0] : null;
+            }
+
+            return null;
+        }
+
+        public Type GetConcreteType(Type type)
+        {
+            if (type.IsInterface)
+            {
+                if (type == typeof(IEnumerable<>) || type == typeof(IList<>))
+                {
+                    return typeof(List<>);
+                }
+
+                if (type == typeof(ICollection<>))
+                {
+                    return typeof(Collection<>);
+                }
+
+                if (type == typeof(ISet<>))
+                {
+                    return typeof(HashSet<>);
+                }
+            }
+
+            return type;
         }
     }
 }
