@@ -83,27 +83,43 @@
             return null;
         }
 
-        public Type GetConcreteType(Type type)
+        public static Type GetConcreteType(Type type)
         {
             if (type.IsInterface)
             {
-                if (type == typeof(IEnumerable<>) || type == typeof(IList<>))
+                if (type.IsGenericType)
+                {
+                    var genericTypeDefinition = type.GetGenericTypeDefinition();
+                    var elementType = GetElementType(type);
+                    var concreteTypeDefinition = GetConcreteTypeDefinition(genericTypeDefinition);
+                    return concreteTypeDefinition.MakeGenericType(elementType);
+                }
+            }
+
+            return type;
+        }
+
+        public static Type GetConcreteTypeDefinition(Type typedefinition)
+        {
+            if (typedefinition.IsInterface)
+            {
+                if (typedefinition == typeof(IEnumerable<>) || typedefinition == typeof(IList<>))
                 {
                     return typeof(List<>);
                 }
 
-                if (type == typeof(ICollection<>))
+                if (typedefinition == typeof(ICollection<>))
                 {
                     return typeof(Collection<>);
                 }
 
-                if (type == typeof(ISet<>))
+                if (typedefinition == typeof(ISet<>))
                 {
                     return typeof(HashSet<>);
                 }
             }
 
-            return type;
+            return typedefinition;
         }
     }
 }

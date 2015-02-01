@@ -422,9 +422,37 @@
         }
 
 
+        /************************************************************************/
+        /*                                                                      
+        /*   Interface collection                                                              
+        /*                                                                      
+        /************************************************************************/
 
+        [Test]
+        public void CreateConverter_StringICollectionToStringArray()
+        {
+            var converter = ConverterFactory.Create<ICollection<string>, string[]>();
+            var input = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
+            var expected = new string[] { "1", "2", "3", "4", "5" };
+            var result = converter(input);
+
+            Assert.IsInstanceOf<string[]>(result);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void CreateConverter_StringArrayToStringICollection()
+        {
+            var converter = ConverterFactory.Create<string[], ICollection<string>>();
+            var input = new string[] { "1", "2", "3", "4", "5" };
+            var expected = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ICollection<string>>(result);
+            Assert.AreEqual(expected, result);
+        }
         
-        
+
         /************************************************************************/
         /*                                                                      
         /*   Misc                                                              

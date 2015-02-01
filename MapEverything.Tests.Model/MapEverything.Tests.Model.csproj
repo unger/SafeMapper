@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="AddressDto.cs" />
+    <Compile Include="Benchmark\BenchSource.cs" />
+    <Compile Include="Benchmark\BenchDestination.cs" />
     <Compile Include="Classes\StructField.cs" />
     <Compile Include="Classes\ClassField.cs" />
     <Compile Include="Classes\StructProperty.cs" />

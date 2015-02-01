@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
@@ -188,14 +189,22 @@
                 {
                     var fromArrayType = fromType;
                     var toArrayType = toType;
-                    var fromElementType = ReflectionUtils.GetElementType(fromType);
-                    var toElementType = ReflectionUtils.GetElementType(toType);
+                    var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
+                    var concreteToType = ReflectionUtils.GetConcreteType(toType);
+                    var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
+                    var toElementType = ReflectionUtils.GetElementType(concreteToType);
 
                     if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
                     {
                         if (!fromType.IsArray)
                         {
-                            var toArrayMethod = fromType.GetMethod("ToArray", Type.EmptyTypes);
+                            var toArrayMethod = concreteFromType.GetMethod("ToArray", Type.EmptyTypes);
+
+                            if (toArrayMethod == null)
+                            {
+                                toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
+                            }
+
                             if (toArrayMethod != null)
                             {
                                 il.EmitCall(OpCodes.Call, toArrayMethod, null);

@@ -13,6 +13,7 @@
 
     using MapEverything.Profiler.AutoMapperHelpers;
     using MapEverything.Tests.Model;
+    using MapEverything.Tests.Model.Benchmark;
     using MapEverything.Tests.Model.Person;
     using MapEverything.Utils;
 
@@ -41,6 +42,9 @@
             var personArray = new Person[maxIterations];
             var personStringArray = new PersonStringDto[maxIterations];
             var addressArray = new Address[maxIterations];
+            var benchSourceArray = new BenchSource[maxIterations];
+
+            var benchSource = new BenchSource();
 
             for (int i = 0; i < maxIterations; i++)
             {
@@ -78,6 +82,7 @@
                                           Country = "Sweden",
                                           Street = "Street 1"
                                       };
+                benchSourceArray[i] = benchSource;
             }
 
             // FromString conversions
@@ -102,8 +107,10 @@
             
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
-            this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
-            
+            //this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
+
+            this.ProfileConvert<BenchSource, BenchDestination>(benchSourceArray, CultureInfo.CurrentCulture, null);
+
             //this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
