@@ -11,8 +11,6 @@ namespace MapEverything.Profiler
 
     using Fasterflect;
 
-    using MapEverything.Generic;
-
     public class ProfileIntParse : ProfileBase
     {
         public ProfileIntParse()

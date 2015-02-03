@@ -31,10 +31,6 @@
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Fasterflect, Version=2.1.3.0, Culture=neutral, PublicKeyToken=38d18473284c1ca7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,29 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Generic\TypeDefinition.cs" />
     <Compile Include="Reflection\MemberWrapper.cs" />
     <Compile Include="Reflection\ReflectionUtils.cs" />
-    <Compile Include="SafeConvert.cs" />
-    <Compile Include="TypeMaps\CollectionTypeMap.cs" />
-    <Compile Include="TypeMaps\FromStringTypeMap.cs" />
-    <Compile Include="TypeMaps\ITypeMap.cs" />
-    <Compile Include="TypeMaps\MemberMap.cs" />
-    <Compile Include="TypeMaps\IMemberMap.cs" />
-    <Compile Include="ITypeMapper.cs" />
+    <Compile Include="Utils\SafeConvert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeDefinition.cs" />
-    <Compile Include="TypeMaps\ConvertibleTypeMap.cs" />
-    <Compile Include="TypeMaps\SimpleTypeMap.cs" />
-    <Compile Include="TypeMaps\ToStringTypeMap.cs" />
-    <Compile Include="TypeMaps\ClassTypeMap.cs" />
-    <Compile Include="TypeMaps\TypeMapFactory.cs" />
-    <Compile Include="TypeMapper.cs" />
-    <Compile Include="Utils\ConverterFactory.cs" />
-    <Compile Include="Utils\StringParseHelpers.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Include="ConverterFactory.cs" />
+    <Compile Include="Utils\EmitExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

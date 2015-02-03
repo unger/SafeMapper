@@ -126,9 +126,6 @@
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
             var dynamicConverter = ConverterFactory.Create<TSource, TDestination>();
-            var dynamicConverterNonGeneric = ConverterFactory.Create(typeof(TSource), typeof(TDestination));
-            var typeMapper = new TypeMapper();
-            var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
 
@@ -158,19 +155,7 @@
 
             this.AddResult("DynamicConverter", i => dynamicConverter(input[i]));
 
-            /*this.AddResult("DynamicConverterNonGeneric", i => dynamicConverterNonGeneric(input[i]));
-
-            this.AddResult("DynamicConverter.Convert", i => ConverterFactory.Convert<TSource, TDestination>(input[i]));
-
-            this.AddResult("DynamicConverter.Convert NonGen", i => ConverterFactory.Convert(input[i], sourceType, destinationType));
-            */
             this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
-
-            this.AddResult("TypeMapper delegate", i => typeMapper.Convert(input[i], typeMapperConverter));
-
-            this.AddResult(
-                  "TypeMapper",
-                  i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider));
 
             this.AddResult(
                     "FastMapper",

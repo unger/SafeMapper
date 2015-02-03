@@ -48,19 +48,6 @@
     <Compile Include="ReflectionUtilsTests.cs" />
     <Compile Include="SafeConvertTests.cs" />
     <Compile Include="TestData.cs" />
-    <Compile Include="TypeDefinitionTests.cs" />
-    <Compile Include="TypeMapperCollectionTests.cs" />
-    <Compile Include="TypeMapperStringTests.cs" />
-    <Compile Include="TypeMapperListTests.cs" />
-    <Compile Include="TypeMapperArrayTests.cs" />
-    <Compile Include="TypeMapperGuidTests.cs" />
-    <Compile Include="TypeMapperDateTimeTests.cs" />
-    <Compile Include="TypeMapperCustomerTests.cs" />
-    <Compile Include="TypeMapperStructTests.cs" />
-    <Compile Include="TypeMapperModelDtoTests.cs" />
-    <Compile Include="TypeMapperTestsBase.cs" />
-    <Compile Include="TypeMapperDecimalTests.cs" />
-    <Compile Include="TypeMapperIntTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

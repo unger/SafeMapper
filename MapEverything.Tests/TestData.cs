@@ -1,11 +1,28 @@
 ﻿namespace MapEverything.Tests
 {
     using System;
+    using System.Data.SqlTypes;
 
     using NUnit.Framework;
 
     public class TestData
     {
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Misc                                                              
+        /*                                                                      
+        /************************************************************************/
+
+        public TestCaseData[] NonGenericTestData =
+            {
+                new TestCaseData(DateTime.MinValue, typeof(DateTime), typeof(SqlDateTime)).Returns(SqlDateTime.MinValue),
+                new TestCaseData(DateTime.MaxValue, typeof(DateTime), typeof(SqlDateTime)).Returns(SqlDateTime.MaxValue),
+                new TestCaseData(SqlDateTime.MinValue, typeof(SqlDateTime), typeof(DateTime)).Returns((DateTime)SqlDateTime.MinValue),
+                new TestCaseData(SqlDateTime.MaxValue, typeof(SqlDateTime), typeof(DateTime)).Returns((DateTime)SqlDateTime.MaxValue),
+            };
+
+
         /************************************************************************/
         /*                                                                      
         /*   String                                                              

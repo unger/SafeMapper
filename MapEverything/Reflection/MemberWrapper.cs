@@ -3,8 +3,6 @@
     using System;
     using System.Reflection;
 
-    using Fasterflect;
-
     public enum MemberType
     {
         Undefined, Property, Field, StringIndexer    
@@ -22,18 +20,8 @@
             this.Name = name;
             this.Member = member;
             this.MemberType = MemberType.Undefined;
-            if (member is PropertyInfo || member is FieldInfo)
-            {
-                this.Type = member.Type();
-            }
-            else
-            {
-                var method = member as MethodInfo;
-                if (method != null)
-                {
-                    this.Type = method.ReturnType;
-                }
-            }
+
+            this.Type = ReflectionUtils.GetMemberType(member);
 
             if (member is PropertyInfo)
             {
@@ -55,10 +43,10 @@
                 if (member is FieldInfo)
                 {
                     this.MemberType = MemberType.Field;
+                    this.CanWrite = !(member as FieldInfo).IsInitOnly;
                 }
 
                 this.CanRead = true;
-                this.CanWrite = true;
             }
         }
 

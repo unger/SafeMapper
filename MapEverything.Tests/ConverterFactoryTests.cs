@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.SqlTypes;
     using System.Globalization;
 
     using MapEverything.Tests.Model.Classes;
@@ -257,7 +258,6 @@
             return this.AssertConverterOutput<DateTime, string>(input, this.numberFormatProvider);
         }
 
-
         /************************************************************************/
         /*                                                                      
         /*   Long                                                              
@@ -460,16 +460,43 @@
         /************************************************************************/
 
         [Test]
-        public void CreateConverter_IntToStringNonGeneric()
+        public void CreateConverter_NonGenericDateTimeToSqlDateTime()
         {
-            var converter = ConverterFactory.Create(typeof(int), typeof(string));
-            var input = 10;
-            var expected = "10";
+            var converter = ConverterFactory.Create(typeof(DateTime), typeof(SqlDateTime));
+            var input = DateTime.MinValue;
             var result = converter(input);
 
-            Assert.AreEqual(expected, result);
+            Assert.AreEqual(SqlDateTime.MinValue, result);
         }
 
+        [Test]
+        public void CreateConverter_NonGenericIntToString()
+        {
+            var converter = ConverterFactory.Create(typeof(int), typeof(string));
+            var input = 1;
+            var result = converter(input);
+
+            Assert.AreEqual("1", result);
+        }
+        [Test]
+        public void CreateConverter_NonGenericStringToInt()
+        {
+            var converter = ConverterFactory.Create(typeof(string), typeof(int));
+            var input = "1";
+            var result = converter(input);
+
+            Assert.AreEqual(1, result);
+        }
+
+
+
+        [TestCaseSource(typeof(TestData), "NonGenericTestData")]
+        public object CreateConverter_NonGenericTestData(object input, Type fromType, Type toType)
+        {
+            var converter = ConverterFactory.Create(fromType, toType);
+
+            return converter(input);
+        }
 
 
         [Test]

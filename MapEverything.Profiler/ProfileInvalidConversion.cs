@@ -42,7 +42,7 @@
             this.ProfileConvert<string, Guid>(stringInvalidArray, formatProvider, i => new Guid(stringInvalidArray[i]));
             this.ProfileConvert<string, int>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
             this.ProfileConvert<string, string>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
-            this.ProfileConvert<string, decimal>(stringInvalidArray, formatProvider, i => StringParser.TryParseDecimal(stringInvalidArray[i], formatProvider));
+            this.ProfileConvert<string, decimal>(stringInvalidArray, formatProvider, i => SafeConvert.ToDecimal(stringInvalidArray[i], formatProvider));
             this.ProfileConvert<string, DateTime>(stringInvalidArray, formatProvider, i => Convert.ToDateTime(stringInvalidArray[i]));
 
             this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
@@ -50,10 +50,9 @@
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
-            var typeMapper = new TypeMapper();
-            var typeMapperConverter = typeMapper.GetConverter(typeof(TSource), typeof(TDestination), formatProvider);
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
+            var dynamicConverter = ConverterFactory.Create<TSource, TDestination>();
 
             if (typeof(TDestination) != typeof(string))
             {
@@ -75,20 +74,19 @@
             {
                 this.AddResult("Native", compareFunc);
             }
-
+            */
             this.AddResult(
                     "FastMapper",
                     i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
-            */
-            this.AddResult("TypeMapper delegate", i => typeMapper.Convert(input[i], typeMapperConverter));
-            
+
             this.AddResult(
-                  "TypeMapper",
-                  i => typeMapper.Convert(input[i], sourceType, destinationType, formatProvider));
+                    "DynamicConverter",
+                    i => dynamicConverter(input[i]));
+            
 
             this.AddResult(
                     "SimpleTypeConverter",
-                    i => SimpleTypeConverter.ConvertTo(input[i], typeof(TDestination), formatProvider));
+                    i => SimpleTypeConverter.ConvertTo(input[i], destinationType, formatProvider));
 
             /*
             this.AddResult(
