@@ -39,7 +39,7 @@
                 new Type[] { fromType, genericConvertType });
 
 
-            var dynamicConverter = ConverterFactory.Create<int[], decimal[]>();
+            var fastConverter = FastConvert.GetConverter<int[], decimal[]>();
             var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<int[], decimal[]>();
 
 
@@ -47,7 +47,7 @@
             this.AddResult("Array.ConvertAll todecimal", i => Array.ConvertAll(intArray, Convert.ToDecimal));
             this.AddResult("Array.ConvertAll changetype", i => Array.ConvertAll(intArray, v => Convert.ChangeType(v, toElementType)));
             this.AddResult("EmitMapper", i => emitMapper.Map(intArray));
-            this.AddResult("DynamicConverter", i => dynamicConverter(intArray));
+            this.AddResult("MapEverything", i => fastConverter(intArray));
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(intArray, fromType, toType));
             //this.AddResult("AutoMapper", i => Mapper.Map(intArray, fromType, toType));
             this.AddResult("Manual forloop", i => this.ConvertArrayManual(intArray, toElementType, v => Convert.ToDecimal(v)));

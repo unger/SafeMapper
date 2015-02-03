@@ -20,7 +20,7 @@
 
             //new ProfileConversion().Execute();
 
-            new ProfileInvalidConversion().Execute();
+            //new ProfileInvalidConversion().Execute();
 
             //new ProfileStringConcat().Execute();
 
@@ -28,7 +28,7 @@
 
             //new ProfileIntParse().Execute();
 
-            //new ProfileCreateConverter().Execute();
+            new ProfileCreateConverter().Execute();
         }
     }
 }

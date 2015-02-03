@@ -1,4 +1,4 @@
-﻿namespace MapEverything
+﻿namespace MapEverything.Utils
 {
     using System;
     using System.Data.SqlTypes;

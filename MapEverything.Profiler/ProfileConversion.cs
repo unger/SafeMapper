@@ -125,7 +125,7 @@
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
-            var dynamicConverter = ConverterFactory.Create<TSource, TDestination>();
+            var fastConverter = FastConvert.GetConverter<TSource, TDestination>();
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
 
@@ -153,7 +153,7 @@
                 this.AddResult("Native", compareFunc);
             }
 
-            this.AddResult("DynamicConverter", i => dynamicConverter(input[i]));
+            this.AddResult("MapEverything", i => fastConverter(input[i]));
 
             this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
 

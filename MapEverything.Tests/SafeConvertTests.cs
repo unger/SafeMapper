@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Globalization;
 
+    using MapEverything.Utils;
+
     using NUnit.Framework;
 
     [TestFixture]

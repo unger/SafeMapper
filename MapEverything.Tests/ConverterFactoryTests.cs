@@ -38,7 +38,7 @@
         [TestCaseSource(typeof(TestData), "StringToStringData")]
         public string CreateConverter_StringToString(string input)
         {
-            var converter = ConverterFactory.Create<string, string>();
+            var converter = FastConvert.GetConverter<string, string>();
 
             return converter(input);
         }
@@ -52,7 +52,7 @@
         [TestCaseSource(typeof(TestData), "StringToIntData")]
         public int CreateConverter_StringToInt(string input)
         {
-            var converter = ConverterFactory.Create<string, int>();
+            var converter = FastConvert.GetConverter<string, int>();
 
             return converter(input);
         }
@@ -66,7 +66,7 @@
         [TestCaseSource(typeof(TestData), "StringToGuidData")]
         public Guid CreateConverter_StringToGuid(string input)
         {
-            var converter = ConverterFactory.Create<string, Guid>();
+            var converter = FastConvert.GetConverter<string, Guid>();
 
             return converter(input);
         }
@@ -80,7 +80,7 @@
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
         public decimal CreateConverter_StringToDecimal(string input)
         {
-            var converter = ConverterFactory.Create<string, decimal>(this.numberFormatProvider);
+            var converter = FastConvert.GetConverter<string, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -94,7 +94,7 @@
         [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
         public DateTime CreateConverter_StringToDateTime(string input)
         {
-            var converter = ConverterFactory.Create<string, DateTime>();
+            var converter = FastConvert.GetConverter<string, DateTime>();
 
             return converter(input);
         }
@@ -115,7 +115,7 @@
         [TestCaseSource(typeof(TestData), "IntToIntData")]
         public int CreateConverter_IntToInt(int input)
         {
-            var converter = ConverterFactory.Create<int, int>();
+            var converter = FastConvert.GetConverter<int, int>();
 
             return converter(input);
         }
@@ -130,7 +130,7 @@
         [TestCaseSource(typeof(TestData), "IntToStringData")]
         public string CreateConverter_IntToString(int input)
         {
-            var converter = ConverterFactory.Create<int, string>();
+            var converter = FastConvert.GetConverter<int, string>();
 
             return converter(input);
         }
@@ -145,7 +145,7 @@
         [TestCaseSource(typeof(TestData), "IntToLongData")]
         public long CreateConverter_IntToLong(int input)
         {
-            var converter = ConverterFactory.Create<int, long>();
+            var converter = FastConvert.GetConverter<int, long>();
 
             return converter(input);
         }
@@ -161,7 +161,7 @@
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
         public string CreateConverter_GuidToString(Guid input)
         {
-            var converter = ConverterFactory.Create<Guid, string>();
+            var converter = FastConvert.GetConverter<Guid, string>();
 
             return converter(input);
         }
@@ -182,7 +182,7 @@
         [TestCaseSource(typeof(TestData), "DecimalToDecimalData")]
         public decimal CreateConverter_DecimalToDecimal(decimal input)
         {
-            var converter = ConverterFactory.Create<decimal, decimal>(this.numberFormatProvider);
+            var converter = FastConvert.GetConverter<decimal, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -190,7 +190,7 @@
         [TestCaseSource(typeof(TestData), "DecimalToStringData")]
         public string CreateConverter_DecimalToString(decimal input)
         {
-            var converter = ConverterFactory.Create<decimal, string>(this.numberFormatProvider);
+            var converter = FastConvert.GetConverter<decimal, string>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -204,7 +204,7 @@
         [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
         public double CreateConverter_DecimalToDouble(decimal input)
         {
-            var converter = ConverterFactory.Create<decimal, double>(this.numberFormatProvider);
+            var converter = FastConvert.GetConverter<decimal, double>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -224,7 +224,7 @@
         [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
         public decimal CreateConverter_DoubleToDecimal(double input)
         {
-            var converter = ConverterFactory.Create<double, decimal>(this.numberFormatProvider);
+            var converter = FastConvert.GetConverter<double, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -247,7 +247,7 @@
         [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
         public string CreateConverter_DateTimeToString(DateTime input)
         {
-            var converter = ConverterFactory.Create<DateTime, string>(this.numberFormatProvider);
+            var converter = FastConvert.GetConverter<DateTime, string>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -268,7 +268,7 @@
         [TestCaseSource(typeof(TestData), "LongToIntData")]
         public int CreateConverter_LongToInt(long input)
         {
-            var converter = ConverterFactory.Create<long, int>();
+            var converter = FastConvert.GetConverter<long, int>();
 
             return converter(input);
         }
@@ -283,7 +283,7 @@
         [Test]
         public void CreateConverter_IntArrayToIntArray()
         {
-            var converter = ConverterFactory.Create<int[], int[]>();
+            var converter = FastConvert.GetConverter<int[], int[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
@@ -293,7 +293,7 @@
         [Test]
         public void CreateConverter_IntArrayToStringArray()
         {
-            var converter = ConverterFactory.Create<int[], string[]>();
+            var converter = FastConvert.GetConverter<int[], string[]>();
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -304,7 +304,7 @@
         [Test]
         public void CreateConverter_StringArrayToIntArray()
         {
-            var converter = ConverterFactory.Create<string[], int[]>();
+            var converter = FastConvert.GetConverter<string[], int[]>();
             var input = new string[] { "1", "2", "3", "4", "5" };
             var expected = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -315,7 +315,7 @@
         [Test]
         public void CreateConverter_IntArrayToDecimalArray()
         {
-            var converter = ConverterFactory.Create<int[], decimal[]>();
+            var converter = FastConvert.GetConverter<int[], decimal[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
             var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
@@ -340,7 +340,7 @@
         [Test]
         public void CreateConverter_StringListToStringArray()
         {
-            var converter = ConverterFactory.Create<List<string>, string[]>();
+            var converter = FastConvert.GetConverter<List<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -352,7 +352,7 @@
         [Test]
         public void CreateConverter_StringListToIntArray()
         {
-            var converter = ConverterFactory.Create<List<string>, int[]>();
+            var converter = FastConvert.GetConverter<List<string>, int[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var expected = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -364,7 +364,7 @@
         [Test]
         public void CreateConverter_StringListToIntList()
         {
-            var converter = ConverterFactory.Create<List<string>, List<int>>();
+            var converter = FastConvert.GetConverter<List<string>, List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -376,7 +376,7 @@
         [Test]
         public void CreateConverter_StringArrayToIntList()
         {
-            var converter = ConverterFactory.Create<string[], List<int>>();
+            var converter = FastConvert.GetConverter<string[], List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -388,7 +388,7 @@
         [Test]
         public void CreateConverter_IntListToDecimalArray()
         {
-            var converter = ConverterFactory.Create<List<int>, decimal[]>();
+            var converter = FastConvert.GetConverter<List<int>, decimal[]>();
             var input = new List<int> { 1, 2, 3, 4, 5 };
             var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
@@ -400,7 +400,7 @@
         [Test]
         public void CreateConverter_IntListToDecimalList()
         {
-            var converter = ConverterFactory.Create<List<int>, List<decimal>>();
+            var converter = FastConvert.GetConverter<List<int>, List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new List<int> { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -412,7 +412,7 @@
         [Test]
         public void CreateConverter_IntArrayToDecimalList()
         {
-            var converter = ConverterFactory.Create<int[], List<decimal>>();
+            var converter = FastConvert.GetConverter<int[], List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -431,7 +431,7 @@
         [Test]
         public void CreateConverter_StringICollectionToStringArray()
         {
-            var converter = ConverterFactory.Create<ICollection<string>, string[]>();
+            var converter = FastConvert.GetConverter<ICollection<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -443,7 +443,7 @@
         [Test]
         public void CreateConverter_StringArrayToStringICollection()
         {
-            var converter = ConverterFactory.Create<string[], ICollection<string>>();
+            var converter = FastConvert.GetConverter<string[], ICollection<string>>();
             var input = new string[] { "1", "2", "3", "4", "5" };
             var expected = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var result = converter(input);
@@ -462,7 +462,7 @@
         [Test]
         public void CreateConverter_NonGenericDateTimeToSqlDateTime()
         {
-            var converter = ConverterFactory.Create(typeof(DateTime), typeof(SqlDateTime));
+            var converter = FastConvert.GetConverter(typeof(DateTime), typeof(SqlDateTime));
             var input = DateTime.MinValue;
             var result = converter(input);
 
@@ -472,7 +472,7 @@
         [Test]
         public void CreateConverter_NonGenericIntToString()
         {
-            var converter = ConverterFactory.Create(typeof(int), typeof(string));
+            var converter = FastConvert.GetConverter(typeof(int), typeof(string));
             var input = 1;
             var result = converter(input);
 
@@ -481,7 +481,7 @@
         [Test]
         public void CreateConverter_NonGenericStringToInt()
         {
-            var converter = ConverterFactory.Create(typeof(string), typeof(int));
+            var converter = FastConvert.GetConverter(typeof(string), typeof(int));
             var input = "1";
             var result = converter(input);
 
@@ -493,7 +493,7 @@
         [TestCaseSource(typeof(TestData), "NonGenericTestData")]
         public object CreateConverter_NonGenericTestData(object input, Type fromType, Type toType)
         {
-            var converter = ConverterFactory.Create(fromType, toType);
+            var converter = FastConvert.GetConverter(fromType, toType);
 
             return converter(input);
         }
@@ -502,7 +502,7 @@
         [Test]
         public void CreateConverter_ConvertPersonToPersonDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = ConverterFactory.Create<Person, PersonDto>();
+            var converter = FastConvert.GetConverter<Person, PersonDto>();
             var person = new Person
                              {
                                  Id = Guid.NewGuid(),
@@ -526,7 +526,7 @@
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-            var converter = ConverterFactory.Create<PersonStringDto, Person>();
+            var converter = FastConvert.GetConverter<PersonStringDto, Person>();
             var person = new PersonStringDto
             {
                 Id = guidStr,
@@ -547,7 +547,7 @@
         [Test]
         public void CreateConverter_ConvertPersonStructToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = ConverterFactory.Create<PersonStruct, Person>();
+            var converter = FastConvert.GetConverter<PersonStruct, Person>();
             var person = new PersonStruct
             {
                 Id = Guid.NewGuid(),
@@ -569,7 +569,7 @@
         [Test]
         public void CreateConverter_ConvertPersonToPersonStruct_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = ConverterFactory.Create<Person, PersonStruct>();
+            var converter = FastConvert.GetConverter<Person, PersonStruct>();
             var person = new Person
             {
                 Id = Guid.NewGuid(),
@@ -593,7 +593,7 @@
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-            var converter = ConverterFactory.Create<Person, PersonStringDto>();
+            var converter = FastConvert.GetConverter<Person, PersonStringDto>();
             var person = new Person
             {
                 Id = new Guid(guidStr),
@@ -618,24 +618,24 @@
 
         private TTo AssertConverterOutput<TFrom, TTo>(TFrom input, IFormatProvider provider)
         {
-            var converter = ConverterFactory.Create<TFrom, TTo>(provider);
+            var converter = FastConvert.GetConverter<TFrom, TTo>(provider);
             var expected = converter(input);
-            var converter1 = ConverterFactory.Create<ClassProperty<TFrom>, ClassProperty<TTo>>(provider);
-            var converter2 = ConverterFactory.Create<ClassProperty<TFrom>, ClassField<TTo>>(provider);
-            var converter3 = ConverterFactory.Create<ClassProperty<TFrom>, StructProperty<TTo>>(provider);
-            var converter4 = ConverterFactory.Create<ClassProperty<TFrom>, StructField<TTo>>(provider);
-            var converter5 = ConverterFactory.Create<ClassField<TFrom>, ClassProperty<TTo>>(provider);
-            var converter6 = ConverterFactory.Create<ClassField<TFrom>, ClassField<TTo>>(provider);
-            var converter7 = ConverterFactory.Create<ClassField<TFrom>, StructProperty<TTo>>(provider);
-            var converter8 = ConverterFactory.Create<ClassField<TFrom>, StructField<TTo>>(provider);
-            var converter9 = ConverterFactory.Create<StructProperty<TFrom>, ClassProperty<TTo>>(provider);
-            var converter10 = ConverterFactory.Create<StructProperty<TFrom>, ClassField<TTo>>(provider);
-            var converter11 = ConverterFactory.Create<StructProperty<TFrom>, StructProperty<TTo>>(provider);
-            var converter12 = ConverterFactory.Create<StructProperty<TFrom>, StructField<TTo>>(provider);
-            var converter13 = ConverterFactory.Create<StructField<TFrom>, ClassProperty<TTo>>(provider);
-            var converter14 = ConverterFactory.Create<StructField<TFrom>, ClassField<TTo>>(provider);
-            var converter15 = ConverterFactory.Create<StructField<TFrom>, StructProperty<TTo>>(provider);
-            var converter16 = ConverterFactory.Create<StructField<TFrom>, StructField<TTo>>(provider);
+            var converter1 = FastConvert.GetConverter<ClassProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter2 = FastConvert.GetConverter<ClassProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter3 = FastConvert.GetConverter<ClassProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter4 = FastConvert.GetConverter<ClassProperty<TFrom>, StructField<TTo>>(provider);
+            var converter5 = FastConvert.GetConverter<ClassField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter6 = FastConvert.GetConverter<ClassField<TFrom>, ClassField<TTo>>(provider);
+            var converter7 = FastConvert.GetConverter<ClassField<TFrom>, StructProperty<TTo>>(provider);
+            var converter8 = FastConvert.GetConverter<ClassField<TFrom>, StructField<TTo>>(provider);
+            var converter9 = FastConvert.GetConverter<StructProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter10 = FastConvert.GetConverter<StructProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter11 = FastConvert.GetConverter<StructProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter12 = FastConvert.GetConverter<StructProperty<TFrom>, StructField<TTo>>(provider);
+            var converter13 = FastConvert.GetConverter<StructField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter14 = FastConvert.GetConverter<StructField<TFrom>, ClassField<TTo>>(provider);
+            var converter15 = FastConvert.GetConverter<StructField<TFrom>, StructProperty<TTo>>(provider);
+            var converter16 = FastConvert.GetConverter<StructField<TFrom>, StructField<TTo>>(provider);
 
             Assert.AreEqual(expected, converter1(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
             Assert.AreEqual(expected, converter2(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));

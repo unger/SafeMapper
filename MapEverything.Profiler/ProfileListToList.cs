@@ -28,7 +28,7 @@
 
             var toElementType = typeof(decimal);
 
-            var dynamicConverter = ConverterFactory.Create<List<int>, List<decimal>>();
+            var fastConverter = FastConvert.GetConverter<List<int>, List<decimal>>();
             var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<List<int>, List<decimal>>();
 
             this.WriteHeader();
@@ -37,7 +37,7 @@
             this.AddResult("Array.ConvertAll todecimal", i => intList.ConvertAll(Convert.ToDecimal));
             this.AddResult("Array.ConvertAll changetype", i => intList.ConvertAll(v => (decimal)Convert.ChangeType(v, toElementType)));
             this.AddResult("EmitMapper", i => emitMapper.Map(intList));
-            this.AddResult("DynamicConverter", i => dynamicConverter(intList));
+            this.AddResult("MapEverything", i => fastConverter(intList));
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(intList, fromType, toType));
             this.AddResult("AutoMapper", i => Mapper.Map(intList, fromType, toType));
         }

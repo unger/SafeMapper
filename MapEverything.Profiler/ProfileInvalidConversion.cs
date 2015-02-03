@@ -52,7 +52,7 @@
         {
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
-            var dynamicConverter = ConverterFactory.Create<TSource, TDestination>();
+            var fastConverter = FastConvert.GetConverter<TSource, TDestination>();
 
             if (typeof(TDestination) != typeof(string))
             {
@@ -80,8 +80,8 @@
                     i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
 
             this.AddResult(
-                    "DynamicConverter",
-                    i => dynamicConverter(input[i]));
+                    "MapEverything",
+                    i => fastConverter(input[i]));
             
 
             this.AddResult(
