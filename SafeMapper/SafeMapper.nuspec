@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>unger</authors>
+    <owners>unger</owners>
+    <licenseUrl>https://github.com/unger/SafeMapper</licenseUrl>
+    <projectUrl>https://github.com/unger/SafeMapper</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>Fast Object Mapper Converter</tags>
+  </metadata>
+</package>
