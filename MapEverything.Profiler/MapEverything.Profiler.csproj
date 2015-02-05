@@ -49,6 +49,9 @@
     <Reference Include="FastMapper">
       <HintPath>..\packages\FastMapper.1.2.0\lib\net40\FastMapper.dll</HintPath>
     </Reference>
+    <Reference Include="fFastMapper">
+      <HintPath>..\packages\fFastMapper.0.5.3\lib\net40\fFastMapper.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\packages\ServiceStack.Text.4.0.36\lib\net40\ServiceStack.Text.dll</HintPath>
     </Reference>

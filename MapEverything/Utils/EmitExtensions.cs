@@ -219,9 +219,9 @@
             }
 
             var memberMaps = ReflectionUtils.GetMemberMaps(fromType, toType);
-            foreach (var memberMap in memberMaps)
+            for (int i = 0; i < memberMaps.Count; i++)
             {
-                il.EmitMemberMap(fromLocal, toLocal, memberMap.Item1, memberMap.Item2);
+                il.EmitMemberMap(fromLocal, toLocal, memberMaps[i].Item1, memberMaps[i].Item2);
             }
 
             il.Emit(OpCodes.Ldloc, toLocal);

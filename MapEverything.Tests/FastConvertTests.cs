@@ -7,12 +7,11 @@
 
     using MapEverything.Tests.Model.Classes;
     using MapEverything.Tests.Model.Person;
-    using MapEverything.Utils;
 
     using NUnit.Framework;
 
     [TestFixture]
-    public class ConverterFactoryTests
+    public class FastConvertTests
     {
         private IFormatProvider numberFormatProvider;
 
@@ -36,7 +35,7 @@
 
 
         [TestCaseSource(typeof(TestData), "StringToStringData")]
-        public string CreateConverter_StringToString(string input)
+        public string GetConverter_StringToString(string input)
         {
             var converter = FastConvert.GetConverter<string, string>();
 
@@ -44,13 +43,13 @@
         }
 
         [TestCaseSource(typeof(TestData), "StringToStringData")]
-        public string CreateConverter_StringMemberToStringMember(string input)
+        public string GetConverter_StringMemberToStringMember(string input)
         {
             return this.AssertConverterOutput<string, string>(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int CreateConverter_StringToInt(string input)
+        public int GetConverter_StringToInt(string input)
         {
             var converter = FastConvert.GetConverter<string, int>();
 
@@ -58,13 +57,13 @@
         }
 
         [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int CreateConverter_StringMemberToIntMember(string input)
+        public int GetConverter_StringMemberToIntMember(string input)
         {
             return this.AssertConverterOutput<string, int>(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToGuidData")]
-        public Guid CreateConverter_StringToGuid(string input)
+        public Guid GetConverter_StringToGuid(string input)
         {
             var converter = FastConvert.GetConverter<string, Guid>();
 
@@ -72,13 +71,13 @@
         }
 
         [TestCaseSource(typeof(TestData), "StringToGuidData")]
-        public Guid CreateConverter_StringMemberToGuidMember(string input)
+        public Guid GetConverter_StringMemberToGuidMember(string input)
         {
             return this.AssertConverterOutput<string, Guid>(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
-        public decimal CreateConverter_StringToDecimal(string input)
+        public decimal GetConverter_StringToDecimal(string input)
         {
             var converter = FastConvert.GetConverter<string, decimal>(this.numberFormatProvider);
 
@@ -86,13 +85,13 @@
         }
 
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
-        public decimal CreateConverter_StringMemberToDecimalMember(string input)
+        public decimal GetConverter_StringMemberToDecimalMember(string input)
         {
             return this.AssertConverterOutput<string, decimal>(input, this.numberFormatProvider);
         }
 
         [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
-        public DateTime CreateConverter_StringToDateTime(string input)
+        public DateTime GetConverter_StringToDateTime(string input)
         {
             var converter = FastConvert.GetConverter<string, DateTime>();
 
@@ -100,7 +99,7 @@
         }
 
         [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
-        public DateTime CreateConverter_StringMemberToDateTimeMember(string input)
+        public DateTime GetConverter_StringMemberToDateTimeMember(string input)
         {
             return this.AssertConverterOutput<string, DateTime>(input);
         }
@@ -113,7 +112,7 @@
 
 
         [TestCaseSource(typeof(TestData), "IntToIntData")]
-        public int CreateConverter_IntToInt(int input)
+        public int GetConverter_IntToInt(int input)
         {
             var converter = FastConvert.GetConverter<int, int>();
 
@@ -121,14 +120,14 @@
         }
 
         [TestCaseSource(typeof(TestData), "IntToIntData")]
-        public int CreateConverter_IntMemberToIntMember(int input)
+        public int GetConverter_IntMemberToIntMember(int input)
         {
             return this.AssertConverterOutput<int, int>(input);
         }
 
 
         [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string CreateConverter_IntToString(int input)
+        public string GetConverter_IntToString(int input)
         {
             var converter = FastConvert.GetConverter<int, string>();
 
@@ -136,14 +135,14 @@
         }
 
         [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string CreateConverter_IntMemberToStringMember(int input)
+        public string GetConverter_IntMemberToStringMember(int input)
         {
             return this.AssertConverterOutput<int, string>(input);
         }
 
 
         [TestCaseSource(typeof(TestData), "IntToLongData")]
-        public long CreateConverter_IntToLong(int input)
+        public long GetConverter_IntToLong(int input)
         {
             var converter = FastConvert.GetConverter<int, long>();
 
@@ -159,7 +158,7 @@
 
 
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
-        public string CreateConverter_GuidToString(Guid input)
+        public string GetConverter_GuidToString(Guid input)
         {
             var converter = FastConvert.GetConverter<Guid, string>();
 
@@ -167,7 +166,7 @@
         }
 
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
-        public string CreateConverter_GuidMemberToStringMember(Guid input)
+        public string GetConverter_GuidMemberToStringMember(Guid input)
         {
             return this.AssertConverterOutput<Guid, string>(input);
         }
@@ -180,7 +179,7 @@
 
 
         [TestCaseSource(typeof(TestData), "DecimalToDecimalData")]
-        public decimal CreateConverter_DecimalToDecimal(decimal input)
+        public decimal GetConverter_DecimalToDecimal(decimal input)
         {
             var converter = FastConvert.GetConverter<decimal, decimal>(this.numberFormatProvider);
 
@@ -188,7 +187,7 @@
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToStringData")]
-        public string CreateConverter_DecimalToString(decimal input)
+        public string GetConverter_DecimalToString(decimal input)
         {
             var converter = FastConvert.GetConverter<decimal, string>(this.numberFormatProvider);
 
@@ -196,13 +195,13 @@
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToStringData")]
-        public string CreateConverter_DecimalMemberToStringMember(decimal input)
+        public string GetConverter_DecimalMemberToStringMember(decimal input)
         {
             return this.AssertConverterOutput<decimal, string>(input, this.numberFormatProvider);
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
-        public double CreateConverter_DecimalToDouble(decimal input)
+        public double GetConverter_DecimalToDouble(decimal input)
         {
             var converter = FastConvert.GetConverter<decimal, double>(this.numberFormatProvider);
 
@@ -210,7 +209,7 @@
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
-        public double CreateConverter_DecimalMemberToDoubleMember(decimal input)
+        public double GetConverter_DecimalMemberToDoubleMember(decimal input)
         {
             return this.AssertConverterOutput<decimal, double>(input, this.numberFormatProvider);
         }
@@ -222,7 +221,7 @@
         /************************************************************************/
 
         [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
-        public decimal CreateConverter_DoubleToDecimal(double input)
+        public decimal GetConverter_DoubleToDecimal(double input)
         {
             var converter = FastConvert.GetConverter<double, decimal>(this.numberFormatProvider);
 
@@ -230,7 +229,7 @@
         }
 
         [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
-        public decimal CreateConverter_DoubleMemberToDecimalMember(double input)
+        public decimal GetConverter_DoubleMemberToDecimalMember(double input)
         {
             return this.AssertConverterOutput<double, decimal>(input, this.numberFormatProvider);
         }
@@ -245,7 +244,7 @@
 
 
         [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
-        public string CreateConverter_DateTimeToString(DateTime input)
+        public string GetConverter_DateTimeToString(DateTime input)
         {
             var converter = FastConvert.GetConverter<DateTime, string>(this.numberFormatProvider);
 
@@ -253,7 +252,7 @@
         }
 
         [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
-        public string CreateConverter_DateTimeMemberToStringMember(DateTime input)
+        public string GetConverter_DateTimeMemberToStringMember(DateTime input)
         {
             return this.AssertConverterOutput<DateTime, string>(input, this.numberFormatProvider);
         }
@@ -266,7 +265,7 @@
 
 
         [TestCaseSource(typeof(TestData), "LongToIntData")]
-        public int CreateConverter_LongToInt(long input)
+        public int GetConverter_LongToInt(long input)
         {
             var converter = FastConvert.GetConverter<long, int>();
 
@@ -281,7 +280,7 @@
         /************************************************************************/
 
         [Test]
-        public void CreateConverter_IntArrayToIntArray()
+        public void GetConverter_IntArrayToIntArray()
         {
             var converter = FastConvert.GetConverter<int[], int[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
@@ -291,7 +290,7 @@
         }
 
         [Test]
-        public void CreateConverter_IntArrayToStringArray()
+        public void GetConverter_IntArrayToStringArray()
         {
             var converter = FastConvert.GetConverter<int[], string[]>();
             var expected = new string[] { "1", "2", "3", "4", "5" };
@@ -302,7 +301,7 @@
         }
 
         [Test]
-        public void CreateConverter_StringArrayToIntArray()
+        public void GetConverter_StringArrayToIntArray()
         {
             var converter = FastConvert.GetConverter<string[], int[]>();
             var input = new string[] { "1", "2", "3", "4", "5" };
@@ -313,7 +312,7 @@
         }
 
         [Test]
-        public void CreateConverter_IntArrayToDecimalArray()
+        public void GetConverter_IntArrayToDecimalArray()
         {
             var converter = FastConvert.GetConverter<int[], decimal[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
@@ -324,7 +323,7 @@
         }
 
         [Test]
-        public void CreateConverter_IntArrayMemberToStringArrayMember()
+        public void GetConverter_IntArrayMemberToStringArrayMember()
         {
             var input = new int[] { 1, 2, 3, 4, 5 };
 
@@ -338,7 +337,7 @@
         /************************************************************************/
 
         [Test]
-        public void CreateConverter_StringListToStringArray()
+        public void GetConverter_StringListToStringArray()
         {
             var converter = FastConvert.GetConverter<List<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
@@ -350,7 +349,7 @@
         }
 
         [Test]
-        public void CreateConverter_StringListToIntArray()
+        public void GetConverter_StringListToIntArray()
         {
             var converter = FastConvert.GetConverter<List<string>, int[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
@@ -362,7 +361,7 @@
         }
 
         [Test]
-        public void CreateConverter_StringListToIntList()
+        public void GetConverter_StringListToIntList()
         {
             var converter = FastConvert.GetConverter<List<string>, List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
@@ -374,7 +373,7 @@
         }
 
         [Test]
-        public void CreateConverter_StringArrayToIntList()
+        public void GetConverter_StringArrayToIntList()
         {
             var converter = FastConvert.GetConverter<string[], List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
@@ -386,7 +385,7 @@
         }
 
         [Test]
-        public void CreateConverter_IntListToDecimalArray()
+        public void GetConverter_IntListToDecimalArray()
         {
             var converter = FastConvert.GetConverter<List<int>, decimal[]>();
             var input = new List<int> { 1, 2, 3, 4, 5 };
@@ -398,7 +397,7 @@
         }
 
         [Test]
-        public void CreateConverter_IntListToDecimalList()
+        public void GetConverter_IntListToDecimalList()
         {
             var converter = FastConvert.GetConverter<List<int>, List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
@@ -410,7 +409,7 @@
         }
 
         [Test]
-        public void CreateConverter_IntArrayToDecimalList()
+        public void GetConverter_IntArrayToDecimalList()
         {
             var converter = FastConvert.GetConverter<int[], List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
@@ -429,7 +428,7 @@
         /************************************************************************/
 
         [Test]
-        public void CreateConverter_StringICollectionToStringArray()
+        public void GetConverter_StringICollectionToStringArray()
         {
             var converter = FastConvert.GetConverter<ICollection<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
@@ -441,7 +440,7 @@
         }
 
         [Test]
-        public void CreateConverter_StringArrayToStringICollection()
+        public void GetConverter_StringArrayToStringICollection()
         {
             var converter = FastConvert.GetConverter<string[], ICollection<string>>();
             var input = new string[] { "1", "2", "3", "4", "5" };
@@ -460,7 +459,7 @@
         /************************************************************************/
 
         [Test]
-        public void CreateConverter_NonGenericDateTimeToSqlDateTime()
+        public void GetConverter_NonGenericDateTimeToSqlDateTime()
         {
             var converter = FastConvert.GetConverter(typeof(DateTime), typeof(SqlDateTime));
             var input = DateTime.MinValue;
@@ -470,7 +469,7 @@
         }
 
         [Test]
-        public void CreateConverter_NonGenericIntToString()
+        public void GetConverter_NonGenericIntToString()
         {
             var converter = FastConvert.GetConverter(typeof(int), typeof(string));
             var input = 1;
@@ -479,7 +478,7 @@
             Assert.AreEqual("1", result);
         }
         [Test]
-        public void CreateConverter_NonGenericStringToInt()
+        public void GetConverter_NonGenericStringToInt()
         {
             var converter = FastConvert.GetConverter(typeof(string), typeof(int));
             var input = "1";
@@ -488,19 +487,16 @@
             Assert.AreEqual(1, result);
         }
 
-
-
         [TestCaseSource(typeof(TestData), "NonGenericTestData")]
-        public object CreateConverter_NonGenericTestData(object input, Type fromType, Type toType)
+        public object GetConverter_NonGenericTestData(object input, Type fromType, Type toType)
         {
             var converter = FastConvert.GetConverter(fromType, toType);
 
             return converter(input);
         }
 
-
         [Test]
-        public void CreateConverter_ConvertPersonToPersonDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void GetConverter_ConvertPersonToPersonDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
             var converter = FastConvert.GetConverter<Person, PersonDto>();
             var person = new Person
@@ -522,7 +518,7 @@
         }
 
         [Test]
-        public void CreateConverter_ConvertPersonStringDtoToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void GetConverter_ConvertPersonStringDtoToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
@@ -545,7 +541,7 @@
         }
 
         [Test]
-        public void CreateConverter_ConvertPersonStructToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void GetConverter_ConvertPersonStructToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
             var converter = FastConvert.GetConverter<PersonStruct, Person>();
             var person = new PersonStruct
@@ -567,7 +563,7 @@
         }
 
         [Test]
-        public void CreateConverter_ConvertPersonToPersonStruct_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void GetConverter_ConvertPersonToPersonStruct_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
             var converter = FastConvert.GetConverter<Person, PersonStruct>();
             var person = new Person
@@ -589,7 +585,7 @@
         }
 
         [Test]
-        public void CreateConverter_ConvertPersonToPersonStringDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void GetConverter_ConvertPersonToPersonStringDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";

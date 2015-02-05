@@ -24,7 +24,7 @@ namespace MapEverything.Profiler
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}", typeof(TSource).Name, typeof(TDestination).Name));
 
-            this.AddResult("MapEverything", i => FastConvert.GetConverter<TSource, TDestination>(formatProvider));
+            this.AddResult("MapEverything", i => ConverterFactory.CreateDelegate<TSource, TDestination>(formatProvider));
 
             this.AddResult("EmitMapper", i => ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>());
 

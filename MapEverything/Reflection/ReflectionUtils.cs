@@ -137,7 +137,7 @@
             return typedefinition;
         }
 
-        public static IEnumerable<Tuple<MemberWrapper, MemberWrapper>> GetMemberMaps(Type fromType, Type toType)
+        public static List<Tuple<MemberWrapper, MemberWrapper>> GetMemberMaps(Type fromType, Type toType)
         {
             var result = new List<Tuple<MemberWrapper, MemberWrapper>>();
 

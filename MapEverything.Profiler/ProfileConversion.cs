@@ -11,6 +11,8 @@
 
     using FastMapper;
 
+    using Grax.fFastMapper;
+
     using MapEverything.Profiler.AutoMapperHelpers;
     using MapEverything.Tests.Model;
     using MapEverything.Tests.Model.Benchmark;
@@ -109,9 +111,9 @@
             
             //this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<BenchSource, BenchDestination>(benchSourceArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<BenchSource, BenchDestination>(benchSourceArray, CultureInfo.CurrentCulture, null);
 
-            //this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<Person, PersonStringDto>(personArray, CultureInfo.CurrentCulture, null);
 
@@ -123,14 +125,15 @@
             
         }
 
-        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
+        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc) where TDestination : new()
         {
             var fastConverter = FastConvert.GetConverter<TSource, TDestination>();
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
 
-
             var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>();
+
+            var fFastMapper = fFastMap.MapperFor<TSource, TDestination>();
 
             if (typeof(TDestination) != typeof(string))
             {
@@ -157,10 +160,9 @@
 
             this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
 
-            this.AddResult(
-                    "FastMapper",
-                    i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
+            this.AddResult("FastMapper", i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
 
+            this.AddResult("fFastMapper", i => fFastMapper.Map(input[i]));
 
             /*
             this.AddResult(
