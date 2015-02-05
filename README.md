@@ -16,6 +16,12 @@ The project is highly influenced by AutoMapper, EmitMapper and FastMapper.
 - Support for public Fields and Properties
 - Support for IEnumerable<T>, IList<T>, ICollection<>T etc
 
+##Installation
+
+http://nuget.org/packages/SafeMapper/
+
+    Install-Package SafeMapper
+
 ##Usage
 
 The fastest way is to get a converter delegate and reuse that if you should convert many objects
