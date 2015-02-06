@@ -5,7 +5,11 @@
 
     using AutoMapper;
 
+    using EmitMapper;
+
     using FastMapper;
+
+    using Omu.ValueInjecter;
 
     using SafeMapper;
     using SafeMapper.Profiler.AutoMapperHelpers;
@@ -37,20 +41,33 @@
             }
 
             // FromString conversions
-            this.ProfileConvert<string, Guid>(stringInvalidArray, formatProvider, i => new Guid(stringInvalidArray[i]));
+            //this.ProfileConvert<string, Guid>(stringInvalidArray, formatProvider, i => new Guid(stringInvalidArray[i]));
             this.ProfileConvert<string, int>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
-            this.ProfileConvert<string, string>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
-            this.ProfileConvert<string, decimal>(stringInvalidArray, formatProvider, i => SafeConvert.ToDecimal(stringInvalidArray[i], formatProvider));
-            this.ProfileConvert<string, DateTime>(stringInvalidArray, formatProvider, i => Convert.ToDateTime(stringInvalidArray[i]));
+            //this.ProfileConvert<string, string>(stringInvalidArray, formatProvider, i => int.Parse(stringInvalidArray[i], formatProvider));
+            //this.ProfileConvert<string, decimal>(stringInvalidArray, formatProvider, i => SafeConvert.ToDecimal(stringInvalidArray[i], formatProvider));
+            //this.ProfileConvert<string, DateTime>(stringInvalidArray, formatProvider, i => Convert.ToDateTime(stringInvalidArray[i]));
 
-            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
         }
 
-        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
+        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc) where TDestination : new()
         {
             var sourceType = typeof(TSource);
             var destinationType = typeof(TDestination);
             var fastConverter = SafeMap.GetConverter<TSource, TDestination>();
+
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>();
+
+            Action<Action<int>, int> trycatchDelegate = (Action<int> action, int i) =>
+                {
+                    try
+                    {
+                        action(i);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                };
 
             if (typeof(TDestination) != typeof(string))
             {
@@ -68,31 +85,41 @@
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
 
-            /*if (compareFunc != null)
+            if (compareFunc != null)
             {
-                this.AddResult("Native", compareFunc);
+                this.AddResult("Native", k => trycatchDelegate(compareFunc, k));
             }
-            */
-            this.AddResult(
-                    "FastMapper",
-                    i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
 
             this.AddResult(
                     "SafeMapper",
-                    i => fastConverter(input[i]));
-            
+                    k => trycatchDelegate(i => fastConverter(input[i]), k));
+
+            this.AddResult("EmitMapper", k => trycatchDelegate(i => emitMapper.Map(input[i]), k));
+
+            this.AddResult("FastMapper", k => trycatchDelegate(i => TypeAdapter.Adapt(input[i], sourceType, destinationType), k));
+
 
             this.AddResult(
+                "ValueInjecter",
+                k => trycatchDelegate(
+                    i =>
+                    {
+                        var result = new TDestination();
+                        result.InjectFrom(input[i]);
+                    }, 
+                    k));
+            
+            /*this.AddResult(
                     "SimpleTypeConverter",
                     i => SimpleTypeConverter.SimpleTypeConverter.ConvertTo(input[i], destinationType, formatProvider));
-
+            */
             /*
             this.AddResult(
                     "UniversalTypeConverter",
                     i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider));
+            */
 
-
-            this.AddResult("AutoMapper", i => Mapper.Map<TSource, TDestination>(input[i]));*/
+            this.AddResult("AutoMapper", k => trycatchDelegate(i => Mapper.Map<TSource, TDestination>(input[i]), k));
 
         }
     }
