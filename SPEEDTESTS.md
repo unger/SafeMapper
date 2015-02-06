@@ -10,13 +10,14 @@ Converting 100000 strings to int with strings containing valid integers
     FastMapper:     40.9 ms
     AutoMapper:     71.2 ms
 
-NOTE: SafeMapper is faster than int.Parse because it uses an alternative int parse based on the IntParseFast found here [http://www.dotnetperls.com/unsafe-parse] with some additional checks for negative numbers and valid numeric characters.
+NOTE: SafeMapper is faster than int.Parse because it uses an alternative int parse based on the IntParseFast found here http://www.dotnetperls.com/unsafe-parse with some additional checks for negative numbers and valid numeric characters.
 
 To prove the importance of not throwing exeptions in the conversion here is an example with try catch around each conversion.
 
 Converting 100000 strings to int with strings containing invalid characters
 
     SafeMapper:      2.2 ms
+    int.TryParse:    9.4 ms
     ValueInjector:  25.6 ms
     AutoMapper:     72.5 ms
     int.Parse:    2318.9 ms
