@@ -12,7 +12,7 @@
     using SafeMapper.Tests.Model.Person;
 
     [TestFixture]
-    public class FastConvertTests
+    public class SafeMapTests
     {
         private IFormatProvider numberFormatProvider;
 

@@ -11,6 +11,8 @@
 
     using Grax.fFastMapper;
 
+    using Omu.ValueInjecter;
+
     using SafeMapper;
     using SafeMapper.Profiler.AutoMapperHelpers;
     using SafeMapper.Tests.Model;
@@ -101,11 +103,11 @@
             */
             //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
             
-            this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
             this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
 
-            this.ProfileConvert<BenchSource, BenchDestination>(benchSourceArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<BenchSource, BenchDestination>(benchSourceArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<Address, AddressDto>(addressArray, CultureInfo.CurrentCulture, null);
 
@@ -160,6 +162,13 @@
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
 
             //this.AddResult("fFastMapper", i => fFastMapper.Map(input[i]));
+
+            this.AddResult("ValueInjecter",
+                i =>
+                    {
+                        var result = new TDestination();
+                        result.InjectFrom(input[i]);
+                    });
 
             /*
             this.AddResult(
