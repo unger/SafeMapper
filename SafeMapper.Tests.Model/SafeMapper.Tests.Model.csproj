@@ -44,6 +44,7 @@
     <Compile Include="AddressDto.cs" />
     <Compile Include="Benchmark\BenchSource.cs" />
     <Compile Include="Benchmark\BenchDestination.cs" />
+    <Compile Include="ExampleEnum.cs" />
     <Compile Include="GenericClasses\StructField.cs" />
     <Compile Include="GenericClasses\ClassField.cs" />
     <Compile Include="GenericClasses\StructProperty.cs" />

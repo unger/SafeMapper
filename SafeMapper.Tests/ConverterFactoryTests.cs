@@ -7,12 +7,12 @@
 
     using NUnit.Framework;
 
-    using SafeMapper;
     using SafeMapper.Tests.Model.GenericClasses;
     using SafeMapper.Tests.Model.Person;
+    using SafeMapper.Utils;
 
     [TestFixture]
-    public class SafeMapTests
+    public class ConverterFactoryTests
     {
         private IFormatProvider numberFormatProvider;
 
@@ -36,71 +36,71 @@
 
 
         [TestCaseSource(typeof(TestData), "StringToStringData")]
-        public string GetConverter_StringToString(string input)
+        public string CreateDelegate_StringToString(string input)
         {
-            var converter = SafeMap.GetConverter<string, string>();
+            var converter = ConverterFactory.CreateDelegate<string, string>();
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToStringData")]
-        public string GetConverter_StringMemberToStringMember(string input)
+        public string CreateDelegate_StringMemberToStringMember(string input)
         {
             return this.AssertConverterOutput<string, string>(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int GetConverter_StringToInt(string input)
+        public int CreateDelegate_StringToInt(string input)
         {
-            var converter = SafeMap.GetConverter<string, int>();
+            var converter = ConverterFactory.CreateDelegate<string, int>();
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int GetConverter_StringMemberToIntMember(string input)
+        public int CreateDelegate_StringMemberToIntMember(string input)
         {
             return this.AssertConverterOutput<string, int>(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToGuidData")]
-        public Guid GetConverter_StringToGuid(string input)
+        public Guid CreateDelegate_StringToGuid(string input)
         {
-            var converter = SafeMap.GetConverter<string, Guid>();
+            var converter = ConverterFactory.CreateDelegate<string, Guid>();
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToGuidData")]
-        public Guid GetConverter_StringMemberToGuidMember(string input)
+        public Guid CreateDelegate_StringMemberToGuidMember(string input)
         {
             return this.AssertConverterOutput<string, Guid>(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
-        public decimal GetConverter_StringToDecimal(string input)
+        public decimal CreateDelegate_StringToDecimal(string input)
         {
-            var converter = SafeMap.GetConverter<string, decimal>(this.numberFormatProvider);
+            var converter = ConverterFactory.CreateDelegate<string, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
-        public decimal GetConverter_StringMemberToDecimalMember(string input)
+        public decimal CreateDelegate_StringMemberToDecimalMember(string input)
         {
             return this.AssertConverterOutput<string, decimal>(input, this.numberFormatProvider);
         }
 
         [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
-        public DateTime GetConverter_StringToDateTime(string input)
+        public DateTime CreateDelegate_StringToDateTime(string input)
         {
-            var converter = SafeMap.GetConverter<string, DateTime>();
+            var converter = ConverterFactory.CreateDelegate<string, DateTime>();
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
-        public DateTime GetConverter_StringMemberToDateTimeMember(string input)
+        public DateTime CreateDelegate_StringMemberToDateTimeMember(string input)
         {
             return this.AssertConverterOutput<string, DateTime>(input);
         }
@@ -113,39 +113,39 @@
 
 
         [TestCaseSource(typeof(TestData), "IntToIntData")]
-        public int GetConverter_IntToInt(int input)
+        public int CreateDelegate_IntToInt(int input)
         {
-            var converter = SafeMap.GetConverter<int, int>();
+            var converter = ConverterFactory.CreateDelegate<int, int>();
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "IntToIntData")]
-        public int GetConverter_IntMemberToIntMember(int input)
+        public int CreateDelegate_IntMemberToIntMember(int input)
         {
             return this.AssertConverterOutput<int, int>(input);
         }
 
 
         [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string GetConverter_IntToString(int input)
+        public string CreateDelegate_IntToString(int input)
         {
-            var converter = SafeMap.GetConverter<int, string>();
+            var converter = ConverterFactory.CreateDelegate<int, string>();
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "IntToStringData")]
-        public string GetConverter_IntMemberToStringMember(int input)
+        public string CreateDelegate_IntMemberToStringMember(int input)
         {
             return this.AssertConverterOutput<int, string>(input);
         }
 
 
         [TestCaseSource(typeof(TestData), "IntToLongData")]
-        public long GetConverter_IntToLong(int input)
+        public long CreateDelegate_IntToLong(int input)
         {
-            var converter = SafeMap.GetConverter<int, long>();
+            var converter = ConverterFactory.CreateDelegate<int, long>();
 
             return converter(input);
         }
@@ -159,15 +159,15 @@
 
 
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
-        public string GetConverter_GuidToString(Guid input)
+        public string CreateDelegate_GuidToString(Guid input)
         {
-            var converter = SafeMap.GetConverter<Guid, string>();
+            var converter = ConverterFactory.CreateDelegate<Guid, string>();
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
-        public string GetConverter_GuidMemberToStringMember(Guid input)
+        public string CreateDelegate_GuidMemberToStringMember(Guid input)
         {
             return this.AssertConverterOutput<Guid, string>(input);
         }
@@ -180,37 +180,37 @@
 
 
         [TestCaseSource(typeof(TestData), "DecimalToDecimalData")]
-        public decimal GetConverter_DecimalToDecimal(decimal input)
+        public decimal CreateDelegate_DecimalToDecimal(decimal input)
         {
-            var converter = SafeMap.GetConverter<decimal, decimal>(this.numberFormatProvider);
+            var converter = ConverterFactory.CreateDelegate<decimal, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToStringData")]
-        public string GetConverter_DecimalToString(decimal input)
+        public string CreateDelegate_DecimalToString(decimal input)
         {
-            var converter = SafeMap.GetConverter<decimal, string>(this.numberFormatProvider);
+            var converter = ConverterFactory.CreateDelegate<decimal, string>(this.numberFormatProvider);
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToStringData")]
-        public string GetConverter_DecimalMemberToStringMember(decimal input)
+        public string CreateDelegate_DecimalMemberToStringMember(decimal input)
         {
             return this.AssertConverterOutput<decimal, string>(input, this.numberFormatProvider);
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
-        public double GetConverter_DecimalToDouble(decimal input)
+        public double CreateDelegate_DecimalToDouble(decimal input)
         {
-            var converter = SafeMap.GetConverter<decimal, double>(this.numberFormatProvider);
+            var converter = ConverterFactory.CreateDelegate<decimal, double>(this.numberFormatProvider);
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
-        public double GetConverter_DecimalMemberToDoubleMember(decimal input)
+        public double CreateDelegate_DecimalMemberToDoubleMember(decimal input)
         {
             return this.AssertConverterOutput<decimal, double>(input, this.numberFormatProvider);
         }
@@ -222,15 +222,15 @@
         /************************************************************************/
 
         [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
-        public decimal GetConverter_DoubleToDecimal(double input)
+        public decimal CreateDelegate_DoubleToDecimal(double input)
         {
-            var converter = SafeMap.GetConverter<double, decimal>(this.numberFormatProvider);
+            var converter = ConverterFactory.CreateDelegate<double, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
-        public decimal GetConverter_DoubleMemberToDecimalMember(double input)
+        public decimal CreateDelegate_DoubleMemberToDecimalMember(double input)
         {
             return this.AssertConverterOutput<double, decimal>(input, this.numberFormatProvider);
         }
@@ -245,15 +245,15 @@
 
 
         [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
-        public string GetConverter_DateTimeToString(DateTime input)
+        public string CreateDelegate_DateTimeToString(DateTime input)
         {
-            var converter = SafeMap.GetConverter<DateTime, string>(this.numberFormatProvider);
+            var converter = ConverterFactory.CreateDelegate<DateTime, string>(this.numberFormatProvider);
 
             return converter(input);
         }
 
         [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
-        public string GetConverter_DateTimeMemberToStringMember(DateTime input)
+        public string CreateDelegate_DateTimeMemberToStringMember(DateTime input)
         {
             return this.AssertConverterOutput<DateTime, string>(input, this.numberFormatProvider);
         }
@@ -266,9 +266,9 @@
 
 
         [TestCaseSource(typeof(TestData), "LongToIntData")]
-        public int GetConverter_LongToInt(long input)
+        public int CreateDelegate_LongToInt(long input)
         {
-            var converter = SafeMap.GetConverter<long, int>();
+            var converter = ConverterFactory.CreateDelegate<long, int>();
 
             return converter(input);
         }
@@ -281,9 +281,9 @@
         /************************************************************************/
 
         [Test]
-        public void GetConverter_IntArrayToIntArray()
+        public void CreateDelegate_IntArrayToIntArray()
         {
-            var converter = SafeMap.GetConverter<int[], int[]>();
+            var converter = ConverterFactory.CreateDelegate<int[], int[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
@@ -291,9 +291,9 @@
         }
 
         [Test]
-        public void GetConverter_IntArrayToStringArray()
+        public void CreateDelegate_IntArrayToStringArray()
         {
-            var converter = SafeMap.GetConverter<int[], string[]>();
+            var converter = ConverterFactory.CreateDelegate<int[], string[]>();
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -302,9 +302,9 @@
         }
 
         [Test]
-        public void GetConverter_StringArrayToIntArray()
+        public void CreateDelegate_StringArrayToIntArray()
         {
-            var converter = SafeMap.GetConverter<string[], int[]>();
+            var converter = ConverterFactory.CreateDelegate<string[], int[]>();
             var input = new string[] { "1", "2", "3", "4", "5" };
             var expected = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -313,9 +313,9 @@
         }
 
         [Test]
-        public void GetConverter_IntArrayToDecimalArray()
+        public void CreateDelegate_IntArrayToDecimalArray()
         {
-            var converter = SafeMap.GetConverter<int[], decimal[]>();
+            var converter = ConverterFactory.CreateDelegate<int[], decimal[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
             var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
@@ -324,7 +324,7 @@
         }
 
         [Test]
-        public void GetConverter_IntArrayMemberToStringArrayMember()
+        public void CreateDelegate_IntArrayMemberToStringArrayMember()
         {
             var input = new int[] { 1, 2, 3, 4, 5 };
 
@@ -338,9 +338,9 @@
         /************************************************************************/
 
         [Test]
-        public void GetConverter_StringListToStringArray()
+        public void CreateDelegate_StringListToStringArray()
         {
-            var converter = SafeMap.GetConverter<List<string>, string[]>();
+            var converter = ConverterFactory.CreateDelegate<List<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -350,9 +350,9 @@
         }
 
         [Test]
-        public void GetConverter_StringListToIntArray()
+        public void CreateDelegate_StringListToIntArray()
         {
-            var converter = SafeMap.GetConverter<List<string>, int[]>();
+            var converter = ConverterFactory.CreateDelegate<List<string>, int[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var expected = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -362,9 +362,9 @@
         }
 
         [Test]
-        public void GetConverter_StringListToIntList()
+        public void CreateDelegate_StringListToIntList()
         {
-            var converter = SafeMap.GetConverter<List<string>, List<int>>();
+            var converter = ConverterFactory.CreateDelegate<List<string>, List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -374,9 +374,9 @@
         }
 
         [Test]
-        public void GetConverter_StringArrayToIntList()
+        public void CreateDelegate_StringArrayToIntList()
         {
-            var converter = SafeMap.GetConverter<string[], List<int>>();
+            var converter = ConverterFactory.CreateDelegate<string[], List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -386,9 +386,9 @@
         }
 
         [Test]
-        public void GetConverter_IntListToDecimalArray()
+        public void CreateDelegate_IntListToDecimalArray()
         {
-            var converter = SafeMap.GetConverter<List<int>, decimal[]>();
+            var converter = ConverterFactory.CreateDelegate<List<int>, decimal[]>();
             var input = new List<int> { 1, 2, 3, 4, 5 };
             var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
@@ -398,9 +398,9 @@
         }
 
         [Test]
-        public void GetConverter_IntListToDecimalList()
+        public void CreateDelegate_IntListToDecimalList()
         {
-            var converter = SafeMap.GetConverter<List<int>, List<decimal>>();
+            var converter = ConverterFactory.CreateDelegate<List<int>, List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new List<int> { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -410,9 +410,9 @@
         }
 
         [Test]
-        public void GetConverter_IntArrayToDecimalList()
+        public void CreateDelegate_IntArrayToDecimalList()
         {
-            var converter = SafeMap.GetConverter<int[], List<decimal>>();
+            var converter = ConverterFactory.CreateDelegate<int[], List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -429,9 +429,9 @@
         /************************************************************************/
 
         [Test]
-        public void GetConverter_StringICollectionToStringArray()
+        public void CreateDelegate_StringICollectionToStringArray()
         {
-            var converter = SafeMap.GetConverter<ICollection<string>, string[]>();
+            var converter = ConverterFactory.CreateDelegate<ICollection<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -441,9 +441,9 @@
         }
 
         [Test]
-        public void GetConverter_StringArrayToStringICollection()
+        public void CreateDelegate_StringArrayToStringICollection()
         {
-            var converter = SafeMap.GetConverter<string[], ICollection<string>>();
+            var converter = ConverterFactory.CreateDelegate<string[], ICollection<string>>();
             var input = new string[] { "1", "2", "3", "4", "5" };
             var expected = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var result = converter(input);
@@ -460,9 +460,9 @@
         /************************************************************************/
 
         [Test]
-        public void GetConverter_NonGenericDateTimeToSqlDateTime()
+        public void CreateDelegate_NonGenericDateTimeToSqlDateTime()
         {
-            var converter = SafeMap.GetConverter(typeof(DateTime), typeof(SqlDateTime));
+            var converter = ConverterFactory.CreateDelegate(typeof(DateTime), typeof(SqlDateTime));
             var input = DateTime.MinValue;
             var result = converter(input);
 
@@ -470,18 +470,18 @@
         }
 
         [Test]
-        public void GetConverter_NonGenericIntToString()
+        public void CreateDelegate_NonGenericIntToString()
         {
-            var converter = SafeMap.GetConverter(typeof(int), typeof(string));
+            var converter = ConverterFactory.CreateDelegate(typeof(int), typeof(string));
             var input = 1;
             var result = converter(input);
 
             Assert.AreEqual("1", result);
         }
         [Test]
-        public void GetConverter_NonGenericStringToInt()
+        public void CreateDelegate_NonGenericStringToInt()
         {
-            var converter = SafeMap.GetConverter(typeof(string), typeof(int));
+            var converter = ConverterFactory.CreateDelegate(typeof(string), typeof(int));
             var input = "1";
             var result = converter(input);
 
@@ -489,17 +489,17 @@
         }
 
         [TestCaseSource(typeof(TestData), "NonGenericTestData")]
-        public object GetConverter_NonGenericTestData(object input, Type fromType, Type toType)
+        public object CreateDelegate_NonGenericTestData(object input, Type fromType, Type toType)
         {
-            var converter = SafeMap.GetConverter(fromType, toType);
+            var converter = ConverterFactory.CreateDelegate(fromType, toType);
 
             return converter(input);
         }
 
         [Test]
-        public void GetConverter_ConvertPersonToPersonDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void CreateDelegate_ConvertPersonToPersonDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = SafeMap.GetConverter<Person, PersonDto>();
+            var converter = ConverterFactory.CreateDelegate<Person, PersonDto>();
             var person = new Person
                              {
                                  Id = Guid.NewGuid(),
@@ -519,11 +519,11 @@
         }
 
         [Test]
-        public void GetConverter_ConvertPersonStringDtoToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void CreateDelegate_ConvertPersonStringDtoToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-            var converter = SafeMap.GetConverter<PersonStringDto, Person>();
+            var converter = ConverterFactory.CreateDelegate<PersonStringDto, Person>();
             var person = new PersonStringDto
             {
                 Id = guidStr,
@@ -542,9 +542,9 @@
         }
 
         [Test]
-        public void GetConverter_ConvertPersonStructToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void CreateDelegate_ConvertPersonStructToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = SafeMap.GetConverter<PersonStruct, Person>();
+            var converter = ConverterFactory.CreateDelegate<PersonStruct, Person>();
             var person = new PersonStruct
             {
                 Id = Guid.NewGuid(),
@@ -564,9 +564,9 @@
         }
 
         [Test]
-        public void GetConverter_ConvertPersonToPersonStruct_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void CreateDelegate_ConvertPersonToPersonStruct_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = SafeMap.GetConverter<Person, PersonStruct>();
+            var converter = ConverterFactory.CreateDelegate<Person, PersonStruct>();
             var person = new Person
             {
                 Id = Guid.NewGuid(),
@@ -586,11 +586,11 @@
         }
 
         [Test]
-        public void GetConverter_ConvertPersonToPersonStringDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
+        public void CreateDelegate_ConvertPersonToPersonStringDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-            var converter = SafeMap.GetConverter<Person, PersonStringDto>();
+            var converter = ConverterFactory.CreateDelegate<Person, PersonStringDto>();
             var person = new Person
             {
                 Id = new Guid(guidStr),
@@ -615,24 +615,24 @@
 
         private TTo AssertConverterOutput<TFrom, TTo>(TFrom input, IFormatProvider provider)
         {
-            var converter = SafeMap.GetConverter<TFrom, TTo>(provider);
+            var converter = ConverterFactory.CreateDelegate<TFrom, TTo>(provider);
             var expected = converter(input);
-            var converter1 = SafeMap.GetConverter<ClassProperty<TFrom>, ClassProperty<TTo>>(provider);
-            var converter2 = SafeMap.GetConverter<ClassProperty<TFrom>, ClassField<TTo>>(provider);
-            var converter3 = SafeMap.GetConverter<ClassProperty<TFrom>, StructProperty<TTo>>(provider);
-            var converter4 = SafeMap.GetConverter<ClassProperty<TFrom>, StructField<TTo>>(provider);
-            var converter5 = SafeMap.GetConverter<ClassField<TFrom>, ClassProperty<TTo>>(provider);
-            var converter6 = SafeMap.GetConverter<ClassField<TFrom>, ClassField<TTo>>(provider);
-            var converter7 = SafeMap.GetConverter<ClassField<TFrom>, StructProperty<TTo>>(provider);
-            var converter8 = SafeMap.GetConverter<ClassField<TFrom>, StructField<TTo>>(provider);
-            var converter9 = SafeMap.GetConverter<StructProperty<TFrom>, ClassProperty<TTo>>(provider);
-            var converter10 = SafeMap.GetConverter<StructProperty<TFrom>, ClassField<TTo>>(provider);
-            var converter11 = SafeMap.GetConverter<StructProperty<TFrom>, StructProperty<TTo>>(provider);
-            var converter12 = SafeMap.GetConverter<StructProperty<TFrom>, StructField<TTo>>(provider);
-            var converter13 = SafeMap.GetConverter<StructField<TFrom>, ClassProperty<TTo>>(provider);
-            var converter14 = SafeMap.GetConverter<StructField<TFrom>, ClassField<TTo>>(provider);
-            var converter15 = SafeMap.GetConverter<StructField<TFrom>, StructProperty<TTo>>(provider);
-            var converter16 = SafeMap.GetConverter<StructField<TFrom>, StructField<TTo>>(provider);
+            var converter1 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter2 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter3 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter4 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, StructField<TTo>>(provider);
+            var converter5 = ConverterFactory.CreateDelegate<ClassField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter6 = ConverterFactory.CreateDelegate<ClassField<TFrom>, ClassField<TTo>>(provider);
+            var converter7 = ConverterFactory.CreateDelegate<ClassField<TFrom>, StructProperty<TTo>>(provider);
+            var converter8 = ConverterFactory.CreateDelegate<ClassField<TFrom>, StructField<TTo>>(provider);
+            var converter9 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter10 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter11 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter12 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, StructField<TTo>>(provider);
+            var converter13 = ConverterFactory.CreateDelegate<StructField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter14 = ConverterFactory.CreateDelegate<StructField<TFrom>, ClassField<TTo>>(provider);
+            var converter15 = ConverterFactory.CreateDelegate<StructField<TFrom>, StructProperty<TTo>>(provider);
+            var converter16 = ConverterFactory.CreateDelegate<StructField<TFrom>, StructField<TTo>>(provider);
 
             Assert.AreEqual(expected, converter1(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
             Assert.AreEqual(expected, converter2(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
