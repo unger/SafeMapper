@@ -128,9 +128,43 @@
 
         public static void EmitConvertValue(this ILGenerator il, Type fromType, Type toType)
         {
+            Label skipConversion = il.DefineLabel();
+
             if (toType.IsAssignableFrom(fromType))
             {
                 return;
+            }
+
+            // Check if fromValue is null
+            if (!fromType.IsValueType || Nullable.GetUnderlyingType(fromType) != null)
+            {
+                var fromLocal = il.DeclareLocal(fromType);
+                var toLocal = il.DeclareLocal(toType);
+                Label nonNull = il.DefineLabel();
+
+                // Store value on top of stack into fromLocal
+                il.Emit(OpCodes.Stloc, fromLocal);
+
+                if (Nullable.GetUnderlyingType(fromType) != null)
+                {
+                    il.Emit(OpCodes.Ldloca, fromLocal);
+                    MethodInfo mi = fromType.GetMethod("get_HasValue", BindingFlags.Instance | BindingFlags.Public);
+                    il.Emit(OpCodes.Call, mi);
+                }
+                else
+                {
+                    il.Emit(OpCodes.Ldloc, fromLocal);
+                }
+
+                il.Emit(OpCodes.Brtrue_S, nonNull);
+
+                // Load toLocal with default value on stack and skip rest of conversion logic
+                il.Emit(OpCodes.Ldloc, toLocal);
+                il.Emit(OpCodes.Br, skipConversion);
+
+                // Not null, put the fromValue back on stack
+                il.MarkLabel(nonNull);
+                il.Emit(OpCodes.Ldloc, fromLocal);
             }
 
             if (toType == typeof(string) && fromType != typeof(string))
@@ -201,6 +235,8 @@
                     }
                 }
             }
+
+            il.MarkLabel(skipConversion);
         }
 
         public static void EmitConvertClass(this ILGenerator il, Type fromType, Type toType)

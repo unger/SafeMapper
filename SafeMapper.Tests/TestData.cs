@@ -33,7 +33,7 @@
 
                 new TestCaseData(false, typeof(bool?), typeof(string)).Returns("False"),
                 new TestCaseData(true, typeof(bool?), typeof(string)).Returns("True"),
-                //new TestCaseData(null, typeof(bool?), typeof(string)).Returns(null),
+                new TestCaseData(null, typeof(bool?), typeof(string)).Returns(null),
 
                 /*new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(int)).Returns(0),
                 new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(int)).Returns(1),
@@ -73,6 +73,8 @@
 
         public TestCaseData[] StringToIntData =
             {
+                new TestCaseData(string.Empty).Returns(0),
+                new TestCaseData(null).Returns(0),
                 new TestCaseData("0").Returns(0),
                 new TestCaseData("10").Returns(10),
                 new TestCaseData("10.0").Returns(0),
@@ -95,6 +97,8 @@
         // Use with decimalseperator = . and thousandseperator = [space]
         public TestCaseData[] StringToDecimalData =
             {
+                new TestCaseData(string.Empty).Returns(0m),
+                new TestCaseData(null).Returns(0m),
                 new TestCaseData("0").Returns(0m),
                 new TestCaseData("10").Returns(10m),
                 new TestCaseData("10.0").Returns(10.0m),
@@ -119,6 +123,8 @@
 
         public TestCaseData[] StringToGuidData =
             {
+                new TestCaseData(string.Empty).Returns(Guid.Empty),
+                new TestCaseData(null).Returns(Guid.Empty),
                 new TestCaseData("00000000-0000-0000-0000-000000000000").Returns(Guid.Empty),
                 new TestCaseData("0cb6c00f-fc44-484f-8ddd-823709b74601").Returns(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")),
                 new TestCaseData("0cb6c00ffc44484f8ddd823709b74601").Returns(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")),
@@ -128,6 +134,8 @@
 
         public TestCaseData[] StringToDateTimeData =
             {
+                new TestCaseData(string.Empty).Returns(DateTime.MinValue),
+                new TestCaseData(null).Returns(DateTime.MinValue),
                 new TestCaseData("1977-03-04").Returns(new DateTime(1977, 03, 04)),
                 new TestCaseData("1977-03-04 13:37").Returns(new DateTime(1977, 03, 04, 13, 37, 00)),
             };

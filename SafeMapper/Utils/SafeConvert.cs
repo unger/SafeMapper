@@ -65,6 +65,11 @@
 
         public static long ToInt64(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return 0;
+            }
+
             long result = 0;
             bool neg = value[0] == '-';
             for (int i = neg ? 1 : 0; i < value.Length; i++)
