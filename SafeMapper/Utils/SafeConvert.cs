@@ -208,5 +208,31 @@
             bool b;
             return bool.TryParse(s, out b) ? b : false;
         }
+
+        public static TEnum EnumTryParse<TEnum>(int value) where TEnum : struct
+        {
+            var enumObject = (TEnum)Enum.ToObject(typeof(TEnum), value);
+
+            if (Enum.IsDefined(typeof(TEnum), enumObject))
+            {
+                return enumObject;
+            }
+
+            return (TEnum)Enum.GetValues(typeof(TEnum)).GetValue(0);
+        }
+
+        public static TEnum EnumTryParse<TEnum>(string value) where TEnum : struct
+        {
+            TEnum enumObject;
+            if (Enum.TryParse(value, out enumObject))
+            {
+                if (Enum.IsDefined(typeof(TEnum), enumObject))
+                {
+                    return enumObject;
+                }
+            }
+
+            return (TEnum)Enum.GetValues(typeof(TEnum)).GetValue(0);
+        }
     }
 }

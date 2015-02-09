@@ -107,7 +107,15 @@
                 // Put property/field value in a local variable to be able to call instance method on it
                 LocalBuilder localReturnType = il.DeclareLocal(fromType);
                 il.Emit(OpCodes.Stloc, localReturnType);
-                il.Emit(OpCodes.Ldloca, localReturnType);
+                if (fromType.IsEnum)
+                {
+                    il.Emit(OpCodes.Ldloc, localReturnType);
+                    il.Emit(OpCodes.Box, fromType);
+                }
+                else
+                {
+                    il.Emit(OpCodes.Ldloca, localReturnType);
+                }
             }
 
             var toStringMethod = fromType.GetMethod("ToString", new[] { typeof(IFormatProvider) });
@@ -167,6 +175,43 @@
                 il.Emit(OpCodes.Ldloc, fromLocal);
             }
 
+            if (fromType.IsEnum)
+            {
+                if (toType == typeof(int))
+                {
+                    return;
+                }
+            }
+
+            if (toType.IsEnum)
+            {
+                if (fromType == typeof(int) || fromType.IsEnum)
+                {
+                    var enumParse = typeof(SafeConvert).GetMethod("EnumTryParse", new[] { typeof(int) });
+                    if (enumParse != null)
+                    {
+                        var enumParseGeneric = enumParse.MakeGenericMethod(toType);
+                        il.EmitCall(OpCodes.Call, enumParseGeneric, null);
+                    }
+
+                    return;
+                }
+
+                if (fromType == typeof(string))
+                {
+                    var enumParse = typeof(SafeConvert).GetMethod("EnumTryParse", new[] { typeof(string) });
+                    if (enumParse != null)
+                    {
+                        var enumParseGeneric = enumParse.MakeGenericMethod(toType);
+                        il.EmitCall(OpCodes.Call, enumParseGeneric, null);
+                    }
+
+                    il.MarkLabel(skipConversion);
+
+                    return;
+                }
+            }
+
             if (toType == typeof(string) && fromType != typeof(string))
             {
                 il.EmitCallToString(fromType);
@@ -186,15 +231,15 @@
                 }
                 else
                 {
-                    var fromArrayType = fromType;
-                    var toArrayType = toType;
-                    var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
-                    var concreteToType = ReflectionUtils.GetConcreteType(toType);
-                    var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
-                    var toElementType = ReflectionUtils.GetElementType(concreteToType);
-
                     if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
                     {
+                        var fromArrayType = fromType;
+                        var toArrayType = toType;
+                        var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
+                        var concreteToType = ReflectionUtils.GetConcreteType(toType);
+                        var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
+                        var toElementType = ReflectionUtils.GetElementType(concreteToType);
+
                         if (!fromType.IsArray)
                         {
                             var toArrayMethod = concreteFromType.GetMethod("ToArray", Type.EmptyTypes);

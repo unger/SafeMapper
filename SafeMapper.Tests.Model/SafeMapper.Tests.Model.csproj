@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="AddressDto.cs" />
+    <Compile Include="AnotherEnum.cs" />
     <Compile Include="Benchmark\BenchSource.cs" />
     <Compile Include="Benchmark\BenchDestination.cs" />
     <Compile Include="ExampleEnum.cs" />

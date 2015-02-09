@@ -35,26 +35,31 @@
                 new TestCaseData(true, typeof(bool?), typeof(string)).Returns("True"),
                 new TestCaseData(null, typeof(bool?), typeof(string)).Returns(null),
 
-                /*new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(int)).Returns(0),
+                new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(int)).Returns(0),
                 new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(int)).Returns(1),
                 new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(int)).Returns(2),
                 new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(int)).Returns(3),
-
-                new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(int)).Returns("Undefined"),
-                new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(int)).Returns("Value1"),
-                new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(int)).Returns("Value2"),
-                new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(int)).Returns("Value3"),
-
+                
+                new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(string)).Returns("Undefined"),
+                new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(string)).Returns("Value1"),
+                new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(string)).Returns("Value2"),
+                new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(string)).Returns("Value3"),
+                
                 new TestCaseData("Undefined", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
                 new TestCaseData("Value1", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
                 new TestCaseData("Value2", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value2),
                 new TestCaseData("Value3", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value3),
-
+                
                 new TestCaseData(-1, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
                 new TestCaseData(0, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
                 new TestCaseData(1, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
                 new TestCaseData(2, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Value2),
-                new TestCaseData(3, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Value3),*/
+                new TestCaseData(3, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Value3),
+
+                new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Undefined),
+                new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Value1),
+                new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Value2),
+                new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Undefined),
             };
 
 
