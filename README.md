@@ -12,9 +12,11 @@ The project is highly influenced by AutoMapper, EmitMapper and FastMapper.
 - Map to and from string 
 - Map array and collections
 - Exception free conversion between most types, fallback to default value for the type
-- Support for Structs and Classes
+- Support for both Structs and Classes
+- Support for nested objects
 - Support for public Fields and Properties
-- Support for IEnumerable<T>, IList<T>, ICollection<>T etc
+- Support for interfaces IEnumerable<T>, IList<T>, ICollection<T> etc
+- Basic Enum conversion to and from int and string
 
 ##Installation
 
@@ -49,9 +51,9 @@ Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests
 
 ##Planned features
 
+- Extended support for Enums with DisplayNameAttribute/DescriptionAttribute
 - Support for circular referencies between objects
 - Mapping support to and from Dictionary<sting, T> and NameValueCollection
-- Support for Enums
 - Configuration support to enable mapping fields/properties with different names
 - Map from Database queries to c# object
 - Map Lucene documents to c# object
