@@ -90,6 +90,8 @@
             //this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
             //this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
 
+            this.ProfileConvert<int, ExampleEnum>(intArray, formatProvider, null);
+
             //this.ProfileConvert<double, decimal>(doubleArray, formatProvider, i => Convert.ToDecimal(doubleArray[i]));
             //this.ProfileConvert<decimal, double>(decimalArray, formatProvider, i => Convert.ToDouble(decimalArray[i]));
             //this.ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));

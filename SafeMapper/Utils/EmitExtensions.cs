@@ -187,13 +187,39 @@
             {
                 if (fromType == typeof(int) || fromType.IsEnum)
                 {
-                    var enumParse = typeof(SafeConvert).GetMethod("EnumTryParse", new[] { typeof(int) });
-                    if (enumParse != null)
+                    Label defaultCase = il.DefineLabel();
+                    Label endOfMethod = il.DefineLabel();
+                    LocalBuilder switchValue = il.DeclareLocal(fromType);
+
+                    il.Emit(OpCodes.Stloc, switchValue);
+
+                    var enumValues = Enum.GetValues(toType);
+
+                    var jumpTable = new Label[enumValues.Length];
+                    for (int i = 0; i < jumpTable.Length; i++)
                     {
-                        var enumParseGeneric = enumParse.MakeGenericMethod(toType);
-                        il.EmitCall(OpCodes.Call, enumParseGeneric, null);
+                        jumpTable[i] = il.DefineLabel();
+                        il.Emit(OpCodes.Ldloc, switchValue);
+                        il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
+                        il.Emit(OpCodes.Beq, jumpTable[i]);
                     }
 
+                    // Branch on default case
+                    il.Emit(OpCodes.Br_S, defaultCase);
+
+                    for (int i = 0; i < enumValues.Length; i++)
+                    {
+                        il.MarkLabel(jumpTable[i]);
+                        il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
+                        il.Emit(OpCodes.Br_S, endOfMethod);
+                    }
+
+                    // Default case
+                    il.MarkLabel(defaultCase);
+                    il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(0));
+
+                    il.MarkLabel(endOfMethod);
+                    
                     return;
                 }
 
