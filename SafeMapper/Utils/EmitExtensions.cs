@@ -183,17 +183,12 @@
             if (toType.IsEnum)
             {
                 il.EmitConvertToEnum(fromType, toType);
-                il.MarkLabel(skipConversion);
-                return;
             }
-
-            if (fromType.IsEnum)
+            else if (fromType.IsEnum)
             {
                 il.EmitConvertFromEnum(fromType, toType);
-                return;
-            }
-
-            if (toType == typeof(string) && fromType != typeof(string))
+            } 
+            else if (toType == typeof(string) && fromType != typeof(string))
             {
                 il.EmitCallToString(fromType);
             }
@@ -202,7 +197,8 @@
                 var converter = ReflectionUtils.GetConvertMethod(
                     fromType,
                     toType,
-                    new[] { typeof(SafeConvert), typeof(Convert) });
+                    new[] { typeof(SafeConvert)/*, typeof(Convert)*/ });
+
                 if (converter != null)
                 {
                     // Load IFormatProvider as second argument
@@ -290,15 +286,52 @@
                 throw new ArgumentException("toType needs to be an enum", "toType");
             }
 
-            if (fromType == typeof(int) || fromType.IsEnum)
+            if (fromType == typeof(string))
             {
+                var enumParse = typeof(SafeConvert).GetMethod("EnumTryParse", new[] { typeof(string) });
+                if (enumParse != null)
+                {
+                    var enumParseGeneric = enumParse.MakeGenericMethod(toType);
+                    il.EmitCall(OpCodes.Call, enumParseGeneric, null);
+                }
+            }
+            else
+            {
+                var enumValues = Enum.GetValues(toType);
+                var underlayingToType = toType.GetEnumUnderlyingType();
+                var underlayingFromType = fromType.IsEnum ? fromType.GetEnumUnderlyingType() : fromType;
+                
+                if (underlayingToType != underlayingFromType)
+                {
+                    var converter = ReflectionUtils.GetConvertMethod(
+                        underlayingFromType,
+                        underlayingToType,
+                        new[] { typeof(SafeConvert)/*, typeof(Convert)*/ });
+
+                    if (converter != null)
+                    {
+                        // Load IFormatProvider as second argument
+                        if (converter.GetParameters().Length == 2)
+                        {
+                            il.Emit(OpCodes.Ldarg_0);
+                        }
+
+                        il.EmitCall(OpCodes.Call, converter, null);
+                    }
+                    else
+                    {
+                        // if it is not possible to convert load enum default value
+                        il.Emit(OpCodes.Pop);
+                        il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(0));
+                        return;
+                    }
+                }
+
                 Label defaultCase = il.DefineLabel();
                 Label endOfMethod = il.DefineLabel();
-                LocalBuilder switchValue = il.DeclareLocal(fromType);
+                LocalBuilder switchValue = il.DeclareLocal(underlayingToType);
 
                 il.Emit(OpCodes.Stloc, switchValue);
-
-                var enumValues = Enum.GetValues(toType);
 
                 var jumpTable = new Label[enumValues.Length];
                 for (int i = 0; i < jumpTable.Length; i++)
@@ -324,17 +357,6 @@
                 il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(0));
 
                 il.MarkLabel(endOfMethod);
-                return;
-            }
-
-            if (fromType == typeof(string))
-            {
-                var enumParse = typeof(SafeConvert).GetMethod("EnumTryParse", new[] { typeof(string) });
-                if (enumParse != null)
-                {
-                    var enumParseGeneric = enumParse.MakeGenericMethod(toType);
-                    il.EmitCall(OpCodes.Call, enumParseGeneric, null);
-                }
             }
         }
 

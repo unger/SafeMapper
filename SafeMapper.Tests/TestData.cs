@@ -45,6 +45,8 @@
                 new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(string)).Returns("Value2"),
                 new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(string)).Returns("Value3"),
                 
+                new TestCaseData(null, typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+                new TestCaseData(string.Empty, typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
                 new TestCaseData("Undefined", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
                 new TestCaseData("Value1", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
                 new TestCaseData("Value2", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value2),
@@ -60,6 +62,18 @@
                 new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Value1),
                 new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Value2),
                 new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Undefined),
+
+                new TestCaseData((short)-1, typeof(short), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+                new TestCaseData((short)0, typeof(short), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+                new TestCaseData((short)1, typeof(short), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
+
+                new TestCaseData((long)-1, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+                new TestCaseData((long)0, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+                new TestCaseData((long)1, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
+                new TestCaseData(long.MaxValue, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+
+                new TestCaseData(DateTime.MinValue, typeof(DateTime), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+
             };
 
 

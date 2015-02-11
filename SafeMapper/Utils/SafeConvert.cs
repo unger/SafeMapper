@@ -88,6 +88,16 @@
             return neg ? result * -1 : result;
         }
 
+        public static long ToInt64(int value)
+        {
+            return (long)value;
+        }
+
+        public static int ToInt32(short value)
+        {
+            return (int)value;
+        }
+
         public static int ToInt32(long value)
         {
             return (value < int.MinValue || value > int.MaxValue) ? 0 : (int)value;
@@ -148,18 +158,6 @@
             return (result <= int.MaxValue && result >= int.MinValue) ? (int)result : 0;
         }
 
-        public static decimal ToDecimal(string s)
-        {
-            decimal d;
-            return decimal.TryParse(s, NumberStyles.Number, CultureInfo.CurrentCulture, out d) ? d : 0m;
-        }
-
-        public static decimal ToDecimal(string s, IFormatProvider provider)
-        {
-            decimal d;
-            return decimal.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider, out d) ? d : 0m;
-        }
-
         public static double ToDouble(string s)
         {
             double d;
@@ -170,6 +168,28 @@
         {
             double d;
             return double.TryParse(s, NumberStyles.Number, provider, out d) ? d : 0d;
+        }
+
+        public static double ToDouble(decimal d)
+        {
+            return (double)d;
+        }
+
+        public static decimal ToDecimal(int i)
+        {
+            return (decimal)i;
+        }
+
+        public static decimal ToDecimal(string s)
+        {
+            decimal d;
+            return decimal.TryParse(s, NumberStyles.Number, CultureInfo.CurrentCulture, out d) ? d : 0m;
+        }
+
+        public static decimal ToDecimal(string s, IFormatProvider provider)
+        {
+            decimal d;
+            return decimal.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider, out d) ? d : 0m;
         }
 
         public static decimal ToDecimal(double d)
