@@ -68,7 +68,12 @@
             il.Emit(OpCodes.Ldloc, toLocal);
         }
 
-        public static void EmitMemberMap(this ILGenerator il, LocalBuilder fromLocal, LocalBuilder toLocal, MemberWrapper fromMember, MemberWrapper toMember)
+        public static void EmitMemberMap(
+            this ILGenerator il,
+            LocalBuilder fromLocal,
+            LocalBuilder toLocal,
+            MemberWrapper fromMember,
+            MemberWrapper toMember)
         {
             // Load toLocal as parameter for the setter
             il.Emit(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
@@ -175,67 +180,17 @@
                 il.Emit(OpCodes.Ldloc, fromLocal);
             }
 
-            if (fromType.IsEnum)
-            {
-                if (toType == typeof(int))
-                {
-                    return;
-                }
-            }
-
             if (toType.IsEnum)
             {
-                if (fromType == typeof(int) || fromType.IsEnum)
-                {
-                    Label defaultCase = il.DefineLabel();
-                    Label endOfMethod = il.DefineLabel();
-                    LocalBuilder switchValue = il.DeclareLocal(fromType);
+                il.EmitConvertToEnum(fromType, toType);
+                il.MarkLabel(skipConversion);
+                return;
+            }
 
-                    il.Emit(OpCodes.Stloc, switchValue);
-
-                    var enumValues = Enum.GetValues(toType);
-
-                    var jumpTable = new Label[enumValues.Length];
-                    for (int i = 0; i < jumpTable.Length; i++)
-                    {
-                        jumpTable[i] = il.DefineLabel();
-                        il.Emit(OpCodes.Ldloc, switchValue);
-                        il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
-                        il.Emit(OpCodes.Beq, jumpTable[i]);
-                    }
-
-                    // Branch on default case
-                    il.Emit(OpCodes.Br_S, defaultCase);
-
-                    for (int i = 0; i < enumValues.Length; i++)
-                    {
-                        il.MarkLabel(jumpTable[i]);
-                        il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
-                        il.Emit(OpCodes.Br_S, endOfMethod);
-                    }
-
-                    // Default case
-                    il.MarkLabel(defaultCase);
-                    il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(0));
-
-                    il.MarkLabel(endOfMethod);
-                    
-                    return;
-                }
-
-                if (fromType == typeof(string))
-                {
-                    var enumParse = typeof(SafeConvert).GetMethod("EnumTryParse", new[] { typeof(string) });
-                    if (enumParse != null)
-                    {
-                        var enumParseGeneric = enumParse.MakeGenericMethod(toType);
-                        il.EmitCall(OpCodes.Call, enumParseGeneric, null);
-                    }
-
-                    il.MarkLabel(skipConversion);
-
-                    return;
-                }
+            if (fromType.IsEnum)
+            {
+                il.EmitConvertFromEnum(fromType, toType);
+                return;
             }
 
             if (toType == typeof(string) && fromType != typeof(string))
@@ -244,7 +199,10 @@
             }
             else
             {
-                var converter = ReflectionUtils.GetConvertMethod(fromType, toType, new[] { typeof(SafeConvert), typeof(Convert) });
+                var converter = ReflectionUtils.GetConvertMethod(
+                    fromType,
+                    toType,
+                    new[] { typeof(SafeConvert), typeof(Convert) });
                 if (converter != null)
                 {
                     // Load IFormatProvider as second argument
@@ -272,7 +230,8 @@
 
                             if (toArrayMethod == null)
                             {
-                                toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
+                                toArrayMethod =
+                                    typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
                             }
 
                             if (toArrayMethod != null)
@@ -308,6 +267,75 @@
             }
 
             il.MarkLabel(skipConversion);
+        }
+
+        public static void EmitConvertFromEnum(this ILGenerator il, Type fromType, Type toType)
+        {
+            if (!fromType.IsEnum)
+            {
+                throw new ArgumentException("fromType needs to be an enum", "fromType");
+            }
+
+            // TODO: Add handling for all numeric values
+            if (toType == typeof(string))
+            {
+                il.EmitCallToString(fromType);
+            }
+        }
+
+        public static void EmitConvertToEnum(this ILGenerator il, Type fromType, Type toType)
+        {
+            if (!toType.IsEnum)
+            {
+                throw new ArgumentException("toType needs to be an enum", "toType");
+            }
+
+            if (fromType == typeof(int) || fromType.IsEnum)
+            {
+                Label defaultCase = il.DefineLabel();
+                Label endOfMethod = il.DefineLabel();
+                LocalBuilder switchValue = il.DeclareLocal(fromType);
+
+                il.Emit(OpCodes.Stloc, switchValue);
+
+                var enumValues = Enum.GetValues(toType);
+
+                var jumpTable = new Label[enumValues.Length];
+                for (int i = 0; i < jumpTable.Length; i++)
+                {
+                    jumpTable[i] = il.DefineLabel();
+                    il.Emit(OpCodes.Ldloc, switchValue);
+                    il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
+                    il.Emit(OpCodes.Beq, jumpTable[i]);
+                }
+
+                // Branch on default case
+                il.Emit(OpCodes.Br_S, defaultCase);
+
+                for (int i = 0; i < enumValues.Length; i++)
+                {
+                    il.MarkLabel(jumpTable[i]);
+                    il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
+                    il.Emit(OpCodes.Br_S, endOfMethod);
+                }
+
+                // Default case
+                il.MarkLabel(defaultCase);
+                il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(0));
+
+                il.MarkLabel(endOfMethod);
+                return;
+            }
+
+            if (fromType == typeof(string))
+            {
+                var enumParse = typeof(SafeConvert).GetMethod("EnumTryParse", new[] { typeof(string) });
+                if (enumParse != null)
+                {
+                    var enumParseGeneric = enumParse.MakeGenericMethod(toType);
+                    il.EmitCall(OpCodes.Call, enumParseGeneric, null);
+                }
+            }
         }
 
         public static void EmitConvertClass(this ILGenerator il, Type fromType, Type toType)
