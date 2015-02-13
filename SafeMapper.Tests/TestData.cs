@@ -75,7 +75,6 @@
                 new TestCaseData(DateTime.MinValue, typeof(DateTime), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
 
                 // Primitive numeric conversions
-                /*
                 // byte
                 new TestCaseData((byte)1, typeof(byte), typeof(byte)).Returns((byte)1),
                 new TestCaseData((byte)1, typeof(byte), typeof(sbyte)).Returns((sbyte)1),
@@ -107,7 +106,7 @@
                 new TestCaseData((sbyte)0, typeof(sbyte), typeof(bool)).Returns(false),
                 new TestCaseData((sbyte)1, typeof(sbyte), typeof(bool)).Returns(true),
                 new TestCaseData((sbyte)65, typeof(sbyte), typeof(char)).Returns('A'),
-
+                
                 // short
                 new TestCaseData((short)1, typeof(short), typeof(byte)).Returns((byte)1),
                 new TestCaseData((short)1, typeof(short), typeof(sbyte)).Returns((sbyte)1),
@@ -124,7 +123,7 @@
                 new TestCaseData((short)1, typeof(short), typeof(bool)).Returns(true),
                 new TestCaseData((short)65, typeof(short), typeof(char)).Returns('A'),
 
-                // short
+                // ushort
                 new TestCaseData((ushort)1, typeof(ushort), typeof(byte)).Returns((byte)1),
                 new TestCaseData((ushort)1, typeof(ushort), typeof(sbyte)).Returns((sbyte)1),
                 new TestCaseData((ushort)1, typeof(ushort), typeof(short)).Returns((short)1),
@@ -139,7 +138,6 @@
                 new TestCaseData((ushort)0, typeof(ushort), typeof(bool)).Returns(false),
                 new TestCaseData((ushort)1, typeof(ushort), typeof(bool)).Returns(true),
                 new TestCaseData((ushort)65, typeof(ushort), typeof(char)).Returns('A'),
-                */
 
                 // int
                 new TestCaseData((int)1, typeof(int), typeof(byte)).Returns((byte)1),
@@ -156,7 +154,7 @@
                 new TestCaseData((int)0, typeof(int), typeof(bool)).Returns(false),
                 new TestCaseData((int)1, typeof(int), typeof(bool)).Returns(true),
                 new TestCaseData((int)65, typeof(int), typeof(char)).Returns('A'),
-                /*
+                
                 // uint
                 new TestCaseData((uint)1, typeof(uint), typeof(byte)).Returns((byte)1),
                 new TestCaseData((uint)1, typeof(uint), typeof(sbyte)).Returns((sbyte)1),
@@ -204,7 +202,7 @@
                 new TestCaseData((ulong)0, typeof(ulong), typeof(bool)).Returns(false),
                 new TestCaseData((ulong)1, typeof(ulong), typeof(bool)).Returns(true),
                 new TestCaseData((ulong)65, typeof(ulong), typeof(char)).Returns('A'),
-
+                
                 // decimal
                 new TestCaseData((decimal)1, typeof(decimal), typeof(byte)).Returns((byte)1),
                 new TestCaseData((decimal)1, typeof(decimal), typeof(sbyte)).Returns((sbyte)1),
@@ -220,7 +218,7 @@
                 new TestCaseData((decimal)0, typeof(decimal), typeof(bool)).Returns(false),
                 new TestCaseData((decimal)1, typeof(decimal), typeof(bool)).Returns(true),
                 new TestCaseData((decimal)65, typeof(decimal), typeof(char)).Returns('A'),
-
+                /*
                 // float
                 new TestCaseData((float)1, typeof(float), typeof(byte)).Returns((byte)1),
                 new TestCaseData((float)1, typeof(float), typeof(sbyte)).Returns((sbyte)1),
@@ -252,7 +250,7 @@
                 new TestCaseData((double)0, typeof(double), typeof(bool)).Returns(false),
                 new TestCaseData((double)1, typeof(double), typeof(bool)).Returns(true),
                 new TestCaseData((double)65, typeof(double), typeof(char)).Returns('A'),
-
+                
                 // bool true
                 new TestCaseData(true, typeof(bool), typeof(byte)).Returns((byte)1),
                 new TestCaseData(true, typeof(bool), typeof(sbyte)).Returns((sbyte)1),
@@ -282,7 +280,7 @@
                 new TestCaseData(false, typeof(bool), typeof(double)).Returns(0d),
                 new TestCaseData(false, typeof(bool), typeof(bool)).Returns(false),
                 new TestCaseData(false, typeof(bool), typeof(char)).Returns('0'),
-
+                
                 // char
                 new TestCaseData('A', typeof(char), typeof(byte)).Returns((byte)65),
                 new TestCaseData('A', typeof(char), typeof(sbyte)).Returns((sbyte)65),
