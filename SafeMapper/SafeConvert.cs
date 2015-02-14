@@ -67,6 +67,11 @@
             return (value < 0) || (value > byte.MaxValue) ? (byte)0 : (byte)value;
         }
 
+        public static byte ToByte(bool value)
+        {
+            return value ? (byte)1 : (byte)0;
+        }
+
         #endregion
 
         #region ToSByte
@@ -120,6 +125,11 @@
         public static sbyte ToSByte(decimal value)
         {
             return (value < sbyte.MinValue || value > sbyte.MaxValue) ? (sbyte)0 : (sbyte)value;
+        }
+
+        public static sbyte ToSByte(bool value)
+        {
+            return value ? (sbyte)1 : (sbyte)0;
         }
 
         #endregion
@@ -177,6 +187,11 @@
             return (value < short.MinValue || value > short.MaxValue) ? (short)0 : (short)value;
         }
 
+        public static short ToInt16(bool value)
+        {
+            return value ? (short)1 : (short)0;
+        }
+
         #endregion
 
         #region ToUInt16
@@ -232,9 +247,20 @@
             return (value < 0 || value > ushort.MaxValue) ? (ushort)0 : (ushort)value;
         }
 
+        public static ushort ToUInt16(bool value)
+        {
+            return value ? (ushort)1 : (ushort)0;
+        }
+
         #endregion
 
         #region ToInt32
+
+        public static int ToInt32(string value)
+        {
+            long result = ToInt64(value);
+            return (result <= int.MaxValue && result >= int.MinValue) ? (int)result : 0;
+        }
 
         public static int ToInt32(byte value)
         {
@@ -278,47 +304,17 @@
 
         public static int ToInt32(double value)
         {
-            if (value >= 0)
-            {
-                if (value < 2147483647.5)
-                {
-                    int result = (int)value;
-                    double dif = value - result;
-                    if (dif > 0.5 || (dif == 0.5 && (result & 1) != 0))
-                    {
-                        result++;
-                    }
-
-                    return result;
-                }
-            }
-            else
-            {
-                if (value >= -2147483648.5)
-                {
-                    int result = (int)value;
-                    double dif = value - result;
-                    if (dif < -0.5 || (dif == -0.5 && (result & 1) != 0))
-                    {
-                        result--;
-                    }
-
-                    return result;
-                }
-            }
-
-            return 0;
+            return (value < int.MinValue || value > int.MaxValue) ? 0 : (int)value;
         }
 
         public static int ToInt32(decimal value)
         {
-            return (value < int.MinValue || value > int.MaxValue) ? 0 : Convert.ToInt32(value);
+            return (value < int.MinValue || value > int.MaxValue) ? 0 : (int)value;
         }
 
-        public static int ToInt32(string value)
+        public static int ToInt32(bool value)
         {
-            long result = ToInt64(value);
-            return (result <= int.MaxValue && result >= int.MinValue) ? (int)result : 0;
+            return value ? 1 : 0;
         }
 
         #endregion
@@ -374,6 +370,11 @@
         public static uint ToUInt32(decimal value)
         {
             return (value < 0 || value > uint.MaxValue) ? 0 : (uint)value;
+        }
+
+        public static uint ToUInt32(bool value)
+        {
+            return value ? (uint)1 : 0;
         }
 
         #endregion
@@ -450,6 +451,11 @@
             return value < long.MinValue || value > long.MaxValue ? 0 : (long)value;
         }
 
+        public static long ToInt64(bool value)
+        {
+            return value ? 1 : 0;
+        }
+
         #endregion
 
         #region ToUInt64
@@ -523,6 +529,11 @@
             return (value < 0) ? 0 : (ulong)value;
         }
 
+        public static ulong ToUInt64(bool value)
+        {
+            return value ? (ulong)1 : 0;
+        }
+
         #endregion
 
         #region ToSingle
@@ -592,6 +603,11 @@
         public static float ToSingle(decimal value)
         {
             return (value < decimal.MinValue || value > decimal.MaxValue) ? 0 : (float)value;
+        }
+
+        public static float ToSingle(bool value)
+        {
+            return value ? 1 : 0;
         }
 
         #endregion
@@ -664,6 +680,11 @@
         public static double ToDouble(decimal value)
         {
             return (double)value;
+        }
+
+        public static double ToDouble(bool value)
+        {
+            return value ? 1 : 0;
         }
 
         #endregion
@@ -740,6 +761,10 @@
                              : d > MaxDecimalAsDouble ? 0m : d < MinDecimalAsDouble ? 0m : (decimal)d;
         }
 
+        public static decimal ToDecimal(bool value)
+        {
+            return value ? 1 : 0;
+        }
 
         #endregion
 
@@ -853,6 +878,11 @@
         public static char ToChar(decimal value)
         {
             return (value < 0 || value > char.MaxValue) ? (char)0 : (char)value;
+        }
+
+        public static char ToChar(bool value)
+        {
+            return value ? '1' : '0';
         }
 
         #endregion

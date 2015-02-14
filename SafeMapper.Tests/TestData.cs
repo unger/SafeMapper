@@ -250,7 +250,7 @@
                 new TestCaseData((double)0, typeof(double), typeof(bool)).Returns(false),
                 new TestCaseData((double)1, typeof(double), typeof(bool)).Returns(true),
                 new TestCaseData((double)65, typeof(double), typeof(char)).Returns('A'),
-                
+                */
                 // bool true
                 new TestCaseData(true, typeof(bool), typeof(byte)).Returns((byte)1),
                 new TestCaseData(true, typeof(bool), typeof(sbyte)).Returns((sbyte)1),
@@ -265,7 +265,7 @@
                 new TestCaseData(true, typeof(bool), typeof(double)).Returns(1d),
                 new TestCaseData(true, typeof(bool), typeof(bool)).Returns(true),
                 new TestCaseData(true, typeof(bool), typeof(char)).Returns('1'),
-
+                
                 // bool false
                 new TestCaseData(false, typeof(bool), typeof(byte)).Returns((byte)0),
                 new TestCaseData(false, typeof(bool), typeof(sbyte)).Returns((sbyte)0),
@@ -280,7 +280,7 @@
                 new TestCaseData(false, typeof(bool), typeof(double)).Returns(0d),
                 new TestCaseData(false, typeof(bool), typeof(bool)).Returns(false),
                 new TestCaseData(false, typeof(bool), typeof(char)).Returns('0'),
-                
+                /*
                 // char
                 new TestCaseData('A', typeof(char), typeof(byte)).Returns((byte)65),
                 new TestCaseData('A', typeof(char), typeof(sbyte)).Returns((sbyte)65),
@@ -389,23 +389,6 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] DecimalToDecimalData =
-            {
-                new TestCaseData(0m).Returns(0m),
-                new TestCaseData(1.000m).Returns(1.000m),
-                new TestCaseData(1000m).Returns(1000m),
-                new TestCaseData(decimal.MaxValue).Returns(decimal.MaxValue),
-                new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
-            };
-
-        public TestCaseData[] DecimalToIntData =
-            {
-                new TestCaseData(decimal.MaxValue).Returns(0),
-                new TestCaseData(decimal.MinValue).Returns(0),
-                new TestCaseData(123.5m).Returns(124),
-                new TestCaseData(123.49m).Returns(123),
-            };
-
         public TestCaseData[] DecimalToStringData =
             {
                 new TestCaseData(decimal.MaxValue).Returns("79228162514264337593543950335"),
@@ -416,6 +399,35 @@
                 new TestCaseData(1.00m).Returns("1.00"),
                 new TestCaseData(1000m).Returns("1000"),
                 new TestCaseData(1000000m).Returns("1000000"),
+            };
+
+        public TestCaseData[] DecimalToShortData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(0),
+                new TestCaseData(decimal.MinValue).Returns(0),
+                new TestCaseData((decimal)short.MaxValue).Returns(short.MaxValue),
+                new TestCaseData((decimal)short.MinValue).Returns(short.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
+        public TestCaseData[] DecimalToIntData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(0),
+                new TestCaseData(decimal.MinValue).Returns(0),
+                new TestCaseData((decimal)int.MaxValue).Returns(int.MaxValue),
+                new TestCaseData((decimal)int.MinValue).Returns(int.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
+        public TestCaseData[] DecimalToDecimalData =
+            {
+                new TestCaseData(0m).Returns(0m),
+                new TestCaseData(1.000m).Returns(1.000m),
+                new TestCaseData(1000m).Returns(1000m),
+                new TestCaseData(decimal.MaxValue).Returns(decimal.MaxValue),
+                new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
             };
 
         public TestCaseData[] DecimalToDoubleData =
@@ -438,7 +450,11 @@
             {
                 new TestCaseData(double.MaxValue).Returns(0),
                 new TestCaseData(double.MinValue).Returns(0),
-                new TestCaseData(123.5d).Returns(124),
+                new TestCaseData((double)int.MaxValue).Returns(int.MaxValue),
+                new TestCaseData((double)int.MinValue).Returns(int.MinValue),
+                new TestCaseData((double)int.MaxValue + 1).Returns(0),
+                new TestCaseData((double)int.MinValue - 1).Returns(0),
+                new TestCaseData(123.5d).Returns(123),
                 new TestCaseData(123.49d).Returns(123),
             };
 

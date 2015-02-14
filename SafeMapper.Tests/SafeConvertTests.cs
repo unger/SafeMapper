@@ -1,7 +1,5 @@
 ﻿namespace SafeMapper.Tests
 {
-    using System;
-
     using NUnit.Framework;
 
     [TestFixture]
@@ -52,6 +50,12 @@
         [TestCase(ulong.MinValue, Result = (short)0)]
         [TestCase((ulong)short.MaxValue, Result = short.MaxValue)]
         public int ToInt16_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToShortData")]
+        public int ToInt16_FromDecimal(decimal input)
         {
             return SafeConvert.ToInt16(input);
         }
@@ -124,17 +128,22 @@
 
         #endregion
 
-
         #region ToInt32
 
-        [TestCaseSource(typeof(TestData), "LongToIntData")]
-        public int ToInt32_FromLong(long input)
+        [TestCaseSource(typeof(TestData), "StringToIntData")]
+        public int ToInt32_FromString(string input)
         {
             return SafeConvert.ToInt32(input);
         }
 
         [TestCaseSource(typeof(TestData), "UIntToIntData")]
         public int ToInt32_FromUInt(uint input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "LongToIntData")]
+        public int ToInt32_FromLong(long input)
         {
             return SafeConvert.ToInt32(input);
         }
@@ -147,12 +156,6 @@
 
         [TestCaseSource(typeof(TestData), "DoubleToIntData")]
         public int ToInt32_FromDouble(double input)
-        {
-            return SafeConvert.ToInt32(input);
-        }
-
-        [TestCaseSource(typeof(TestData), "StringToIntData")]
-        public int ToInt32_FromString(string input)
         {
             return SafeConvert.ToInt32(input);
         }
