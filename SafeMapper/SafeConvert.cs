@@ -19,7 +19,7 @@
         public static byte ToByte(string value)
         {
             ulong result = ToUInt64(value);
-            return (result > byte.MaxValue) ? (byte)result : (byte)0;
+            return (result > byte.MaxValue) ? (byte)0 : (byte)result;
         }
 
         public static byte ToByte(byte value)

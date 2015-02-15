@@ -5,6 +5,55 @@
     [TestFixture]
     public class SafeConvertTests
     {
+        #region ToByte
+
+        [TestCase("255", Result = byte.MaxValue)]
+        [TestCase("0", Result = byte.MinValue)]
+        [TestCase("256", Result = 0)]
+        [TestCase("-1", Result = 0)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public byte ToByte_FromString(string input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (byte)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (byte)0)]
+        public byte ToByte_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase(byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = byte.MinValue)]
+        public byte ToByte_FromByte(byte input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((short)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((short)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(short.MaxValue, Result = (byte)0)]
+        [TestCase(short.MinValue, Result = (byte)0)]
+        [TestCase(byte.MaxValue + 1, Result = (byte)0)]
+        [TestCase(byte.MinValue - 1, Result = (byte)0)]
+        public byte ToByte_FromInt16(short input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((ushort)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((ushort)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(ushort.MaxValue, Result = (byte)0)]
+        [TestCase((ushort)(byte.MaxValue + 1), Result = (byte)0)]
+        public byte ToByte_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        #endregion
+
         #region ToInt16
 
         [TestCase(byte.MaxValue, Result = (short)byte.MaxValue)]

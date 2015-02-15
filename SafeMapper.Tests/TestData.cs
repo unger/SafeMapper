@@ -521,7 +521,6 @@
 
         public TestCaseData[] UIntToIntData =
             {
-                new TestCaseData((uint)0).Returns(0),
                 new TestCaseData(uint.MaxValue).Returns(0),
                 new TestCaseData((uint)int.MaxValue).Returns(int.MaxValue),
                 new TestCaseData(uint.MinValue).Returns(0),
@@ -537,7 +536,6 @@
             {
                 new TestCaseData(Guid.Empty).Returns("00000000-0000-0000-0000-000000000000"),
                 new TestCaseData(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")).Returns("0cb6c00f-fc44-484f-8ddd-823709b74601"),
-                new TestCaseData(new Guid("0cb6c00ffc44484f8ddd823709b74601")).Returns("0cb6c00f-fc44-484f-8ddd-823709b74601"),
             };
 
         /************************************************************************/
