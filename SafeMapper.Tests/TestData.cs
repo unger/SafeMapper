@@ -218,7 +218,7 @@
                 new TestCaseData((decimal)0, typeof(decimal), typeof(bool)).Returns(false),
                 new TestCaseData((decimal)1, typeof(decimal), typeof(bool)).Returns(true),
                 new TestCaseData((decimal)65, typeof(decimal), typeof(char)).Returns('A'),
-                /*
+                
                 // float
                 new TestCaseData((float)1, typeof(float), typeof(byte)).Returns((byte)1),
                 new TestCaseData((float)1, typeof(float), typeof(sbyte)).Returns((sbyte)1),
@@ -250,7 +250,7 @@
                 new TestCaseData((double)0, typeof(double), typeof(bool)).Returns(false),
                 new TestCaseData((double)1, typeof(double), typeof(bool)).Returns(true),
                 new TestCaseData((double)65, typeof(double), typeof(char)).Returns('A'),
-                */
+                
                 // bool true
                 new TestCaseData(true, typeof(bool), typeof(byte)).Returns((byte)1),
                 new TestCaseData(true, typeof(bool), typeof(sbyte)).Returns((sbyte)1),
@@ -280,7 +280,7 @@
                 new TestCaseData(false, typeof(bool), typeof(double)).Returns(0d),
                 new TestCaseData(false, typeof(bool), typeof(bool)).Returns(false),
                 new TestCaseData(false, typeof(bool), typeof(char)).Returns('0'),
-                /*
+                
                 // char
                 new TestCaseData('A', typeof(char), typeof(byte)).Returns((byte)65),
                 new TestCaseData('A', typeof(char), typeof(sbyte)).Returns((sbyte)65),
@@ -296,7 +296,7 @@
                 new TestCaseData('A', typeof(char), typeof(bool)).Returns(true),
                 new TestCaseData('0', typeof(char), typeof(bool)).Returns(false),
                 new TestCaseData('1', typeof(char), typeof(bool)).Returns(true),
-                new TestCaseData('A', typeof(char), typeof(char)).Returns('A'),*/
+                new TestCaseData('A', typeof(char), typeof(char)).Returns('A'),
 
             };
 
