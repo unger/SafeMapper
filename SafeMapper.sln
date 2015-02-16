@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{75B948
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests.Performance", "SafeMapper.Tests.Performance\SafeMapper.Tests.Performance.csproj", "{521BB35C-2196-435D-B181-9172E5AE5F78}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{955AA075-D841-4BB9-9487-DAC42EEBCECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{955AA075-D841-4BB9-9487-DAC42EEBCECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{955AA075-D841-4BB9-9487-DAC42EEBCECC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{521BB35C-2196-435D-B181-9172E5AE5F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{521BB35C-2196-435D-B181-9172E5AE5F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{521BB35C-2196-435D-B181-9172E5AE5F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{521BB35C-2196-435D-B181-9172E5AE5F78}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
