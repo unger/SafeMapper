@@ -14,27 +14,45 @@
     public class PerformanceTests
     {
         [Test]
-        public void IntToStringPerformance()
+        public void IntToStringPerformance_ComparedWithNative()
         {
             var input = int.MaxValue;
-            var output = this.MeasurePerformance<int, string>(() => Convert.ToString(input), input);
+            var difference = this.ComparePerformance<int, string>(() => Convert.ToString(input), input);
 
-            Assert.LessOrEqual(output[1], 0d);
-            Assert.LessOrEqual(output[0], 0.15d);
+            Assert.LessOrEqual(difference, 0d);
         }
 
         [Test]
-        public void StringToIntPerformance()
+        public void IntToStringPerformance_ComparedWithEmitMapper()
+        {
+            var input = int.MaxValue;
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<int, string>();
+            var difference = this.ComparePerformance<int, string>(() => emitMapper.Map(input), input);
+
+            Assert.LessOrEqual(difference, 0d);
+        }
+
+        [Test]
+        public void StringToIntPerformance_ComparedWithNative()
         {
             var input = "2147483647";
-            var output = this.MeasurePerformance<string, int>(() => Convert.ToInt32(input), input);
+            var difference = this.ComparePerformance<string, int>(() => Convert.ToInt32(input), input);
 
-            Assert.LessOrEqual(output[1], 0d);
-            Assert.LessOrEqual(output[0], 0d);
+            Assert.LessOrEqual(difference, 0d);
         }
 
         [Test]
-        public void PersonStringDtoToPerson()
+        public void StringToIntPerformance_ComparedWithEmitMapper()
+        {
+            var input = "2147483647";
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<string, int>();
+            var difference = this.ComparePerformance<string, int>(() => emitMapper.Map(input), input);
+
+            Assert.LessOrEqual(difference, 0d);
+        }
+
+        [Test]
+        public void PersonStringDtoToPerson_ComparedWithNative()
         {
             var input = new PersonStringDto
             {
@@ -44,7 +62,7 @@
                 Length = 1.85m.ToString(CultureInfo.CurrentCulture),
                 BirthDate = "1977-03-04"
             };
-            var output = this.MeasurePerformance<PersonStringDto, Person>(
+            var difference = this.ComparePerformance<PersonStringDto, Person>(
                 () =>
                 {
                     var personDto = new Person();
@@ -56,12 +74,28 @@
                 },
                 input);
 
-            Assert.LessOrEqual(output[1], 0d);
-            Assert.LessOrEqual(output[0], 0d);
+            Assert.LessOrEqual(difference, 0d);
         }
 
         [Test]
-        public void PersonToPersonStringDto()
+        public void PersonStringDtoToPerson_ComparedWithEmitMapper()
+        {
+            var input = new PersonStringDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Magnus Unger",
+                Age = "38",
+                Length = 1.85m.ToString(CultureInfo.CurrentCulture),
+                BirthDate = "1977-03-04"
+            };
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<PersonStringDto, Person>();
+            var difference = this.ComparePerformance<PersonStringDto, Person>(() => emitMapper.Map(input), input);
+
+            Assert.LessOrEqual(difference, 0d);
+        }
+
+        [Test]
+        public void PersonToPersonStringDto_ComparedWithNative()
         {
             var input = new Person
             {
@@ -71,7 +105,7 @@
                 Length = 1.85m,
                 BirthDate = new DateTime(1977, 03, 04)
             };
-            var output = this.MeasurePerformance<Person, PersonStringDto>(
+            var difference = this.ComparePerformance<Person, PersonStringDto>(
                 () =>
                 {
                     var personDto = new PersonStringDto();
@@ -83,35 +117,34 @@
                 },
                 input);
 
-
-            Assert.LessOrEqual(output[1], 0.10d);
-            Assert.LessOrEqual(output[0], 0.15d);
+            Assert.LessOrEqual(difference, 0d);
         }
 
-        private double[] MeasurePerformance<TFrom, TTo>(Action nativeAction, TFrom input, int iterations = 100000)
+        [Test]
+        public void PersonToPersonStringDto_ComparedWithEmitMapper()
+        {
+            var input = new Person
+            {
+                Id = Guid.NewGuid(),
+                Name = "Magnus Unger",
+                Age = 38,
+                Length = 1.85m,
+                BirthDate = new DateTime(1977, 03, 04)
+            };
+            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<Person, PersonStringDto>();
+            var difference = this.ComparePerformance<Person, PersonStringDto>(() => emitMapper.Map(input), input);
+
+            Assert.LessOrEqual(difference, 0d);
+        }
+
+        private double ComparePerformance<TFrom, TTo>(Action compareAction, TFrom input, int iterations = 100000)
         {
             var safeMapConverter = SafeMap.GetConverter<TFrom, TTo>();
-            var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>();
 
-            // Warmup
-            Profiler.Profile(100, () => safeMapConverter(input));
-            Profiler.Profile(100, nativeAction);
-            Profiler.Profile(100, () => emitMapper.Map(input));
+            var compareTime = Clock.BenchmarkTime(compareAction, iterations);
+            var safeMapperTime = Clock.BenchmarkTime(() => safeMapConverter(input), iterations);
 
-            var safemapperTicks = Profiler.Profile(100000, () => safeMapConverter(input));
-            var nativeTicks = Profiler.Profile(100000, nativeAction);
-            var emitMapperTicks = Profiler.Profile(100000, () => emitMapper.Map(input));
-
-            if (safemapperTicks == -1 || nativeTicks == -1 || emitMapperTicks == -1)
-            {
-                throw new Exception("invalid conversion");
-            } 
-
-            return new[]
-                       {
-                           (double)(safemapperTicks - nativeTicks) / nativeTicks,
-                           (double)(safemapperTicks - emitMapperTicks) / emitMapperTicks
-                       };
+            return (safeMapperTime - compareTime) / compareTime;
         }
     }
 }
