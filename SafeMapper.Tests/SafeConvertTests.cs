@@ -18,16 +18,16 @@
             return SafeConvert.ToByte(input);
         }
 
-        [TestCase(sbyte.MaxValue, Result = (byte)sbyte.MaxValue)]
-        [TestCase(sbyte.MinValue, Result = (byte)0)]
-        public byte ToByte_FromSByte(sbyte input)
+        [TestCase(byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = byte.MinValue)]
+        public byte ToByte_FromByte(byte input)
         {
             return SafeConvert.ToByte(input);
         }
 
-        [TestCase(byte.MaxValue, Result = byte.MaxValue)]
-        [TestCase(byte.MinValue, Result = byte.MinValue)]
-        public byte ToByte_FromByte(byte input)
+        [TestCase(sbyte.MaxValue, Result = (byte)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (byte)0)]
+        public byte ToByte_FromSByte(sbyte input)
         {
             return SafeConvert.ToByte(input);
         }
@@ -48,6 +48,88 @@
         [TestCase(ushort.MaxValue, Result = (byte)0)]
         [TestCase((ushort)(byte.MaxValue + 1), Result = (byte)0)]
         public byte ToByte_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((int)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((int)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(int.MaxValue, Result = (byte)0)]
+        [TestCase(int.MinValue, Result = (byte)0)]
+        [TestCase(byte.MaxValue + 1, Result = (byte)0)]
+        [TestCase(byte.MinValue - 1, Result = (byte)0)]
+        public byte ToByte_FromInt32(int input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((uint)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((uint)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(uint.MaxValue, Result = (byte)0)]
+        [TestCase((uint)(byte.MaxValue + 1), Result = (byte)0)]
+        public byte ToByte_FromUInt32(uint input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((long)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((long)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(long.MaxValue, Result = (byte)0)]
+        [TestCase(long.MinValue, Result = (byte)0)]
+        [TestCase(byte.MaxValue + 1, Result = (byte)0)]
+        [TestCase(byte.MinValue - 1, Result = (byte)0)]
+        public byte ToByte_FromInt64(long input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((ulong)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((ulong)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(ulong.MaxValue, Result = (byte)0)]
+        [TestCase((ulong)(byte.MaxValue + 1), Result = (byte)0)]
+        public byte ToByte_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((float)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((float)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(float.MaxValue, Result = (byte)0)]
+        [TestCase(float.MinValue, Result = (byte)0)]
+        [TestCase(byte.MaxValue + 1, Result = (byte)0)]
+        [TestCase(byte.MinValue - 1, Result = (byte)0)]
+        [TestCase(byte.MaxValue - 1.5f, Result = byte.MaxValue - 2)]
+        [TestCase(byte.MinValue + 1.5f, Result = byte.MinValue + 1)]
+        public byte ToByte_FromSingle(float input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((double)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((double)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(double.MaxValue, Result = (byte)0)]
+        [TestCase(double.MinValue, Result = (byte)0)]
+        [TestCase(byte.MaxValue + 1, Result = (byte)0)]
+        [TestCase(byte.MinValue - 1, Result = (byte)0)]
+        [TestCase(byte.MaxValue - 1.5f, Result = byte.MaxValue - 2)]
+        [TestCase(byte.MinValue + 1.5f, Result = byte.MinValue + 1)]
+        public byte ToByte_FromDouble(double input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public byte ToByte_FromBoolean(bool input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
+        [TestCase((char)byte.MaxValue, Result = byte.MaxValue)]
+        [TestCase((char)byte.MinValue, Result = byte.MinValue)]
+        [TestCase(char.MaxValue, Result = (byte)0)]
+        [TestCase((char)(byte.MaxValue + 1), Result = (byte)0)]
+        public byte ToByte_FromChar(char input)
         {
             return SafeConvert.ToByte(input);
         }
