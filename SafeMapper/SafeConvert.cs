@@ -3,6 +3,7 @@
     using System;
     using System.Data.SqlTypes;
     using System.Globalization;
+    using System.Linq;
 
     public class SafeConvert
     {
@@ -109,7 +110,7 @@
 
         public static sbyte ToSByte(short value)
         {
-            return (value < 0 || value > sbyte.MaxValue) ? (sbyte)0 : (sbyte)value;
+            return (value < sbyte.MinValue || value > sbyte.MaxValue) ? (sbyte)0 : (sbyte)value;
         }
 
         public static sbyte ToSByte(ushort value)
@@ -1090,6 +1091,30 @@
             }
 
             return (TEnum)Enum.GetValues(typeof(TEnum)).GetValue(0);
+        }
+
+        #endregion
+
+        #region Other
+
+        public static char[] ToCharArray(string value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return value.ToArray();
+        }
+
+        public static string ToString(char[] value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return new string(value);
         }
 
         #endregion

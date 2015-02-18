@@ -1,5 +1,7 @@
 ﻿namespace SafeMapper.Tests
 {
+    using System;
+
     using NUnit.Framework;
 
     [TestFixture]
@@ -118,6 +120,12 @@
             return SafeConvert.ToByte(input);
         }
 
+        [TestCaseSource(typeof(TestData), "DecimalToByteData")]
+        public byte ToByte_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToByte(input);
+        }
+
         [TestCase(false, Result = 0)]
         [TestCase(true, Result = 1)]
         public byte ToByte_FromBoolean(bool input)
@@ -132,6 +140,140 @@
         public byte ToByte_FromChar(char input)
         {
             return SafeConvert.ToByte(input);
+        }
+
+        #endregion
+
+        #region ToSByte
+
+        [TestCase("127", Result = sbyte.MaxValue)]
+        [TestCase("-128", Result = sbyte.MinValue)]
+        [TestCase("128", Result = 0)]
+        [TestCase("-129", Result = 0)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public sbyte ToSByte_FromString(string input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase(byte.MaxValue, Result = 0)]
+        [TestCase(byte.MinValue, Result = 0)]
+        [TestCase((byte)127, Result = sbyte.MaxValue)]
+        public sbyte ToSByte_FromByte(byte input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = sbyte.MinValue)]
+        public sbyte ToSByte_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((short)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase((short)sbyte.MinValue, Result = sbyte.MinValue)]
+        [TestCase(short.MaxValue, Result = (sbyte)0)]
+        [TestCase(short.MinValue, Result = (sbyte)0)]
+        [TestCase(sbyte.MaxValue + 1, Result = (sbyte)0)]
+        [TestCase(sbyte.MinValue - 1, Result = (sbyte)0)]
+        public sbyte ToSByte_FromInt16(short input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((ushort)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase(ushort.MaxValue, Result = (sbyte)0)]
+        [TestCase((ushort)(sbyte.MaxValue + 1), Result = (sbyte)0)]
+        public sbyte ToSByte_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((int)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase((int)sbyte.MinValue, Result = sbyte.MinValue)]
+        [TestCase(int.MaxValue, Result = (sbyte)0)]
+        [TestCase(int.MinValue, Result = (sbyte)0)]
+        [TestCase(sbyte.MaxValue + 1, Result = (sbyte)0)]
+        [TestCase(sbyte.MinValue - 1, Result = (sbyte)0)]
+        public sbyte ToSByte_FromInt32(int input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((uint)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase(uint.MaxValue, Result = (sbyte)0)]
+        [TestCase((uint)(sbyte.MaxValue + 1), Result = (sbyte)0)]
+        public sbyte ToSByte_FromUInt32(uint input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((long)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase((long)sbyte.MinValue, Result = sbyte.MinValue)]
+        [TestCase(long.MaxValue, Result = (sbyte)0)]
+        [TestCase(long.MinValue, Result = (sbyte)0)]
+        [TestCase(sbyte.MaxValue + 1, Result = (sbyte)0)]
+        [TestCase(sbyte.MinValue - 1, Result = (sbyte)0)]
+        public sbyte ToSByte_FromInt64(long input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((ulong)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase(ulong.MaxValue, Result = (sbyte)0)]
+        [TestCase((ulong)(sbyte.MaxValue + 1), Result = (sbyte)0)]
+        public sbyte ToSByte_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((float)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase((float)sbyte.MinValue, Result = sbyte.MinValue)]
+        [TestCase(float.MaxValue, Result = (sbyte)0)]
+        [TestCase(float.MinValue, Result = (sbyte)0)]
+        [TestCase(sbyte.MaxValue + 1, Result = (sbyte)0)]
+        [TestCase(sbyte.MinValue - 1, Result = (sbyte)0)]
+        [TestCase(sbyte.MaxValue - 1.5f, Result = sbyte.MaxValue - 2)]
+        [TestCase(sbyte.MinValue + 1.5f, Result = sbyte.MinValue + 2)]
+        public sbyte ToSByte_FromSingle(float input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((double)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase((double)sbyte.MinValue, Result = sbyte.MinValue)]
+        [TestCase(double.MaxValue, Result = (sbyte)0)]
+        [TestCase(double.MinValue, Result = (sbyte)0)]
+        [TestCase(sbyte.MaxValue + 1, Result = (sbyte)0)]
+        [TestCase(sbyte.MinValue - 1, Result = (sbyte)0)]
+        [TestCase(sbyte.MaxValue - 1.5f, Result = sbyte.MaxValue - 2)]
+        [TestCase(sbyte.MinValue + 1.5f, Result = sbyte.MinValue + 2)]
+        public sbyte ToSByte_FromDouble(double input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToSByteData")]
+        public sbyte ToSByte_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase(false, Result = (sbyte)0)]
+        [TestCase(true, Result = (sbyte)1)]
+        public sbyte ToSByte_FromBoolean(bool input)
+        {
+            return SafeConvert.ToSByte(input);
+        }
+
+        [TestCase((char)sbyte.MaxValue, Result = sbyte.MaxValue)]
+        [TestCase(char.MaxValue, Result = (sbyte)0)]
+        [TestCase((char)(sbyte.MaxValue + 1), Result = (sbyte)0)]
+        public sbyte ToSByte_FromChar(char input)
+        {
+            return SafeConvert.ToSByte(input);
         }
 
         #endregion
@@ -185,8 +327,8 @@
             return SafeConvert.ToInt16(input);
         }
 
-        [TestCaseSource(typeof(TestData), "DecimalToShortData")]
-        public int ToInt16_FromDecimal(decimal input)
+        [TestCaseSource(typeof(TestData), "DecimalToInt16Data")]
+        public short ToInt16_FromDecimal(decimal input)
         {
             return SafeConvert.ToInt16(input);
         }
@@ -257,6 +399,12 @@
             return SafeConvert.ToUInt16(input);
         }
 
+        [TestCaseSource(typeof(TestData), "DecimalToUInt16Data")]
+        public ushort ToUInt16_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToUInt16(input);
+        }
+
         #endregion
 
         #region ToInt32
@@ -274,12 +422,12 @@
         }
 
         [TestCaseSource(typeof(TestData), "LongToIntData")]
-        public int ToInt32_FromLong(long input)
+        public int ToInt32_FromInt64(long input)
         {
             return SafeConvert.ToInt32(input);
         }
 
-        [TestCaseSource(typeof(TestData), "DecimalToIntData")]
+        [TestCaseSource(typeof(TestData), "DecimalToInt32Data")]
         public int ToInt32_FromDecimal(decimal input)
         {
             return SafeConvert.ToInt32(input);
@@ -289,6 +437,37 @@
         public int ToInt32_FromDouble(double input)
         {
             return SafeConvert.ToInt32(input);
+        }
+
+        #endregion
+
+        #region ToUInt32
+
+
+
+        #endregion
+
+
+        #region ToString
+
+        [TestCase(null, Result = null)]
+        [TestCase(new char[0], Result = "")]
+        [TestCase(new[] { 'F', 'o', 'o' }, Result = "Foo")]
+        public string ToString_FromCharArray(char[] input)
+        {
+            return SafeConvert.ToString(input);
+        }
+
+        #endregion
+
+        #region Other
+
+        [TestCase(null, Result = null)]
+        [TestCase("", Result = new char[0])]
+        [TestCase("Foo", Result = new[] { 'F', 'o', 'o' })]
+        public char[] ToCharArray_FromString(string input)
+        {
+            return SafeConvert.ToCharArray(input);
         }
 
         #endregion

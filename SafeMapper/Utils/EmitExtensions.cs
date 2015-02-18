@@ -180,85 +180,81 @@
                 il.Emit(OpCodes.Ldloc, fromLocal);
             }
 
-            if (toType.IsEnum)
+            var converter = ReflectionUtils.GetConvertMethod(
+                fromType,
+                toType,
+                new[] { typeof(SafeConvert) });
+
+            if (converter != null)
+            {
+                // Load IFormatProvider as second argument
+                if (converter.GetParameters().Length == 2)
+                {
+                    il.Emit(OpCodes.Ldarg_0);
+                }
+
+                il.EmitCall(OpCodes.Call, converter, null);
+            }
+            else if (toType.IsEnum)
             {
                 il.EmitConvertToEnum(fromType, toType);
             }
             else if (fromType.IsEnum)
             {
                 il.EmitConvertFromEnum(fromType, toType);
-            } 
+            }
             else if (toType == typeof(string) && fromType != typeof(string))
             {
                 il.EmitCallToString(fromType);
             }
             else
             {
-                var converter = ReflectionUtils.GetConvertMethod(
-                    fromType,
-                    toType,
-                    new[] { typeof(SafeConvert)/*, typeof(Convert)*/ });
-
-                if (converter != null)
+                if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
                 {
-                    // Load IFormatProvider as second argument
-                    if (converter.GetParameters().Length == 2)
+                    var fromArrayType = fromType;
+                    var toArrayType = toType;
+                    var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
+                    var concreteToType = ReflectionUtils.GetConcreteType(toType);
+                    var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
+                    var toElementType = ReflectionUtils.GetElementType(concreteToType);
+
+                    if (!fromType.IsArray)
                     {
-                        il.Emit(OpCodes.Ldarg_0);
+                        var toArrayMethod = concreteFromType.GetMethod("ToArray", Type.EmptyTypes);
+
+                        if (toArrayMethod == null)
+                        {
+                            toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
+                        }
+
+                        if (toArrayMethod != null)
+                        {
+                            il.EmitCall(OpCodes.Call, toArrayMethod, null);
+                            fromArrayType = fromElementType.MakeArrayType();
+                        }
                     }
 
-                    il.EmitCall(OpCodes.Call, converter, null);
+                    if (!toType.IsArray)
+                    {
+                        toArrayType = toElementType.MakeArrayType();
+                    }
+
+                    il.EmitConvertArray(fromArrayType, toArrayType);
+
+                    if (!toType.IsArray)
+                    {
+                        var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
+                        var toConstructor = toType.GetConstructor(new[] { toEnumerableType });
+
+                        if (toConstructor != null)
+                        {
+                            il.Emit(OpCodes.Newobj, toConstructor);
+                        }
+                    }
                 }
                 else
                 {
-                    if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
-                    {
-                        var fromArrayType = fromType;
-                        var toArrayType = toType;
-                        var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
-                        var concreteToType = ReflectionUtils.GetConcreteType(toType);
-                        var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
-                        var toElementType = ReflectionUtils.GetElementType(concreteToType);
-
-                        if (!fromType.IsArray)
-                        {
-                            var toArrayMethod = concreteFromType.GetMethod("ToArray", Type.EmptyTypes);
-
-                            if (toArrayMethod == null)
-                            {
-                                toArrayMethod =
-                                    typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
-                            }
-
-                            if (toArrayMethod != null)
-                            {
-                                il.EmitCall(OpCodes.Call, toArrayMethod, null);
-                                fromArrayType = fromElementType.MakeArrayType();
-                            }
-                        }
-
-                        if (!toType.IsArray)
-                        {
-                            toArrayType = toElementType.MakeArrayType();
-                        }
-
-                        il.EmitConvertArray(fromArrayType, toArrayType);
-
-                        if (!toType.IsArray)
-                        {
-                            var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
-                            var toConstructor = toType.GetConstructor(new[] { toEnumerableType });
-
-                            if (toConstructor != null)
-                            {
-                                il.Emit(OpCodes.Newobj, toConstructor);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        il.EmitConvertClass(fromType, toType);
-                    }
+                    il.EmitConvertClass(fromType, toType);
                 }
             }
 
@@ -306,7 +302,7 @@
                     var converter = ReflectionUtils.GetConvertMethod(
                         underlayingFromType,
                         underlayingToType,
-                        new[] { typeof(SafeConvert)/*, typeof(Convert)*/ });
+                        new[] { typeof(SafeConvert) });
 
                     if (converter != null)
                     {
