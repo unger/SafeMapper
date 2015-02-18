@@ -141,8 +141,8 @@
         {
             var safeMapConverter = SafeMap.GetConverter<TFrom, TTo>();
 
-            var compareTime = Clock.BenchmarkTime(compareAction, iterations);
-            var safeMapperTime = Clock.BenchmarkTime(() => safeMapConverter(input), iterations);
+            var compareTime = Profiler.Profile(compareAction, iterations, 100);
+            var safeMapperTime = Profiler.Profile(() => safeMapConverter(input), iterations, 100);
 
             return (safeMapperTime - compareTime) / compareTime;
         }

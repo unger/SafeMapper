@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="PerformanceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\Clock.cs" />
     <Compile Include="Util\Profiler.cs" />
   </ItemGroup>
   <ItemGroup>
