@@ -295,12 +295,12 @@
 
         public static ushort ToUInt16(float value)
         {
-            return (value < 0 || value > short.MaxValue) ? (ushort)0 : (ushort)value;
+            return (value < 0 || value > ushort.MaxValue) ? (ushort)0 : (ushort)value;
         }
 
         public static ushort ToUInt16(double value)
         {
-            return (value < 0 || value > short.MaxValue) ? (ushort)0 : (ushort)value;
+            return (value < 0 || value > ushort.MaxValue) ? (ushort)0 : (ushort)value;
         }
 
         public static ushort ToUInt16(bool value)
@@ -310,7 +310,7 @@
 
         public static ushort ToUInt16(char value)
         {
-            return (value > ushort.MaxValue) ? (ushort)0 : value;
+            return value;
         }
 
         #endregion
@@ -1077,6 +1077,20 @@
 
         #endregion
 
+        #region ToString
+
+        public static string ToString(char[] value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            return new string(value);
+        }
+
+        #endregion
+
         #region Enums
 
         public static TEnum EnumTryParse<TEnum>(string value) where TEnum : struct
@@ -1105,16 +1119,6 @@
             }
 
             return value.ToArray();
-        }
-
-        public static string ToString(char[] value)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-
-            return new string(value);
         }
 
         #endregion

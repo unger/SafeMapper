@@ -280,16 +280,42 @@
 
         #region ToInt16
 
+        [TestCase("32767", Result = short.MaxValue)]
+        [TestCase("-32768", Result = short.MinValue)]
+        [TestCase("32768", Result = 0)]
+        [TestCase("-32769", Result = 0)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public short ToInt16_FromString(string input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
         [TestCase(byte.MaxValue, Result = (short)byte.MaxValue)]
         [TestCase(byte.MinValue, Result = (short)byte.MinValue)]
-        public int ToInt16_FromByte(byte input)
+        public short ToInt16_FromByte(byte input)
         {
             return SafeConvert.ToInt16(input);
         }
 
         [TestCase(sbyte.MaxValue, Result = (short)sbyte.MaxValue)]
         [TestCase(sbyte.MinValue, Result = (short)sbyte.MinValue)]
-        public int ToInt16_FromSByte(sbyte input)
+        public short ToInt16_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
+        [TestCase(short.MaxValue, Result = short.MaxValue)]
+        [TestCase(short.MinValue, Result = short.MinValue)]
+        public short ToInt16_FromInt16(short input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (short)0)]
+        [TestCase(ushort.MinValue, Result = (short)0)]
+        [TestCase((ushort)short.MaxValue, Result = short.MaxValue)]
+        public short ToInt16_FromUInt16(ushort input)
         {
             return SafeConvert.ToInt16(input);
         }
@@ -298,7 +324,7 @@
         [TestCase(int.MinValue, Result = (short)0)]
         [TestCase((int)short.MaxValue, Result = short.MaxValue)]
         [TestCase((int)short.MinValue, Result = short.MinValue)]
-        public int ToInt16_FromInt32(int input)
+        public short ToInt16_FromInt32(int input)
         {
             return SafeConvert.ToInt16(input);
         }
@@ -306,7 +332,7 @@
         [TestCase(uint.MaxValue, Result = (short)0)]
         [TestCase(uint.MinValue, Result = (short)0)]
         [TestCase((uint)short.MaxValue, Result = short.MaxValue)]
-        public int ToInt16_FromUInt32(uint input)
+        public short ToInt16_FromUInt32(uint input)
         {
             return SafeConvert.ToInt16(input);
         }
@@ -314,7 +340,7 @@
         [TestCase(long.MaxValue, Result = (short)0)]
         [TestCase(long.MinValue, Result = (short)0)]
         [TestCase((long)short.MaxValue, Result = short.MaxValue)]
-        public int ToInt16_FromInt64(long input)
+        public short ToInt16_FromInt64(long input)
         {
             return SafeConvert.ToInt16(input);
         }
@@ -322,7 +348,33 @@
         [TestCase(ulong.MaxValue, Result = (short)0)]
         [TestCase(ulong.MinValue, Result = (short)0)]
         [TestCase((ulong)short.MaxValue, Result = short.MaxValue)]
-        public int ToInt16_FromUInt64(ulong input)
+        public short ToInt16_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
+        [TestCase((float)short.MaxValue, Result = short.MaxValue)]
+        [TestCase((float)short.MinValue, Result = short.MinValue)]
+        [TestCase(float.MaxValue, Result = (short)0)]
+        [TestCase(float.MinValue, Result = (short)0)]
+        [TestCase(short.MaxValue + 1, Result = (short)0)]
+        [TestCase(short.MinValue - 1, Result = (short)0)]
+        [TestCase(short.MaxValue - 1.5f, Result = short.MaxValue - 2)]
+        [TestCase(short.MinValue + 1.5f, Result = short.MinValue + 2)]
+        public short ToInt16_FromSingle(float input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
+        [TestCase((double)short.MaxValue, Result = short.MaxValue)]
+        [TestCase((double)short.MinValue, Result = short.MinValue)]
+        [TestCase(double.MaxValue, Result = (short)0)]
+        [TestCase(double.MinValue, Result = (short)0)]
+        [TestCase(short.MaxValue + 1, Result = (short)0)]
+        [TestCase(short.MinValue - 1, Result = (short)0)]
+        [TestCase(short.MaxValue - 1.5f, Result = short.MaxValue - 2)]
+        [TestCase(short.MinValue + 1.5f, Result = short.MinValue + 2)]
+        public short ToInt16_FromDouble(double input)
         {
             return SafeConvert.ToInt16(input);
         }
@@ -333,9 +385,35 @@
             return SafeConvert.ToInt16(input);
         }
 
+        [TestCase(false, Result = (short)0)]
+        [TestCase(true, Result = (short)1)]
+        public short ToInt16_FromBoolean(bool input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
+        [TestCase((char)short.MaxValue, Result = short.MaxValue)]
+        [TestCase(char.MaxValue, Result = (short)0)]
+        [TestCase((char)(short.MaxValue + 1), Result = (short)0)]
+        public short ToInt16_FromChar(char input)
+        {
+            return SafeConvert.ToInt16(input);
+        }
+
         #endregion
 
         #region ToUInt16
+
+        [TestCase("65535", Result = ushort.MaxValue)]
+        [TestCase("0", Result = ushort.MinValue)]
+        [TestCase("65536", Result = 0)]
+        [TestCase("-1", Result = 0)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public ushort ToUInt16_FromString(string input)
+        {
+            return SafeConvert.ToUInt16(input);
+        }
 
         [TestCase(byte.MaxValue, Result = (ushort)byte.MaxValue)]
         [TestCase(byte.MinValue, Result = (ushort)byte.MinValue)]
@@ -399,8 +477,49 @@
             return SafeConvert.ToUInt16(input);
         }
 
+        [TestCase((float)ushort.MaxValue, Result = ushort.MaxValue)]
+        [TestCase((float)ushort.MinValue, Result = ushort.MinValue)]
+        [TestCase(float.MaxValue, Result = (ushort)0)]
+        [TestCase(float.MinValue, Result = (ushort)0)]
+        [TestCase(ushort.MaxValue + 1, Result = (ushort)0)]
+        [TestCase(ushort.MinValue - 1, Result = (ushort)0)]
+        [TestCase(ushort.MaxValue - 1.5f, Result = ushort.MaxValue - 2)]
+        [TestCase(ushort.MinValue + 1.5f, Result = ushort.MinValue + 1)]
+        public ushort ToUInt16_FromSingle(float input)
+        {
+            return SafeConvert.ToUInt16(input);
+        }
+
+        [TestCase((double)ushort.MaxValue, Result = ushort.MaxValue)]
+        [TestCase((double)ushort.MinValue, Result = ushort.MinValue)]
+        [TestCase(double.MaxValue, Result = (ushort)0)]
+        [TestCase(double.MinValue, Result = (ushort)0)]
+        [TestCase(ushort.MaxValue + 1, Result = (ushort)0)]
+        [TestCase(ushort.MinValue - 1, Result = (ushort)0)]
+        [TestCase(ushort.MaxValue - 1.5d, Result = ushort.MaxValue - 2)]
+        [TestCase(ushort.MinValue + 1.5d, Result = ushort.MinValue + 1)]
+        public ushort ToUInt16_FromDouble(double input)
+        {
+            return SafeConvert.ToUInt16(input);
+        }
+
         [TestCaseSource(typeof(TestData), "DecimalToUInt16Data")]
         public ushort ToUInt16_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToUInt16(input);
+        }
+
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public ushort ToUInt16_FromBoolean(bool input)
+        {
+            return SafeConvert.ToUInt16(input);
+        }
+
+        [TestCase((char)ushort.MaxValue, Result = ushort.MaxValue)]
+        [TestCase((char)ushort.MinValue, Result = ushort.MinValue)]
+        [TestCase(char.MaxValue, Result = (ushort)0)]
+        public ushort ToUInt16_FromChar(char input)
         {
             return SafeConvert.ToUInt16(input);
         }
@@ -446,7 +565,6 @@
 
 
         #endregion
-
 
         #region ToString
 
