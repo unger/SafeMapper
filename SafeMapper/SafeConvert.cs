@@ -627,7 +627,7 @@
 
         public static ulong ToUInt64(decimal value)
         {
-            return (value < 0) ? 0 : (ulong)value;
+            return (value < 0 || value > ulong.MaxValue) ? 0 : (ulong)value;
         }
 
         public static ulong ToUInt64(bool value)
@@ -647,7 +647,7 @@
 
         public static ulong ToUInt64(double value)
         {
-            return (value < 0 || value > ulong.MaxValue) ? 0 : (ulong)value;
+            return (value < 0 || value > (double)ulong.MaxValue) ? 0 : (ulong)value;
         }
 
         #endregion

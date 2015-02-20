@@ -71,6 +71,11 @@
                 return true;
             }
 
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                return true;
+            }
+
             foreach (var intType in type.GetInterfaces())
             {
                 if (intType.IsGenericType && intType.GetGenericTypeDefinition() == typeof(IEnumerable<>))

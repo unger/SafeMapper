@@ -113,8 +113,8 @@
         [TestCase(double.MinValue, Result = (byte)0)]
         [TestCase(byte.MaxValue + 1, Result = (byte)0)]
         [TestCase(byte.MinValue - 1, Result = (byte)0)]
-        [TestCase(byte.MaxValue - 1.5f, Result = byte.MaxValue - 2)]
-        [TestCase(byte.MinValue + 1.5f, Result = byte.MinValue + 1)]
+        [TestCase(byte.MaxValue - 1.5d, Result = byte.MaxValue - 2)]
+        [TestCase(byte.MinValue + 1.5d, Result = byte.MinValue + 1)]
         public byte ToByte_FromDouble(double input)
         {
             return SafeConvert.ToByte(input);
@@ -248,8 +248,8 @@
         [TestCase(double.MinValue, Result = (sbyte)0)]
         [TestCase(sbyte.MaxValue + 1, Result = (sbyte)0)]
         [TestCase(sbyte.MinValue - 1, Result = (sbyte)0)]
-        [TestCase(sbyte.MaxValue - 1.5f, Result = sbyte.MaxValue - 2)]
-        [TestCase(sbyte.MinValue + 1.5f, Result = sbyte.MinValue + 2)]
+        [TestCase(sbyte.MaxValue - 1.5d, Result = sbyte.MaxValue - 2)]
+        [TestCase(sbyte.MinValue + 1.5d, Result = sbyte.MinValue + 2)]
         public sbyte ToSByte_FromDouble(double input)
         {
             return SafeConvert.ToSByte(input);
@@ -372,8 +372,8 @@
         [TestCase(double.MinValue, Result = (short)0)]
         [TestCase(short.MaxValue + 1, Result = (short)0)]
         [TestCase(short.MinValue - 1, Result = (short)0)]
-        [TestCase(short.MaxValue - 1.5f, Result = short.MaxValue - 2)]
-        [TestCase(short.MinValue + 1.5f, Result = short.MinValue + 2)]
+        [TestCase(short.MaxValue - 1.5d, Result = short.MaxValue - 2)]
+        [TestCase(short.MinValue + 1.5d, Result = short.MinValue + 2)]
         public short ToInt16_FromDouble(double input)
         {
             return SafeConvert.ToInt16(input);
@@ -516,9 +516,8 @@
             return SafeConvert.ToUInt16(input);
         }
 
-        [TestCase((char)ushort.MaxValue, Result = ushort.MaxValue)]
         [TestCase((char)ushort.MinValue, Result = ushort.MinValue)]
-        [TestCase(char.MaxValue, Result = (ushort)0)]
+        [TestCase(char.MaxValue, Result = ushort.MaxValue)]
         public ushort ToUInt16_FromChar(char input)
         {
             return SafeConvert.ToUInt16(input);
@@ -534,8 +533,45 @@
             return SafeConvert.ToInt32(input);
         }
 
-        [TestCaseSource(typeof(TestData), "UIntToIntData")]
-        public int ToInt32_FromUInt(uint input)
+        [TestCase(byte.MaxValue, Result = (short)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (short)byte.MinValue)]
+        public int ToInt32_FromByte(byte input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (int)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (int)sbyte.MinValue)]
+        public int ToInt32_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase(short.MaxValue, Result = (int)short.MaxValue)]
+        [TestCase(short.MinValue, Result = (int)short.MinValue)]
+        public int ToInt32_FromInt16(short input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (int)ushort.MaxValue)]
+        [TestCase(ushort.MinValue, Result = 0)]
+        public int ToInt32_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase(int.MaxValue, Result = int.MaxValue)]
+        [TestCase(int.MinValue, Result = int.MinValue)]
+        public int ToInt32_FromInt32(int input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = 0)]
+        [TestCase(uint.MinValue, Result = 0)]
+        [TestCase((uint)int.MaxValue, Result = int.MaxValue)]
+        public int ToInt32_FromUInt32(uint input)
         {
             return SafeConvert.ToInt32(input);
         }
@@ -546,14 +582,50 @@
             return SafeConvert.ToInt32(input);
         }
 
+        [TestCase(ulong.MaxValue, Result = 0)]
+        [TestCase(ulong.MinValue, Result = 0)]
+        [TestCase((ulong)int.MaxValue, Result = int.MaxValue)]
+        public int ToInt32_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase(float.MaxValue, Result = 0)]
+        [TestCase(float.MinValue, Result = 0)]
+        [TestCase((float)int.MinValue, Result = int.MinValue)]
+        [TestCase(int.MaxValue - 7483647f, Result = int.MaxValue - 7483647)]
+        public int ToInt32_FromSingle(float input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase((double)int.MaxValue, Result = int.MaxValue)]
+        [TestCase((double)int.MinValue, Result = int.MinValue)]
+        [TestCase(double.MaxValue, Result = 0)]
+        [TestCase(double.MinValue, Result = 0)]
+        [TestCase(int.MaxValue - 1.5d, Result = int.MaxValue - 2)]
+        [TestCase(int.MinValue + 1.5d, Result = int.MinValue + 2)]
+        public int ToInt32_FromDouble(double input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
         [TestCaseSource(typeof(TestData), "DecimalToInt32Data")]
         public int ToInt32_FromDecimal(decimal input)
         {
             return SafeConvert.ToInt32(input);
         }
 
-        [TestCaseSource(typeof(TestData), "DoubleToIntData")]
-        public int ToInt32_FromDouble(double input)
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public int ToInt32_FromBoolean(bool input)
+        {
+            return SafeConvert.ToInt32(input);
+        }
+
+        [TestCase(char.MaxValue, Result = (int)char.MaxValue)]
+        [TestCase(char.MinValue, Result = 0)]
+        public int ToInt32_FromChar(char input)
         {
             return SafeConvert.ToInt32(input);
         }
@@ -562,7 +634,348 @@
 
         #region ToUInt32
 
+        [TestCase("4294967295", Result = uint.MaxValue)]
+        [TestCase("0", Result = uint.MinValue)]
+        [TestCase("4294967296", Result = 0)]
+        [TestCase("-1", Result = 0)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public uint ToUInt32_FromString(string input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
 
+        [TestCase(byte.MaxValue, Result = (uint)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (uint)byte.MinValue)]
+        public uint ToUInt32_FromByte(byte input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (uint)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (uint)0)]
+        public uint ToUInt32_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(short.MaxValue, Result = (uint)short.MaxValue)]
+        [TestCase(short.MinValue, Result = (uint)0)]
+        [TestCase((short)uint.MinValue, Result = uint.MinValue)]
+        public uint ToUInt32_FromInt16(short input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (uint)ushort.MaxValue)]
+        [TestCase(ushort.MinValue, Result = (uint)ushort.MinValue)]
+        public uint ToUInt32_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(int.MaxValue, Result = (uint)int.MaxValue)]
+        [TestCase(int.MinValue, Result = (uint)0)]
+        [TestCase((int)uint.MinValue, Result = uint.MinValue)]
+        public uint ToUInt32_FromInt32(int input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = uint.MaxValue)]
+        [TestCase(uint.MinValue, Result = uint.MinValue)]
+        public uint ToUInt32_FromUInt32(uint input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(long.MaxValue, Result = (uint)0)]
+        [TestCase(long.MinValue, Result = (uint)0)]
+        [TestCase((long)uint.MaxValue, Result = uint.MaxValue)]
+        public uint ToUInt32_FromInt64(long input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(ulong.MaxValue, Result = (uint)0)]
+        [TestCase(ulong.MinValue, Result = (uint)0)]
+        [TestCase((ulong)uint.MaxValue, Result = uint.MaxValue)]
+        public uint ToUInt32_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase((float)uint.MinValue, Result = uint.MinValue)]
+        [TestCase(float.MaxValue, Result = (uint)0)]
+        [TestCase(float.MinValue, Result = (uint)0)]
+        [TestCase(uint.MinValue - 1f, Result = (uint)0)]
+        [TestCase(uint.MinValue + 1.5f, Result = uint.MinValue + 1)]
+        public uint ToUInt32_FromSingle(float input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase((double)uint.MaxValue, Result = uint.MaxValue)]
+        [TestCase((double)uint.MinValue, Result = uint.MinValue)]
+        [TestCase(double.MaxValue, Result = (uint)0)]
+        [TestCase(double.MinValue, Result = (uint)0)]
+        [TestCase(uint.MaxValue + 1d, Result = (uint)0)]
+        [TestCase(uint.MinValue - 1d, Result = (uint)0)]
+        [TestCase(uint.MaxValue - 1.5d, Result = uint.MaxValue - 2)]
+        [TestCase(uint.MinValue + 1.5d, Result = uint.MinValue + 1)]
+        public uint ToUInt32_FromDouble(double input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToUInt32Data")]
+        public uint ToUInt32_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public uint ToUInt32_FromBoolean(bool input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        [TestCase((char)uint.MinValue, Result = uint.MinValue)]
+        [TestCase(char.MaxValue, Result = (uint)char.MaxValue)]
+        public uint ToUInt32_FromChar(char input)
+        {
+            return SafeConvert.ToUInt32(input);
+        }
+
+        #endregion
+
+        #region ToInt64
+
+        [TestCase("9223372036854775807", Result = long.MaxValue)]
+        [TestCase("-9223372036854775808", Result = long.MinValue)]
+        //[TestCase("9223372036854775808", Result = 0)]
+        //[TestCase("-9223372036854775809", Result = 0)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public long ToInt64_FromString(string input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(byte.MaxValue, Result = (long)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (long)byte.MinValue)]
+        public long ToInt64_FromByte(byte input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (long)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (long)sbyte.MinValue)]
+        public long ToInt64_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(short.MaxValue, Result = (long)short.MaxValue)]
+        [TestCase(short.MinValue, Result = (long)short.MinValue)]
+        public long ToInt64_FromInt16(short input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (long)ushort.MaxValue)]
+        [TestCase(ushort.MinValue, Result = 0)]
+        public long ToInt64_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(int.MaxValue, Result = (long)int.MaxValue)]
+        [TestCase(int.MinValue, Result = (long)int.MinValue)]
+        public long ToInt64_FromInt32(int input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = (long)uint.MaxValue)]
+        [TestCase(uint.MinValue, Result = (long)uint.MinValue)]
+        [TestCase((uint)int.MaxValue, Result = int.MaxValue)]
+        public long ToInt64_FromUInt32(uint input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(long.MaxValue, Result = long.MaxValue)]
+        [TestCase(long.MinValue, Result = long.MinValue)]
+        public long ToInt64_FromInt64(long input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(ulong.MaxValue, Result = 0)]
+        [TestCase(ulong.MinValue, Result = 0)]
+        [TestCase((ulong)long.MaxValue, Result = long.MaxValue)]
+        public long ToInt64_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(float.MaxValue, Result = 0)]
+        [TestCase(float.MinValue, Result = 0)]
+        [TestCase((float)int.MinValue, Result = int.MinValue)]
+        public long ToInt64_FromSingle(float input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase((double)int.MaxValue, Result = int.MaxValue)]
+        [TestCase((double)int.MinValue, Result = int.MinValue)]
+        [TestCase(double.MaxValue, Result = 0)]
+        [TestCase(double.MinValue, Result = 0)]
+        [TestCase(int.MaxValue - 1.5d, Result = int.MaxValue - 2)]
+        [TestCase(int.MinValue + 1.5d, Result = int.MinValue + 2)]
+        public long ToInt64_FromDouble(double input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToInt64Data")]
+        public long ToInt64_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public long ToInt64_FromBoolean(bool input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        [TestCase(char.MaxValue, Result = (long)char.MaxValue)]
+        [TestCase(char.MinValue, Result = 0)]
+        public long ToInt64_FromChar(char input)
+        {
+            return SafeConvert.ToInt64(input);
+        }
+
+        #endregion
+
+        #region ToUInt64
+
+        [TestCase("18446744073709551615", Result = ulong.MaxValue)]
+        [TestCase("0", Result = ulong.MinValue)]
+        [TestCase("18446744073709551616", Result = 0)]
+        //[TestCase("18446744073709551617", Result = 0)]
+        [TestCase("-1", Result = 0)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public ulong ToUInt64_FromString(string input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(byte.MaxValue, Result = (ulong)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (ulong)byte.MinValue)]
+        public ulong ToUInt64_FromByte(byte input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (ulong)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (ulong)0)]
+        public ulong ToUInt64_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(short.MaxValue, Result = (ulong)short.MaxValue)]
+        [TestCase(short.MinValue, Result = (ulong)0)]
+        [TestCase((short)uint.MinValue, Result = ulong.MinValue)]
+        public ulong ToUInt64_FromInt16(short input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (ulong)ushort.MaxValue)]
+        [TestCase(ushort.MinValue, Result = (ulong)ushort.MinValue)]
+        public ulong ToUInt64_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(int.MaxValue, Result = (ulong)int.MaxValue)]
+        [TestCase(int.MinValue, Result = (ulong)0)]
+        [TestCase((int)uint.MinValue, Result = ulong.MinValue)]
+        public ulong ToUInt64_FromInt32(int input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = (ulong)uint.MaxValue)]
+        [TestCase(uint.MinValue, Result = (ulong)uint.MinValue)]
+        public ulong ToUInt64_FromUInt32(uint input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(long.MaxValue, Result = (ulong)long.MaxValue)]
+        [TestCase(long.MinValue, Result = (ulong)0)]
+        public ulong ToUInt64_FromInt64(long input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(ulong.MaxValue, Result = ulong.MaxValue)]
+        [TestCase(ulong.MinValue, Result = ulong.MinValue)]
+        public ulong ToUInt64_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase((float)ulong.MinValue, Result = ulong.MinValue)]
+        [TestCase(float.MaxValue, Result = (ulong)0)]
+        [TestCase(float.MinValue, Result = (ulong)0)]
+        [TestCase(ulong.MinValue - 1f, Result = (ulong)0)]
+        [TestCase(ulong.MinValue + 1.5f, Result = ulong.MinValue + 1)]
+        public ulong ToUInt64_FromSingle(float input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        //[TestCase((double)ulong.MaxValue, Result = ulong.MaxValue)]
+        [TestCase((double)ulong.MinValue, Result = ulong.MinValue)]
+        [TestCase(double.MaxValue, Result = (ulong)0)]
+        [TestCase(double.MinValue, Result = (ulong)0)]
+        [TestCase(ulong.MaxValue + 1d, Result = (ulong)0)]
+        [TestCase(ulong.MinValue - 1d, Result = (ulong)0)]
+        //[TestCase(ulong.MaxValue - 1.5d, Result = ulong.MaxValue - 2)]
+        [TestCase(ulong.MinValue + 1.5d, Result = ulong.MinValue + 1)]
+        public ulong ToUInt64_FromDouble(double input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToUInt64Data")]
+        public ulong ToUInt64_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public ulong ToUInt64_FromBoolean(bool input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
+
+        [TestCase((char)ulong.MinValue, Result = ulong.MinValue)]
+        [TestCase(char.MaxValue, Result = (ulong)char.MaxValue)]
+        public ulong ToUInt64_FromChar(char input)
+        {
+            return SafeConvert.ToUInt64(input);
+        }
 
         #endregion
 

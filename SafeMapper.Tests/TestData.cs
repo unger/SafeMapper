@@ -1,6 +1,8 @@
 ﻿namespace SafeMapper.Tests
 {
     using System;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Data.SqlTypes;
 
     using NUnit.Framework;
@@ -15,6 +17,16 @@
         /*   Misc                                                              
         /*                                                                      
         /************************************************************************/
+
+        public TestCaseData[] NonGenericCollectionTestData =
+            {
+                // Collections
+                new TestCaseData((IList<int>)new List<int> { 1, 2, 3 }, typeof(IList<int>), typeof(int[])).Returns(new[] { 1, 2, 3 }),
+                new TestCaseData((IList<string>)new List<string> { "1", "2", "3" }, typeof(IList<string>), typeof(HashSet<string>)).Returns(new HashSet<string> { "1", "2", "3" }),
+                new TestCaseData((ISet<string>)new HashSet<string> { "1", "2", "3" }, typeof(ISet<string>), typeof(List<int>)).Returns(new List<int> { 1, 2, 3 }),
+                new TestCaseData((IEnumerable<string>)new List<string> { "1", "2", "3" }, typeof(IEnumerable<string>), typeof(List<int>)).Returns(new List<int> { 1, 2, 3 }),
+                new TestCaseData(new List<string> { "1", "2", "3" }, typeof(List<string>), typeof(IEnumerable<int>)).Returns(new List<int> { 1, 2, 3 }),
+            };
 
         public TestCaseData[] NonGenericTestData =
             {
@@ -523,19 +535,6 @@
         /*                                                                      
         /************************************************************************/
 
-
-        public TestCaseData[] DoubleToIntData =
-            {
-                new TestCaseData(double.MaxValue).Returns(0),
-                new TestCaseData(double.MinValue).Returns(0),
-                new TestCaseData((double)int.MaxValue).Returns(int.MaxValue),
-                new TestCaseData((double)int.MinValue).Returns(int.MinValue),
-                new TestCaseData((double)int.MaxValue + 1).Returns(0),
-                new TestCaseData((double)int.MinValue - 1).Returns(0),
-                new TestCaseData(123.5d).Returns(123),
-                new TestCaseData(123.49d).Returns(123),
-            };
-
         public TestCaseData[] DoubleToDecimalData =
             {
                 new TestCaseData(double.MaxValue).Returns(0m),
@@ -588,20 +587,6 @@
                 new TestCaseData(0).Returns("0"),
                 new TestCaseData(int.MaxValue).Returns(int.MaxValue.ToString()),
                 new TestCaseData(int.MinValue).Returns(int.MinValue.ToString()),
-            };
-
-        /************************************************************************/
-        /*                                                                      
-        /*   UInt                                                              
-        /*                                                                      
-        /************************************************************************/
-
-
-        public TestCaseData[] UIntToIntData =
-            {
-                new TestCaseData(uint.MaxValue).Returns(0),
-                new TestCaseData((uint)int.MaxValue).Returns(int.MaxValue),
-                new TestCaseData(uint.MinValue).Returns(0),
             };
 
         /************************************************************************/

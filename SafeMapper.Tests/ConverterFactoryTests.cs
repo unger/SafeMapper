@@ -488,6 +488,14 @@
             Assert.AreEqual(1, result);
         }
 
+        [TestCaseSource(typeof(TestData), "NonGenericCollectionTestData")]
+        public object CreateDelegate_NonGenericCollectionTestData(object input, Type fromType, Type toType)
+        {
+            var converter = ConverterFactory.CreateDelegate(fromType, toType);
+
+            return converter(input);
+        }
+
         [TestCaseSource(typeof(TestData), "NonGenericTestData")]
         public object CreateDelegate_NonGenericTestData(object input, Type fromType, Type toType)
         {
