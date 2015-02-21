@@ -1,6 +1,7 @@
 ﻿namespace SafeMapper.Tests
 {
     using System;
+    using System.Globalization;
 
     using NUnit.Framework;
 
@@ -752,6 +753,8 @@
 
         #region ToInt64
 
+        [TestCase(null, Result = 0)]
+        [TestCase("", Result = 0)]
         [TestCase("9223372036854775807", Result = long.MaxValue)]
         [TestCase("-9223372036854775808", Result = long.MinValue)]
         //[TestCase("9223372036854775808", Result = 0)]
@@ -975,6 +978,111 @@
         public ulong ToUInt64_FromChar(char input)
         {
             return SafeConvert.ToUInt64(input);
+        }
+
+        #endregion
+
+        #region ToDouble
+
+        [TestCase(null, Result = 0)]
+        [TestCase("", Result = 0)]
+        [TestCase("1.7976931348623157", Result = 1.7976931348623157)]
+        [TestCase("-1.7976931348623157", Result = -1.7976931348623157)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public double ToDouble_FromString(string input)
+        {
+            return SafeConvert.ToDouble(input, CultureInfo.InvariantCulture);
+        }
+
+        [TestCase(byte.MaxValue, Result = (double)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (double)byte.MinValue)]
+        public double ToDouble_FromByte(byte input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (double)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (double)sbyte.MinValue)]
+        public double ToDouble_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(short.MaxValue, Result = (double)short.MaxValue)]
+        [TestCase(short.MinValue, Result = (double)short.MinValue)]
+        public double ToDouble_FromInt16(short input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (double)ushort.MaxValue)]
+        [TestCase(ushort.MinValue, Result = 0)]
+        public double ToDouble_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(int.MaxValue, Result = (double)int.MaxValue)]
+        [TestCase(int.MinValue, Result = (double)int.MinValue)]
+        public double ToDouble_FromInt32(int input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = (double)uint.MaxValue)]
+        [TestCase(uint.MinValue, Result = (double)uint.MinValue)]
+        public double ToDouble_FromUInt32(uint input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(long.MaxValue, Result = (double)long.MaxValue)]
+        [TestCase(long.MinValue, Result = (double)long.MinValue)]
+        public double ToDouble_FromInt64(long input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(ulong.MaxValue, Result = (double)ulong.MaxValue)]
+        [TestCase(ulong.MinValue, Result = 0d)]
+        public double ToDouble_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(float.MaxValue, Result = (double)float.MaxValue)]
+        [TestCase(float.MinValue, Result = (double)float.MinValue)]
+        public double ToDouble_FromSingle(float input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(double.MaxValue, Result = double.MaxValue)]
+        [TestCase(double.MinValue, Result = double.MinValue)]
+        public double ToDouble_FromDouble(double input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
+        public double ToDouble_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public double ToDouble_FromBoolean(bool input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
+        [TestCase(char.MaxValue, Result = (double)char.MaxValue)]
+        [TestCase(char.MinValue, Result = 0)]
+        public double ToDouble_FromChar(char input)
+        {
+            return SafeConvert.ToDouble(input);
         }
 
         #endregion
