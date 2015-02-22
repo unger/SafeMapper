@@ -507,9 +507,22 @@
         /*                                                                      
         /************************************************************************/
 
+        public TestCaseData[] StringToDecimalData =
+            {
+                new TestCaseData(string.Empty).Returns(0m),
+                new TestCaseData(null).Returns(0m),
+                new TestCaseData("0").Returns(0m),
+                new TestCaseData("79228162514264337593543950335").Returns(decimal.MaxValue),
+                new TestCaseData("79228162514264337593543950336").Returns(0m),
+                new TestCaseData("-79228162514264337593543950335").Returns(decimal.MinValue),
+                new TestCaseData("-79228162514264337593543950336").Returns(0m),
+                new TestCaseData("abc").Returns(0m),
+                new TestCaseData("123a").Returns(0m),
+                new TestCaseData("123m").Returns(0m),
+            };
 
         // Use with decimalseperator = . and thousandseperator = [space]
-        public TestCaseData[] StringToDecimalData =
+        public TestCaseData[] StringToDecimalWithFormatData =
             {
                 new TestCaseData(string.Empty).Returns(0m),
                 new TestCaseData(null).Returns(0m),

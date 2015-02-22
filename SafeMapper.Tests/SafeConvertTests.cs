@@ -998,13 +998,21 @@
 
         #region ToSingle
 
+        [TestCase(null, Result = 0f)]
+        [TestCase("", Result = 0f)]
+        [TestCase("1", Result = 1f)]
+        public float ToSingle_FromString(string input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
         [TestCase(null, Result = 0)]
         [TestCase("", Result = 0)]
         [TestCase("1.7976931348623157", Result = 1.7976931348623157f)]
         [TestCase("-1.7976931348623157", Result = -1.7976931348623157f)]
         [TestCase(":", Result = 0)]
         [TestCase("/", Result = 0)]
-        public float ToSingle_FromString(string input)
+        public float ToSingle_FromStringWithFormat(string input)
         {
             return SafeConvert.ToSingle(input, this.numberFormatProvider);
         }
@@ -1074,6 +1082,10 @@
 
         [TestCase((double)float.MaxValue, Result = float.MaxValue)]
         [TestCase((double)float.MinValue, Result = float.MinValue)]
+        //[TestCase(((double)float.MaxValue) + 1d, Result = 0f)]
+        //[TestCase(((double)float.MinValue) - 1d, Result = 0f)]
+        [TestCase(double.MaxValue, Result = 0f)]
+        [TestCase(double.MinValue, Result = 0f)]
         public float ToSingle_FromDouble(double input)
         {
             return SafeConvert.ToSingle(input);
@@ -1103,13 +1115,21 @@
 
         #region ToDouble
 
+        [TestCase(null, Result = 0d)]
+        [TestCase("", Result = 0d)]
+        [TestCase("1", Result = 1d)]
+        public double ToDouble_FromString(string input)
+        {
+            return SafeConvert.ToDouble(input);
+        }
+
         [TestCase(null, Result = 0)]
         [TestCase("", Result = 0)]
         [TestCase("1.7976931348623157", Result = 1.7976931348623157)]
         [TestCase("-1.7976931348623157", Result = -1.7976931348623157)]
         [TestCase(":", Result = 0)]
         [TestCase("/", Result = 0)]
-        public double ToDouble_FromString(string input)
+        public double ToDouble_FromStringWithFormat(string input)
         {
             return SafeConvert.ToDouble(input, CultureInfo.InvariantCulture);
         }
@@ -1210,6 +1230,12 @@
 
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
         public decimal ToDecimal_FromString(string input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "StringToDecimalWithFormatData")]
+        public decimal ToDecimal_FromStringWithFormat(string input)
         {
             return SafeConvert.ToDecimal(input, this.numberFormatProvider);
         }

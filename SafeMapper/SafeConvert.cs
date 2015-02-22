@@ -658,8 +658,7 @@
 
         public static float ToSingle(string s)
         {
-            float f;
-            return float.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.CurrentCulture, out f) ? f : 0f;
+            return ToSingle(s, CultureInfo.CurrentCulture);
         }
 
         public static float ToSingle(string s, IFormatProvider provider)
@@ -715,12 +714,12 @@
 
         public static float ToSingle(double value)
         {
-            return (value < float.MinValue || value > float.MaxValue) ? 0 : (float)value;
+            return (value < (double)float.MinValue || value > (double)float.MaxValue) ? 0f : (float)value;
         }
 
         public static float ToSingle(decimal value)
         {
-            return (value < decimal.MinValue || value > decimal.MaxValue) ? 0 : (float)value;
+            return (float)value;
         }
 
         public static float ToSingle(bool value)
@@ -739,14 +738,7 @@
 
         public static double ToDouble(string s)
         {
-            double d;
-            return double.TryParse(
-                s,
-                NumberStyles.Float | NumberStyles.AllowThousands,
-                CultureInfo.CurrentCulture,
-                out d)
-                       ? d
-                       : 0d;
+            return ToDouble(s, CultureInfo.CurrentCulture);
         }
 
         public static double ToDouble(string s, IFormatProvider provider)
@@ -826,14 +818,13 @@
 
         public static decimal ToDecimal(string s)
         {
-            decimal d;
-            return decimal.TryParse(s, NumberStyles.Number, CultureInfo.CurrentCulture, out d) ? d : 0m;
+            return ToDecimal(s, CultureInfo.CurrentCulture);
         }
 
         public static decimal ToDecimal(string s, IFormatProvider provider)
         {
             decimal d;
-            return decimal.TryParse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider, out d) ? d : 0m;
+            return decimal.TryParse(s, NumberStyles.Number, provider, out d) ? d : 0m;
         }
 
         public static decimal ToDecimal(byte value)
