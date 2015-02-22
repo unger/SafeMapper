@@ -1,9 +1,10 @@
 version: 1.0.{build}
-build:
-  publish_nuget: true
-  verbosity: minimal
 before_build:
   - nuget restore ".\SafeMapper.sln"  
+build:
+  project: .\SafeMapper.sln
+  publish_nuget: true
+  verbosity: minimal
 artifacts:
 - path: '*.nupkg'
   name: Nuget
