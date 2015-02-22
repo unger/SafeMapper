@@ -693,8 +693,8 @@
 
         public TestCaseData[] DateTimeToStringData =
             {
-                new TestCaseData(new DateTime(1977, 03, 04)).Returns("1977-03-04 00:00:00"),
-                new TestCaseData(new DateTime(1977, 03, 04, 13, 37, 00)).Returns("1977-03-04 13:37:00"),
+                new TestCaseData(new DateTime(1977, 03, 04)).Returns(new DateTime(1977, 03, 04).ToString()),
+                new TestCaseData(new DateTime(1977, 03, 04, 13, 37, 00)).Returns(new DateTime(1977, 03, 04, 13, 37, 0).ToString()),
             };
 
     }

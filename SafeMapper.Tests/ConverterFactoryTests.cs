@@ -613,7 +613,7 @@
             Assert.AreEqual("Magnus", result.Name);
             Assert.AreEqual("37", result.Age);
             Assert.AreEqual(expectedDecimal.ToString(), result.Length);
-            Assert.AreEqual("1977-03-04 00:00:00", result.BirthDate);
+            Assert.AreEqual(new DateTime(1977, 03, 04).ToString(), result.BirthDate);
         }
 
         private TTo AssertConverterOutput<TFrom, TTo>(TFrom input)
