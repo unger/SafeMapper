@@ -894,6 +894,11 @@
                              : d > MaxDecimalAsDouble ? 0m : d < MinDecimalAsDouble ? 0m : (decimal)d;
         }
 
+        public static decimal ToDecimal(decimal value)
+        {
+            return value;
+        }
+
         public static decimal ToDecimal(bool value)
         {
             return value ? 1 : 0;

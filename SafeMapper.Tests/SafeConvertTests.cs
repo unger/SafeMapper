@@ -8,6 +8,20 @@
     [TestFixture]
     public class SafeConvertTests
     {
+        private IFormatProvider numberFormatProvider;
+
+        [TestFixtureSetUp]
+        public void SetUpFixture()
+        {
+            var numberFormat = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+
+            numberFormat.NumberDecimalSeparator = ".";
+            numberFormat.CurrencyDecimalSeparator = ".";
+            numberFormat.NumberGroupSeparator = " ";
+            numberFormat.CurrencyGroupSeparator = " ";
+            this.numberFormatProvider = numberFormat;
+        }
+
         #region ToByte
 
         [TestCase("255", Result = byte.MaxValue)]
@@ -982,6 +996,111 @@
 
         #endregion
 
+        #region ToSingle
+
+        [TestCase(null, Result = 0)]
+        [TestCase("", Result = 0)]
+        [TestCase("1.7976931348623157", Result = 1.7976931348623157f)]
+        [TestCase("-1.7976931348623157", Result = -1.7976931348623157f)]
+        [TestCase(":", Result = 0)]
+        [TestCase("/", Result = 0)]
+        public float ToSingle_FromString(string input)
+        {
+            return SafeConvert.ToSingle(input, this.numberFormatProvider);
+        }
+
+        [TestCase(byte.MaxValue, Result = (float)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (float)byte.MinValue)]
+        public float ToSingle_FromByte(byte input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (float)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (float)sbyte.MinValue)]
+        public float ToSingle_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(short.MaxValue, Result = (float)short.MaxValue)]
+        [TestCase(short.MinValue, Result = (float)short.MinValue)]
+        public float ToSingle_FromInt16(short input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (float)ushort.MaxValue)]
+        [TestCase(ushort.MinValue, Result = 0)]
+        public float ToSingle_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(int.MaxValue, Result = (float)int.MaxValue)]
+        [TestCase(int.MinValue, Result = (float)int.MinValue)]
+        public float ToSingle_FromInt32(int input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = (float)uint.MaxValue)]
+        [TestCase(uint.MinValue, Result = (float)uint.MinValue)]
+        public float ToSingle_FromUInt32(uint input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(long.MaxValue, Result = (float)long.MaxValue)]
+        [TestCase(long.MinValue, Result = (float)long.MinValue)]
+        public float ToSingle_FromInt64(long input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(ulong.MaxValue, Result = (float)ulong.MaxValue)]
+        [TestCase(ulong.MinValue, Result = 0d)]
+        public float ToSingle_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(float.MaxValue, Result = float.MaxValue)]
+        [TestCase(float.MinValue, Result = float.MinValue)]
+        public float ToSingle_FromSingle(float input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase((double)float.MaxValue, Result = float.MaxValue)]
+        [TestCase((double)float.MinValue, Result = float.MinValue)]
+        public float ToSingle_FromDouble(double input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToSingleData")]
+        public float ToSingle_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(false, Result = 0)]
+        [TestCase(true, Result = 1)]
+        public float ToSingle_FromBoolean(bool input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        [TestCase(char.MaxValue, Result = (float)char.MaxValue)]
+        [TestCase(char.MinValue, Result = 0)]
+        public float ToSingle_FromChar(char input)
+        {
+            return SafeConvert.ToSingle(input);
+        }
+
+        #endregion
+
         #region ToDouble
 
         [TestCase(null, Result = 0)]
@@ -1083,6 +1202,94 @@
         public double ToDouble_FromChar(char input)
         {
             return SafeConvert.ToDouble(input);
+        }
+
+        #endregion
+
+        #region ToDecimal
+
+        [TestCaseSource(typeof(TestData), "StringToDecimalData")]
+        public decimal ToDecimal_FromString(string input)
+        {
+            return SafeConvert.ToDecimal(input, this.numberFormatProvider);
+        }
+
+        [TestCaseSource(typeof(TestData), "ByteToDecimalData")]
+        public decimal ToDecimal_FromByte(byte input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "SByteToDecimalData")]
+        public decimal ToDecimal_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "Int16ToDecimalData")]
+        public decimal ToDecimal_FromInt16(short input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "UInt16ToDecimalData")]
+        public decimal ToDecimal_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "Int32ToDecimalData")]
+        public decimal ToDecimal_FromInt32(int input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "UInt32ToDecimalData")]
+        public decimal ToDecimal_FromUInt32(uint input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "Int64ToDecimalData")]
+        public decimal ToDecimal_FromInt64(long input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "UInt64ToDecimalData")]
+        public decimal ToDecimal_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "SingleToDecimalData")]
+        public decimal ToDecimal_FromSingle(float input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
+        public decimal ToDecimal_FromDouble(double input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToDecimalData")]
+        public decimal ToDecimal_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "BooleanToDecimalData")]
+        public decimal ToDecimal_FromBoolean(bool input)
+        {
+            return SafeConvert.ToDecimal(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "CharToDecimalData")]
+        public decimal ToDecimal_FromChar(char input)
+        {
+            return SafeConvert.ToDecimal(input);
         }
 
         #endregion
