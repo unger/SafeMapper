@@ -3,6 +3,8 @@ SafeMapper
 
 [![Build status](https://ci.appveyor.com/api/projects/status/skkynthpqot0bmo4?svg=true)](https://ci.appveyor.com/project/unger/safemapper)
 
+[![Coverage Status](https://coveralls.io/repos/unger/SafeMapper/badge.svg)](https://coveralls.io/r/unger/SafeMapper)
+
 The goal with SafeMapper is to have an exception free and extremly fast mapper between primitive and complex types.
 
 The project is highly influenced by AutoMapper, EmitMapper and FastMapper.
