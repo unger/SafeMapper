@@ -49,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionUtilsTests.cs" />
     <Compile Include="SafeConvertTests.cs" />
+    <Compile Include="SafeMapTests.cs" />
     <Compile Include="TestData.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
