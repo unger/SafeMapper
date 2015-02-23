@@ -1320,6 +1320,116 @@
 
         #endregion
 
+        #region ToBoolean
+
+        [TestCase("True", Result = true)]
+        [TestCase("False", Result = false)]
+        [TestCase("true", Result = true)]
+        [TestCase("false", Result = false)]
+        [TestCase("Foo", Result = false)]
+        public bool ToBoolean_FromString(string input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(byte.MaxValue, Result = true)]
+        [TestCase(byte.MinValue, Result = false)]
+        public bool ToBoolean_FromByte(byte input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = true)]
+        [TestCase(sbyte.MinValue, Result = true)]
+        [TestCase((sbyte)0, Result = false)]
+        public bool ToBoolean_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(short.MaxValue, Result = true)]
+        [TestCase(short.MinValue, Result = true)]
+        [TestCase((short)0, Result = false)]
+        public bool ToBoolean_FromInt16(short input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = true)]
+        [TestCase(ushort.MinValue, Result = false)]
+        public bool ToBoolean_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(int.MaxValue, Result = true)]
+        [TestCase(int.MinValue, Result = true)]
+        [TestCase(0, Result = false)]
+        public bool ToBoolean_FromInt32(int input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = true)]
+        [TestCase(uint.MinValue, Result = false)]
+        public bool ToBoolean_FromUInt32(uint input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(long.MaxValue, Result = true)]
+        [TestCase(long.MinValue, Result = true)]
+        [TestCase(0L, Result = false)]
+        public bool ToBoolean_FromInt64(long input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(ulong.MaxValue, Result = true)]
+        [TestCase(ulong.MinValue, Result = false)]
+        public bool ToBoolean_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(float.MaxValue, Result = true)]
+        [TestCase(float.MinValue, Result = true)]
+        [TestCase(0f, Result = false)]
+        public bool ToBoolean_FromSingle(float input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(double.MaxValue, Result = true)]
+        [TestCase(double.MinValue, Result = true)]
+        [TestCase(0d, Result = false)]
+        public bool ToBoolean_FromDouble(double input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToBooleanData")]
+        public bool ToBoolean_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(false, Result = false)]
+        [TestCase(true, Result = true)]
+        public bool ToBoolean_FromBoolean(bool input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        [TestCase(char.MaxValue, Result = true)]
+        [TestCase(char.MinValue, Result = false)]
+        public bool ToBoolean_FromChar(char input)
+        {
+            return SafeConvert.ToBoolean(input);
+        }
+
+        #endregion
+
         #region ToString
 
         [TestCase(null, Result = null)]

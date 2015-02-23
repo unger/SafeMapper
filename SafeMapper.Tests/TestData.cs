@@ -473,15 +473,6 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToDecimalData =
-            {
-                new TestCaseData(0m).Returns(0m),
-                new TestCaseData(1.000m).Returns(1.000m),
-                new TestCaseData(1000m).Returns(1000m),
-                new TestCaseData(decimal.MaxValue).Returns(decimal.MaxValue),
-                new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
-            };
-
         public TestCaseData[] DecimalToSingleData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28f),
@@ -498,6 +489,22 @@
                 new TestCaseData(123.5m).Returns(123.5d),
                 new TestCaseData(123.49m).Returns(123.49d),
                 new TestCaseData(-123.5m).Returns(-123.5d),
+            };
+
+        public TestCaseData[] DecimalToDecimalData =
+            {
+                new TestCaseData(0m).Returns(0m),
+                new TestCaseData(1.000m).Returns(1.000m),
+                new TestCaseData(1000m).Returns(1000m),
+                new TestCaseData(decimal.MaxValue).Returns(decimal.MaxValue),
+                new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
+            };
+
+        public TestCaseData[] DecimalToBooleanData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(true),
+                new TestCaseData(decimal.MinValue).Returns(true),
+                new TestCaseData(0m).Returns(false),
             };
 
 
