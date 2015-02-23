@@ -3,9 +3,15 @@ before_build:
   - nuget restore ".\SafeMapper.sln"  
 configuration: Release
 build:
-  project: .\SafeMapper.sln
+  project: .\SafeMapper\SafeMapper.csproj
   publish_nuget: true
   verbosity: minimal
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
 artifacts:
 - path: '*.nupkg'
   name: Nuget
