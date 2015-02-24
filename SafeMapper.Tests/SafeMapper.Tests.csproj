@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConverterFactoryTests.cs" />
+    <Compile Include="EmitExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionUtilsTests.cs" />
     <Compile Include="SafeConvertTests.cs" />

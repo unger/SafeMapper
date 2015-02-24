@@ -13,5 +13,10 @@
         public decimal Length { get; set; }
 
         public DateTime BirthDate { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1}", this.Name, this.Age);
+        }
     }
 }

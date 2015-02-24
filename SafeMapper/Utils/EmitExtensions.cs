@@ -132,10 +132,7 @@
             else
             {
                 toStringMethod = fromType.GetMethod("ToString", Type.EmptyTypes);
-                if (toStringMethod != null)
-                {
-                    il.EmitCall(OpCodes.Callvirt, toStringMethod, null);
-                }
+                il.EmitCall(OpCodes.Callvirt, toStringMethod, null);
             }
         }
 
@@ -304,14 +301,8 @@
                         underlayingToType,
                         new[] { typeof(SafeConvert) });
 
-                    if (converter != null)
+                    if (converter != null && converter.GetParameters().Length == 1)
                     {
-                        // Load IFormatProvider as second argument
-                        if (converter.GetParameters().Length == 2)
-                        {
-                            il.Emit(OpCodes.Ldarg_0);
-                        }
-
                         il.EmitCall(OpCodes.Call, converter, null);
                     }
                     else

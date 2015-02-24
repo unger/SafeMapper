@@ -1430,6 +1430,137 @@
 
         #endregion
 
+        #region ToChar
+
+        [TestCase("", Result = (char)0)]
+        [TestCase(null, Result = (char)0)]
+        [TestCase("A", Result = 'A')]
+        [TestCase("0", Result = '0')]
+        [TestCase("ab", Result = (char)0)]
+        public char ToChar_FromString(string input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(byte.MaxValue, Result = (char)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (char)byte.MinValue)]
+        public char ToChar_FromByte(byte input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(sbyte.MaxValue, Result = (char)sbyte.MaxValue)]
+        [TestCase(sbyte.MinValue, Result = (char)0)]
+        public char ToChar_FromSByte(sbyte input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(short.MaxValue, Result = (char)short.MaxValue)]
+        [TestCase(short.MinValue, Result = (char)0)]
+        [TestCase((short)char.MinValue, Result = char.MinValue)]
+        public char ToChar_FromInt16(short input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(ushort.MaxValue, Result = (char)ushort.MaxValue)]
+        [TestCase(ushort.MinValue, Result = (char)ushort.MinValue)]
+        public char ToChar_FromUInt16(ushort input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(int.MaxValue, Result = (char)0)]
+        [TestCase(int.MinValue, Result = (char)0)]
+        [TestCase((int)char.MaxValue, Result = char.MaxValue)]
+        [TestCase((int)char.MinValue, Result = char.MinValue)]
+        public char ToChar_FromInt32(int input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(uint.MaxValue, Result = (char)0)]
+        [TestCase(uint.MinValue, Result = (char)0)]
+        [TestCase((uint)char.MaxValue, Result = char.MaxValue)]
+        public char ToChar_FromUInt32(uint input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(long.MaxValue, Result = (char)0)]
+        [TestCase(long.MinValue, Result = (char)0)]
+        [TestCase((long)char.MaxValue, Result = char.MaxValue)]
+        public char ToChar_FromInt64(long input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(ulong.MaxValue, Result = (char)0)]
+        [TestCase(ulong.MinValue, Result = (char)0)]
+        [TestCase((ulong)char.MaxValue, Result = char.MaxValue)]
+        public char ToChar_FromUInt64(ulong input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase((float)char.MinValue, Result = char.MinValue)]
+        [TestCase(float.MaxValue, Result = (char)0)]
+        [TestCase(float.MinValue, Result = (char)0)]
+        [TestCase((float)char.MinValue - 1f, Result = (char)0)]
+        [TestCase(65f, Result = 'A')]
+        [TestCase(65.5f, Result = 'A')]
+        public char ToChar_FromSingle(float input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase((double)char.MaxValue, Result = char.MaxValue)]
+        [TestCase((double)char.MinValue, Result = char.MinValue)]
+        [TestCase(double.MaxValue, Result = (char)0)]
+        [TestCase(double.MinValue, Result = (char)0)]
+        [TestCase((double)char.MaxValue + 1d, Result = (char)0)]
+        [TestCase((double)char.MinValue - 1d, Result = (char)0)]
+        [TestCase((double)char.MaxValue - 1.5d, Result = (char)(char.MaxValue - 2))]
+        [TestCase(65d, Result = 'A')]
+        [TestCase(65.5d, Result = 'A')]
+        public char ToChar_FromDouble(double input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "DecimalToCharData")]
+        public char ToChar_FromDecimal(decimal input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(false, Result = '0')]
+        [TestCase(true, Result = '1')]
+        public char ToChar_FromBoolean(bool input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        [TestCase(char.MaxValue, Result = char.MaxValue)]
+        [TestCase(char.MinValue, Result = char.MinValue)]
+        public char ToChar_FromChar(char input)
+        {
+            return SafeConvert.ToChar(input);
+        }
+
+        #endregion
+
+        #region ToGuid
+
+        [TestCaseSource(typeof(TestData), "StringToGuidData")]
+        public Guid ToGuid_FromString(string input)
+        {
+            return SafeConvert.ToGuid(input);
+        }
+
+        #endregion
+
         #region ToString
 
         [TestCase(null, Result = null)]

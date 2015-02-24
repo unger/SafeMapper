@@ -7,6 +7,7 @@
     using NUnit.Framework;
 
     using SafeMapper.Tests.Model;
+    using SafeMapper.Tests.Model.Person;
 
     public class TestData
     {
@@ -29,6 +30,8 @@
 
         public TestCaseData[] NonGenericTestData =
             {
+                new TestCaseData(new Person { Name = "Magnus", Age = 37 }, typeof(Person), typeof(string)).Returns("Magnus 37"),
+
                 new TestCaseData(DateTime.MinValue, typeof(DateTime), typeof(SqlDateTime)).Returns(SqlDateTime.MinValue),
                 new TestCaseData(DateTime.MaxValue, typeof(DateTime), typeof(SqlDateTime)).Returns(SqlDateTime.MaxValue),
                 new TestCaseData(SqlDateTime.MinValue, typeof(SqlDateTime), typeof(DateTime)).Returns((DateTime)SqlDateTime.MinValue),
@@ -507,6 +510,12 @@
                 new TestCaseData(0m).Returns(false),
             };
 
+        public TestCaseData[] DecimalToCharData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns((char)0),
+                new TestCaseData(decimal.MinValue).Returns((char)0),
+                new TestCaseData(65m).Returns('A'),
+            };
 
         /************************************************************************/
         /*                                                                      

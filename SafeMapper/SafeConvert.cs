@@ -979,6 +979,16 @@
 
         #region ToChar
 
+        public static char ToChar(string value)
+        {
+            if (value == null || value.Length != 1)
+            {
+                return (char)0;
+            }
+
+            return value[0];
+        }
+
         public static char ToChar(byte value)
         {
             return (char)value;
@@ -1001,7 +1011,7 @@
 
         public static char ToChar(int value)
         {
-            return (value < 0) ? (char)0 : (char)value;
+            return (value < 0 || value > char.MaxValue) ? (char)0 : (char)value;
         }
 
         public static char ToChar(uint value)
@@ -1096,10 +1106,7 @@
             TEnum enumObject;
             if (Enum.TryParse(value, out enumObject))
             {
-                if (Enum.IsDefined(typeof(TEnum), enumObject))
-                {
-                    return enumObject;
-                }
+                return enumObject;
             }
 
             return (TEnum)Enum.GetValues(typeof(TEnum)).GetValue(0);
