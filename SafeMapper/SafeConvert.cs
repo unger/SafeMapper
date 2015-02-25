@@ -1063,6 +1063,11 @@
 
         #region ToDateTime
 
+        public static DateTime ToDateTime(string s)
+        {
+            return ToDateTime(s, CultureInfo.CurrentCulture);
+        }
+
         public static DateTime ToDateTime(string s, IFormatProvider provider)
         {
             DateTime d;

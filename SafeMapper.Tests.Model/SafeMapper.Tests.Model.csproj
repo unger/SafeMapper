@@ -42,10 +42,17 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="AddressDto.cs" />
-    <Compile Include="AnotherEnum.cs" />
+    <Compile Include="Enums\AnotherEnum.cs" />
     <Compile Include="Benchmark\BenchSource.cs" />
     <Compile Include="Benchmark\BenchDestination.cs" />
-    <Compile Include="ExampleEnum.cs" />
+    <Compile Include="Enums\UInt32Enum.cs" />
+    <Compile Include="Enums\UInt64Enum.cs" />
+    <Compile Include="Enums\UInt16Enum.cs" />
+    <Compile Include="Enums\Int16Enum.cs" />
+    <Compile Include="Enums\SByteEnum.cs" />
+    <Compile Include="Enums\ByteEnum.cs" />
+    <Compile Include="Enums\Int32Enum.cs" />
+    <Compile Include="Enums\Int64Enum.cs" />
     <Compile Include="GenericClasses\StructField.cs" />
     <Compile Include="GenericClasses\ClassField.cs" />
     <Compile Include="GenericClasses\StructProperty.cs" />

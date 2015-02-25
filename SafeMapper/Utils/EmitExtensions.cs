@@ -309,7 +309,7 @@
                     {
                         // if it is not possible to convert load enum default value
                         il.Emit(OpCodes.Pop);
-                        il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(0));
+                        il.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
                         return;
                     }
                 }
@@ -325,7 +325,7 @@
                 {
                     jumpTable[i] = il.DefineLabel();
                     il.Emit(OpCodes.Ldloc, switchValue);
-                    il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
+                    il.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(i));
                     il.Emit(OpCodes.Beq, jumpTable[i]);
                 }
 
@@ -335,18 +335,18 @@
                 for (int i = 0; i < enumValues.Length; i++)
                 {
                     il.MarkLabel(jumpTable[i]);
-                    il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(i));
+                    il.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(i));
                     il.Emit(OpCodes.Br_S, endOfMethod);
                 }
 
                 // Default case
                 il.MarkLabel(defaultCase);
-                il.Emit(OpCodes.Ldc_I4, (int)enumValues.GetValue(0));
+                il.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
 
                 il.MarkLabel(endOfMethod);
             }
         }
-
+        
         public static void EmitConvertClass(this ILGenerator il, Type fromType, Type toType)
         {
             var fromLocal = il.DeclareLocal(fromType);
@@ -369,6 +369,48 @@
             }
 
             il.Emit(OpCodes.Ldloc, toLocal);
+        }
+
+        private static void EmitLoadEnumValue(this ILGenerator il, Type type, object enumValue)
+        {
+            if (type == typeof(byte))
+            {
+                il.Emit(OpCodes.Ldc_I4, (int)(byte)enumValue);
+                il.Emit(OpCodes.Conv_U1);
+            }
+            else if (type == typeof(sbyte))
+            {
+                il.Emit(OpCodes.Ldc_I4, (int)(sbyte)enumValue);
+                il.Emit(OpCodes.Conv_I1);
+            }
+            else if (type == typeof(short))
+            {
+                il.Emit(OpCodes.Ldc_I4, (int)(short)enumValue);
+                il.Emit(OpCodes.Conv_I2);
+            }
+            else if (type == typeof(ushort))
+            {
+                il.Emit(OpCodes.Ldc_I4, (int)(ushort)enumValue);
+                il.Emit(OpCodes.Conv_U2);
+            }
+            else if (type == typeof(int))
+            {
+                il.Emit(OpCodes.Ldc_I4, (int)enumValue);
+            }
+            else if (type == typeof(uint))
+            {
+                il.Emit(OpCodes.Ldc_I4, (int)(uint)enumValue);
+                il.Emit(OpCodes.Conv_U4);
+            }
+            else if (type == typeof(long))
+            {
+                il.Emit(OpCodes.Ldc_I8, (long)enumValue);
+            }
+            else if (type == typeof(ulong))
+            {
+                il.Emit(OpCodes.Ldc_I8, (long)(ulong)enumValue);
+                il.Emit(OpCodes.Conv_U8);
+            }
         }
     }
 }

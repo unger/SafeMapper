@@ -1,4 +1,4 @@
-﻿namespace SafeMapper.Tests.Model
+﻿namespace SafeMapper.Tests.Model.Enums
 {
     public enum AnotherEnum
     {

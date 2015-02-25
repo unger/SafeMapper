@@ -7,6 +7,7 @@
     using NUnit.Framework;
 
     using SafeMapper.Tests.Model;
+    using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.Person;
 
     public class TestData
@@ -49,44 +50,44 @@
                 new TestCaseData(true, typeof(bool?), typeof(string)).Returns("True"),
                 new TestCaseData(null, typeof(bool?), typeof(string)).Returns(null),
 
-                new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(int)).Returns(0),
-                new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(int)).Returns(1),
-                new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(int)).Returns(2),
-                new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(int)).Returns(3),
+                new TestCaseData(Int32Enum.Undefined, typeof(Int32Enum), typeof(int)).Returns(0),
+                new TestCaseData(Int32Enum.Value1, typeof(Int32Enum), typeof(int)).Returns(1),
+                new TestCaseData(Int32Enum.Value2, typeof(Int32Enum), typeof(int)).Returns(2),
+                new TestCaseData(Int32Enum.Value3, typeof(Int32Enum), typeof(int)).Returns(3),
                 
-                new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(string)).Returns("Undefined"),
-                new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(string)).Returns("Value1"),
-                new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(string)).Returns("Value2"),
-                new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(string)).Returns("Value3"),
+                new TestCaseData(Int32Enum.Undefined, typeof(Int32Enum), typeof(string)).Returns("Undefined"),
+                new TestCaseData(Int32Enum.Value1, typeof(Int32Enum), typeof(string)).Returns("Value1"),
+                new TestCaseData(Int32Enum.Value2, typeof(Int32Enum), typeof(string)).Returns("Value2"),
+                new TestCaseData(Int32Enum.Value3, typeof(Int32Enum), typeof(string)).Returns("Value3"),
                 
-                new TestCaseData(null, typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData(string.Empty, typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData("Undefined", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData("Value1", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
-                new TestCaseData("Value2", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value2),
-                new TestCaseData("Value3", typeof(string), typeof(ExampleEnum)).Returns(ExampleEnum.Value3),
+                new TestCaseData(null, typeof(string), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData(string.Empty, typeof(string), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData("Undefined", typeof(string), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData("Value1", typeof(string), typeof(Int32Enum)).Returns(Int32Enum.Value1),
+                new TestCaseData("Value2", typeof(string), typeof(Int32Enum)).Returns(Int32Enum.Value2),
+                new TestCaseData("Value3", typeof(string), typeof(Int32Enum)).Returns(Int32Enum.Value3),
                 
-                new TestCaseData(-1, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData(0, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData(1, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
-                new TestCaseData(2, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Value2),
-                new TestCaseData(3, typeof(int), typeof(ExampleEnum)).Returns(ExampleEnum.Value3),
+                new TestCaseData(-1, typeof(int), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData(0, typeof(int), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData(1, typeof(int), typeof(Int32Enum)).Returns(Int32Enum.Value1),
+                new TestCaseData(2, typeof(int), typeof(Int32Enum)).Returns(Int32Enum.Value2),
+                new TestCaseData(3, typeof(int), typeof(Int32Enum)).Returns(Int32Enum.Value3),
 
-                new TestCaseData(ExampleEnum.Undefined, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Undefined),
-                new TestCaseData(ExampleEnum.Value1, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Value1),
-                new TestCaseData(ExampleEnum.Value2, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Value2),
-                new TestCaseData(ExampleEnum.Value3, typeof(ExampleEnum), typeof(AnotherEnum)).Returns(AnotherEnum.Undefined),
+                new TestCaseData(Int32Enum.Undefined, typeof(Int32Enum), typeof(AnotherEnum)).Returns(AnotherEnum.Undefined),
+                new TestCaseData(Int32Enum.Value1, typeof(Int32Enum), typeof(AnotherEnum)).Returns(AnotherEnum.Value1),
+                new TestCaseData(Int32Enum.Value2, typeof(Int32Enum), typeof(AnotherEnum)).Returns(AnotherEnum.Value2),
+                new TestCaseData(Int32Enum.Value3, typeof(Int32Enum), typeof(AnotherEnum)).Returns(AnotherEnum.Undefined),
 
-                new TestCaseData((short)-1, typeof(short), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData((short)0, typeof(short), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData((short)1, typeof(short), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
+                new TestCaseData((short)-1, typeof(short), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData((short)0, typeof(short), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData((short)1, typeof(short), typeof(Int32Enum)).Returns(Int32Enum.Value1),
 
-                new TestCaseData((long)-1, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData((long)0, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
-                new TestCaseData((long)1, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Value1),
-                new TestCaseData(long.MaxValue, typeof(long), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+                new TestCaseData((long)-1, typeof(long), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData((long)0, typeof(long), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
+                new TestCaseData((long)1, typeof(long), typeof(Int32Enum)).Returns(Int32Enum.Value1),
+                new TestCaseData(long.MaxValue, typeof(long), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
 
-                new TestCaseData(DateTime.MinValue, typeof(DateTime), typeof(ExampleEnum)).Returns(ExampleEnum.Undefined),
+                new TestCaseData(DateTime.MinValue, typeof(DateTime), typeof(Int32Enum)).Returns(Int32Enum.Undefined),
 
                 // Primitive numeric conversions
                 // byte
@@ -712,6 +713,27 @@
                 new TestCaseData(new DateTime(1977, 03, 04)).Returns(new DateTime(1977, 03, 04).ToString()),
                 new TestCaseData(new DateTime(1977, 03, 04, 13, 37, 00)).Returns(new DateTime(1977, 03, 04, 13, 37, 0).ToString()),
             };
+
+        public TestCaseData[] DateTimeToSqlDateTimeData =
+            {
+                new TestCaseData(DateTime.MinValue).Returns(SqlDateTime.MinValue),
+                new TestCaseData(DateTime.MaxValue).Returns(SqlDateTime.MaxValue),
+            };
+
+        /************************************************************************/
+        /*                                                                      
+        /*   SqlDateTime                                                              
+        /*                                                                      
+        /************************************************************************/
+
+        public TestCaseData[] SqlDateTimeToDateTimeData =
+            {
+                new TestCaseData(SqlDateTime.MinValue).Returns((DateTime)SqlDateTime.MinValue),
+                new TestCaseData(SqlDateTime.MaxValue).Returns((DateTime)SqlDateTime.MaxValue),
+            };
+
+
+
 
     }
 }

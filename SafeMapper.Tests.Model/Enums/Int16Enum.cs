@@ -1,6 +1,6 @@
-﻿namespace SafeMapper.Tests.Model
+﻿namespace SafeMapper.Tests.Model.Enums
 {
-    public enum ExampleEnum
+    public enum Int16Enum : short
     {
         Undefined = 0,
         Value1 = 1,

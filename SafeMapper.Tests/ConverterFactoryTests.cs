@@ -7,6 +7,8 @@
 
     using NUnit.Framework;
 
+    using SafeMapper.Tests.Model;
+    using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.GenericClasses;
     using SafeMapper.Tests.Model.Person;
     using SafeMapper.Utils;
@@ -451,7 +453,127 @@
             Assert.IsInstanceOf<ICollection<string>>(result);
             Assert.AreEqual(expected, result);
         }
-        
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Enum                                                              
+        /*                                                                      
+        /************************************************************************/
+
+        [TestCase((byte)0, Result = ByteEnum.Undefined)]
+        [TestCase((byte)1, Result = ByteEnum.Value1)]
+        [TestCase((byte)2, Result = ByteEnum.Value2)]
+        [TestCase((byte)3, Result = ByteEnum.Value3)]
+        [TestCase((byte)4, Result = ByteEnum.Undefined)]
+        public ByteEnum ToByteEnum_FromByte(byte input)
+        {
+            var converter = ConverterFactory.CreateDelegate<byte, ByteEnum>();
+            return converter(input);
+        }
+
+        [TestCase((byte)0, Result = SByteEnum.Undefined)]
+        [TestCase((byte)1, Result = SByteEnum.Value1)]
+        [TestCase((byte)2, Result = SByteEnum.Value2)]
+        [TestCase((byte)3, Result = SByteEnum.Value3)]
+        [TestCase((byte)4, Result = SByteEnum.Undefined)]
+        public SByteEnum ToSByteEnum_FromByte(byte input)
+        {
+            var converter = ConverterFactory.CreateDelegate<byte, SByteEnum>();
+            return converter(input);
+        }
+
+        [TestCase((byte)0, Result = Int16Enum.Undefined)]
+        [TestCase((byte)1, Result = Int16Enum.Value1)]
+        [TestCase((byte)2, Result = Int16Enum.Value2)]
+        [TestCase((byte)3, Result = Int16Enum.Value3)]
+        [TestCase((byte)4, Result = Int16Enum.Undefined)]
+        public Int16Enum ToInt16Enum_FromByte(byte input)
+        {
+            var converter = ConverterFactory.CreateDelegate<byte, Int16Enum>();
+            return converter(input);
+        }
+
+        [TestCase((byte)0, Result = UInt16Enum.Undefined)]
+        [TestCase((byte)1, Result = UInt16Enum.Value1)]
+        [TestCase((byte)2, Result = UInt16Enum.Value2)]
+        [TestCase((byte)3, Result = UInt16Enum.Value3)]
+        [TestCase((byte)4, Result = UInt16Enum.Undefined)]
+        public UInt16Enum ToUInt16Enum_FromByte(byte input)
+        {
+            var converter = ConverterFactory.CreateDelegate<byte, UInt16Enum>();
+            return converter(input);
+        }
+
+        [TestCase(-1, Result = Int32Enum.Undefined)]
+        [TestCase(0, Result = Int32Enum.Undefined)]
+        [TestCase(1, Result = Int32Enum.Value1)]
+        [TestCase(2, Result = Int32Enum.Value2)]
+        [TestCase(3, Result = Int32Enum.Value3)]
+        [TestCase(4, Result = Int32Enum.Undefined)]
+        public Int32Enum ToInt32Enum_FromInt32(int input)
+        {
+            var converter = ConverterFactory.CreateDelegate<int, Int32Enum>();
+            return converter(input);
+        }
+
+        [TestCase(-1, Result = UInt32Enum.Undefined)]
+        [TestCase(0, Result = UInt32Enum.Undefined)]
+        [TestCase(1, Result = UInt32Enum.Value1)]
+        [TestCase(2, Result = UInt32Enum.Value2)]
+        [TestCase(3, Result = UInt32Enum.Value3)]
+        [TestCase(4, Result = UInt32Enum.Undefined)]
+        public UInt32Enum ToUInt32Enum_FromInt32(int input)
+        {
+            var converter = ConverterFactory.CreateDelegate<int, UInt32Enum>();
+            return converter(input);
+        }
+
+        [TestCase(-1L, Result = Int32Enum.Undefined)]
+        [TestCase(0L, Result = Int32Enum.Undefined)]
+        [TestCase(1L, Result = Int32Enum.Value1)]
+        [TestCase(2L, Result = Int32Enum.Value2)]
+        [TestCase(3L, Result = Int32Enum.Value3)]
+        [TestCase(4L, Result = Int32Enum.Undefined)]
+        public Int32Enum ToInt32Enum_FromInt64(long input)
+        {
+            var converter = ConverterFactory.CreateDelegate<long, Int32Enum>();
+            return converter(input);
+        }
+
+        [TestCase(-1L, Result = Int64Enum.Undefined)]
+        [TestCase(0L, Result = Int64Enum.Undefined)]
+        [TestCase(1L, Result = Int64Enum.Value1)]
+        [TestCase(long.MinValue, Result = Int64Enum.Min)]
+        [TestCase(long.MaxValue, Result = Int64Enum.Max)]
+        [TestCase(4L, Result = Int64Enum.Undefined)]
+        public Int64Enum ToInt64Enum_FromInt64(long input)
+        {
+            var converter = ConverterFactory.CreateDelegate<long, Int64Enum>();
+            return converter(input);
+        }
+
+        [TestCase(-1L, Result = UInt64Enum.Undefined)]
+        [TestCase(0L, Result = UInt64Enum.Undefined)]
+        [TestCase(1L, Result = UInt64Enum.Value1)]
+        [TestCase(long.MinValue, Result = UInt64Enum.Undefined)]
+        [TestCase(long.MaxValue, Result = UInt64Enum.Undefined)]
+        [TestCase(4L, Result = UInt64Enum.Undefined)]
+        public UInt64Enum ToUInt64Enum_FromInt64(long input)
+        {
+            var converter = ConverterFactory.CreateDelegate<long, UInt64Enum>();
+            return converter(input);
+        }
+
+        [TestCase(0UL, Result = UInt64Enum.Undefined)]
+        [TestCase(1UL, Result = UInt64Enum.Value1)]
+        [TestCase(ulong.MinValue, Result = UInt64Enum.Undefined)]
+        [TestCase(ulong.MaxValue, Result = UInt64Enum.Max)]
+        [TestCase(4UL, Result = UInt64Enum.Undefined)]
+        public UInt64Enum ToUInt64Enum_FromUInt64(ulong input)
+        {
+            var converter = ConverterFactory.CreateDelegate<ulong, UInt64Enum>();
+            return converter(input);
+        }
 
         /************************************************************************/
         /*                                                                      
@@ -478,6 +600,7 @@
 
             Assert.AreEqual("1", result);
         }
+
         [Test]
         public void CreateDelegate_NonGenericStringToInt()
         {

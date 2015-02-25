@@ -11,6 +11,7 @@ namespace SafeMapper.Tests
     using NUnit.Framework;
 
     using SafeMapper.Tests.Model;
+    using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Utils;
 
     [TestFixture]
@@ -43,7 +44,7 @@ namespace SafeMapper.Tests
         public void EmitConvertFromEnum_FromEnum_ShouldNotThrowException()
         {
             Assert.DoesNotThrow(
-                () => EmitExtensions.EmitConvertFromEnum(this.ilgenerator, typeof(ExampleEnum), typeof(int)));
+                () => EmitExtensions.EmitConvertFromEnum(this.ilgenerator, typeof(Int32Enum), typeof(int)));
         }
 
         [Test]
@@ -58,7 +59,7 @@ namespace SafeMapper.Tests
         public void EmitConvertToEnum_ToEnum_ShouldNotThrowException()
         {
             Assert.DoesNotThrow(
-                () => EmitExtensions.EmitConvertToEnum(this.ilgenerator, typeof(string), typeof(ExampleEnum)));
+                () => EmitExtensions.EmitConvertToEnum(this.ilgenerator, typeof(string), typeof(Int32Enum)));
         }
 
 

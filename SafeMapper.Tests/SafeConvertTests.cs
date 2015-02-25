@@ -1,6 +1,7 @@
 ﻿namespace SafeMapper.Tests
 {
     using System;
+    using System.Data.SqlTypes;
     using System.Globalization;
 
     using NUnit.Framework;
@@ -1557,6 +1558,38 @@
         public Guid ToGuid_FromString(string input)
         {
             return SafeConvert.ToGuid(input);
+        }
+
+        #endregion
+
+        #region ToDateTime
+
+        [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
+        public DateTime ToDateTime_FromString(string input)
+        {
+            return SafeConvert.ToDateTime(input);
+        }
+
+        [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
+        public DateTime ToDateTime_FromStringWithFormat(string input)
+        {
+            return SafeConvert.ToDateTime(input, CultureInfo.InvariantCulture);
+        }
+
+        [TestCaseSource(typeof(TestData), "SqlDateTimeToDateTimeData")]
+        public DateTime ToDateTime_FromSqlDateTime(SqlDateTime input)
+        {
+            return SafeConvert.ToDateTime(input);
+        }
+
+        #endregion
+
+        #region ToSqlDateTime
+
+        [TestCaseSource(typeof(TestData), "DateTimeToSqlDateTimeData")]
+        public SqlDateTime ToSqlDateTime_FromSqlDateTime(DateTime input)
+        {
+            return SafeConvert.ToSqlDateTime(input);
         }
 
         #endregion
