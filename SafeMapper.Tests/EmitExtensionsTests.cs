@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SafeMapper.Tests
+﻿namespace SafeMapper.Tests
 {
+    using System;
     using System.Reflection.Emit;
 
     using NUnit.Framework;
 
-    using SafeMapper.Tests.Model;
     using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Utils;
 

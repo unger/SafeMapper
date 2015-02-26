@@ -77,31 +77,40 @@
         {
             // Load toLocal as parameter for the setter
             il.Emit(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
+            if (toMember.MemberSetterType == MemberType.StringIndexer)
+            {
+                il.Emit(OpCodes.Ldstr, toMember.Name);
+            }
 
             // Load fromLocal as parameter for the getter
             il.Emit(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
 
-            if (fromMember.Member is PropertyInfo)
+            if (fromMember.MemberGetter is PropertyInfo)
             {
-                var getter = (fromMember.Member as PropertyInfo).GetGetMethod();
+                var getter = (fromMember.MemberGetter as PropertyInfo).GetGetMethod();
+                if (fromMember.MemberGetterType == MemberType.StringIndexer)
+                {
+                    il.Emit(OpCodes.Ldstr, fromMember.Name);
+                }
+
                 il.Emit(OpCodes.Callvirt, getter);
             }
-            else if (fromMember.Member is FieldInfo)
+            else if (fromMember.MemberGetter is FieldInfo)
             {
-                il.Emit(OpCodes.Ldfld, fromMember.Member as FieldInfo);
+                il.Emit(OpCodes.Ldfld, fromMember.MemberGetter as FieldInfo);
             }
 
             // Convert the value on top of the stack to the correct toType
             il.EmitConvertValue(fromMember.Type, toMember.Type);
 
-            if (toMember.Member is PropertyInfo)
+            if (toMember.MemberSetter is PropertyInfo)
             {
-                var setter = (toMember.Member as PropertyInfo).GetSetMethod();
+                var setter = (toMember.MemberSetter as PropertyInfo).GetSetMethod();
                 il.Emit(OpCodes.Callvirt, setter);
             }
-            else if (toMember.Member is FieldInfo)
+            else if (toMember.MemberSetter is FieldInfo)
             {
-                il.Emit(OpCodes.Stfld, toMember.Member as FieldInfo);
+                il.Emit(OpCodes.Stfld, toMember.MemberSetter as FieldInfo);
             }
         }
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Data.SqlTypes;
     using System.Globalization;
 
@@ -625,6 +626,58 @@
             var converter = ConverterFactory.CreateDelegate(fromType, toType);
 
             return converter(input);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertNameValueCollectionToPerson_ShouldReturnPersonWithCorrectValues()
+        {
+            var converter = ConverterFactory.CreateDelegate<NameValueCollection, Person>();
+            var person = new Person
+            {
+                Id = Guid.NewGuid(),
+                Name = "Magnus",
+                Age = 37,
+                Length = 182.5m,
+                BirthDate = new DateTime(1977, 03, 04)
+            };
+            var input = new NameValueCollection();
+            input.Add("Id", person.Id.ToString());
+            input.Add("Name", person.Name);
+            input.Add("Age", person.Age.ToString());
+            input.Add("Length", person.Length.ToString());
+            input.Add("BirthDate", person.BirthDate.ToString());
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<Person>(result);
+            Assert.AreEqual(person.Id, result.Id);
+            Assert.AreEqual(person.Name, result.Name);
+            Assert.AreEqual(person.Age, result.Age);
+            Assert.AreEqual(person.Length, result.Length);
+            Assert.AreEqual(person.BirthDate, result.BirthDate);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertPersonToNameValueCollection()
+        {
+            var converter = ConverterFactory.CreateDelegate<Person, NameValueCollection>();
+            var person = new Person
+            {
+                Id = Guid.NewGuid(),
+                Name = "Magnus",
+                Age = 37,
+                Length = 182.5m,
+                BirthDate = new DateTime(1977, 03, 04)
+            };
+
+            var result = converter(person);
+
+            Assert.IsInstanceOf<NameValueCollection>(result);
+            Assert.AreEqual(person.Id.ToString(), result["Id"]);
+            Assert.AreEqual(person.Name, result["Name"]);
+            Assert.AreEqual(person.Age.ToString(), result["Age"]);
+            Assert.AreEqual(person.Length.ToString(), result["Length"]);
+            Assert.AreEqual(person.BirthDate.ToString(), result["BirthDate"]);
         }
 
         [Test]

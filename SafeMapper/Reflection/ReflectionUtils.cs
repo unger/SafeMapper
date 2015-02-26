@@ -42,11 +42,17 @@
             }
             else if (type == typeof(NameValueCollection))
             {
+                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                if (itemIndexer != null)
+                {
+                    return new MemberWrapper(name, itemIndexer);
+                }
+                /*
                 var getValuesMethod = type.GetMethod("GetValues", new[] { typeof(string) });
                 if (getValuesMethod != null)
                 {
                     return new MemberWrapper(name, getValuesMethod);
-                }
+                }*/
             }
 
             var propertyInfo = type.GetProperty(name);
@@ -85,6 +91,11 @@
             }
 
             return false;
+        }
+
+        public static bool IsDictionary(Type type)
+        {
+            return type == typeof(NameValueCollection);
         }
 
         public static Type GetElementType(Type type)
@@ -150,16 +161,37 @@
         {
             var result = new List<Tuple<MemberWrapper, MemberWrapper>>();
 
-            var fromMembers = GetMembers(fromType);
-            var toMembers = GetMembers(toType).ToDictionary(m => m.Name);
+            var fromIsDictionary = IsDictionary(fromType);
+            var toIsDictionary = IsDictionary(toType);
 
-            foreach (var fromMember in fromMembers)
+            var fromMembers = GetMembers(fromType);
+            var toMembers = GetMembers(toType);
+
+            if (fromIsDictionary && toIsDictionary)
             {
-                if (fromMember.CanRead)
+                // Do nothing
+            }
+            else if (fromIsDictionary)
+            {
+                foreach (var toMember in toMembers)
                 {
-                    if (toMembers.ContainsKey(fromMember.Name))
+                    if (toMember.CanWrite)
                     {
-                        var toMember = toMembers[fromMember.Name];
+                        var fromMember = GetMember(fromType, toMember.Name);
+                        if (fromMember.CanRead)
+                        {
+                            result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
+                        }
+                    }
+                }
+            }
+            else if (toIsDictionary)
+            {
+                foreach (var fromMember in fromMembers)
+                {
+                    if (fromMember.CanRead)
+                    {
+                        var toMember = GetMember(toType, fromMember.Name);
                         if (toMember.CanWrite)
                         {
                             result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
@@ -167,6 +199,25 @@
                     }
                 }
             }
+            else
+            {
+                var toMembersDict = toMembers.ToDictionary(m => m.Name);
+                foreach (var fromMember in fromMembers)
+                {
+                    if (fromMember.CanRead)
+                    {
+                        if (toMembersDict.ContainsKey(fromMember.Name))
+                        {
+                            var toMember = toMembersDict[fromMember.Name];
+                            if (toMember.CanWrite)
+                            {
+                                result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
+                            }
+                        }
+                    }
+                }
+            }
+
 
             return result;
         }

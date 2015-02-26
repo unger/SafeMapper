@@ -19,6 +19,8 @@ The project is highly influenced by AutoMapper, EmitMapper and FastMapper.
 - Support for public Fields and Properties
 - Support for interfaces IEnumerable<T>, IList<T>, ICollection<T> etc
 - Basic Enum conversion to and from int and string
+- Conversion from NameValueCollection to Object
+- Conversion from Object to NameValueCollection
 
 ##Installation
 
@@ -55,7 +57,7 @@ Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests
 
 - Extended support for Enums with DisplayNameAttribute/DescriptionAttribute
 - Support for circular referencies between objects
-- Mapping support to and from Dictionary<sting, T> and NameValueCollection
+- Mapping support to and from Dictionary<sting, T>
 - Configuration support to enable mapping fields/properties with different names
 - Map from Database queries to c# object
 - Map Lucene documents to c# object

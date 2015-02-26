@@ -69,6 +69,12 @@
             Assert.Null(member);
         }
 
+        [TestCase(typeof(NameValueCollection), Result = true)]
+        public bool IsDictionary(Type type)
+        {
+            return ReflectionUtils.IsDictionary(type);
+        }
+
         [Test]
         public void GetElementType_ArrayOfInt_ShouldReturnInt()
         {
