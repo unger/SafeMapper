@@ -1,5 +1,7 @@
 ﻿namespace SafeMapper.Tests
 {
+    using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.Specialized;
 
@@ -60,6 +62,14 @@
         }
 
         [Test]
+        public void GetMember_MethodInfo_ShouldReturnNull()
+        {
+            var member = ReflectionUtils.GetMember(typeof(int), "ToString");
+
+            Assert.Null(member);
+        }
+
+        [Test]
         public void GetElementType_ArrayOfInt_ShouldReturnInt()
         {
             var type = ReflectionUtils.GetElementType(typeof(int[]));
@@ -92,13 +102,60 @@
         }
 
         [Test]
+        public void GetConcreteType_IEnumerable_ShouldReturnNull()
+        {
+            var type = ReflectionUtils.GetConcreteType(typeof(IEnumerable));
+
+            Assert.Null(type);
+        }
+
+        [Test]
         public void GetConcreteType_Int_ShouldReturnInt()
         {
             var type = ReflectionUtils.GetConcreteType(typeof(int));
 
             Assert.AreEqual(typeof(int), type);
         }
-        
 
+        [Test]
+        public void GetConcreteTypeDefinition_IList_ShouldReturnList()
+        {
+            var type = ReflectionUtils.GetConcreteTypeDefinition(typeof(IList<>));
+
+            Assert.AreEqual(typeof(List<>), type);
+        }
+
+        [Test]
+        public void GetConcreteTypeDefinition_List_ShouldReturnList()
+        {
+            var type = ReflectionUtils.GetConcreteTypeDefinition(typeof(List<>));
+
+            Assert.AreEqual(typeof(List<>), type);
+        }
+
+        [Test]
+        public void GetConcreteTypeDefinition_IEnumerable_ShouldReturnNull()
+        {
+            var type = ReflectionUtils.GetConcreteTypeDefinition(typeof(IEnumerable));
+
+            Assert.Null(type);
+        }
+
+        [Test]
+        public void GetConvertMethod_IEnumerable_ShouldReturnNull()
+        {
+            var method = ReflectionUtils.GetConvertMethod(typeof(string), typeof(string), new[] { typeof(SafeConvert) });
+
+            Assert.Null(method);
+        }
+
+        [Test]
+        public void GetMemberType_ConstructorInfo_ShouldReturnVoid()
+        {
+            var constructor = typeof(int).GetConstructor(Type.EmptyTypes);
+            var type = ReflectionUtils.GetMemberType(constructor);
+
+            Assert.AreEqual(typeof(void), type);
+        }
     }
 }

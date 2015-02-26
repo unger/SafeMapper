@@ -114,6 +114,8 @@
                     var concreteTypeDefinition = GetConcreteTypeDefinition(genericTypeDefinition);
                     return concreteTypeDefinition.MakeGenericType(elementType);
                 }
+
+                return null;
             }
 
             return type;
@@ -137,6 +139,8 @@
                 {
                     return typeof(HashSet<>);
                 }
+
+                return null;
             }
 
             return typedefinition;
