@@ -457,9 +457,57 @@
 
         /************************************************************************/
         /*                                                                      
-        /*   Enum                                                              
+        /*   Convert From Enum                                                              
         /*                                                                      
         /************************************************************************/
+
+        [TestCase(ByteEnum.Undefined, Result = (byte)0)]
+        [TestCase(ByteEnum.Value1, Result = (byte)1)]
+        [TestCase(ByteEnum.Value2, Result = (byte)2)]
+        [TestCase(ByteEnum.Value3, Result = (byte)3)]
+        public byte ToByte_FromByteEnum(ByteEnum input)
+        {
+            var converter = ConverterFactory.CreateDelegate<ByteEnum, byte>();
+            return converter(input);
+        }
+
+        [TestCase(ByteEnum.Undefined, Result = (long)0)]
+        [TestCase(ByteEnum.Value1, Result = (long)1)]
+        [TestCase(ByteEnum.Value2, Result = (long)2)]
+        [TestCase(ByteEnum.Value3, Result = (long)3)]
+        public long ToInt64_FromByteEnum(ByteEnum input)
+        {
+            var converter = ConverterFactory.CreateDelegate<ByteEnum, long>();
+            return converter(input);
+        }
+
+
+        [TestCase(Int64Enum.Undefined, Result = (byte)0)]
+        [TestCase(Int64Enum.Value1, Result = (byte)1)]
+        [TestCase(Int64Enum.Min, Result = (byte)0)]
+        [TestCase(Int64Enum.Max, Result = (byte)0)]
+        public byte ToByte_FromInt64Enum(Int64Enum input)
+        {
+            var converter = ConverterFactory.CreateDelegate<Int64Enum, byte>();
+            return converter(input);
+        }
+
+        /************************************************************************/
+        /*                                                                      
+        /*   Convert To Enum                                                              
+        /*                                                                      
+        /************************************************************************/
+
+        [TestCase("Undefined", Result = ByteEnum.Undefined)]
+        [TestCase("Value1", Result = ByteEnum.Value1)]
+        [TestCase("Value2", Result = ByteEnum.Value2)]
+        [TestCase("Value3", Result = ByteEnum.Value3)]
+        [TestCase("Value4", Result = ByteEnum.Undefined)]
+        public ByteEnum ToByteEnum_FromString(string input)
+        {
+            var converter = ConverterFactory.CreateDelegate<string, ByteEnum>();
+            return converter(input);
+        }
 
         [TestCase((byte)0, Result = ByteEnum.Undefined)]
         [TestCase((byte)1, Result = ByteEnum.Value1)]
@@ -626,6 +674,18 @@
             var converter = ConverterFactory.CreateDelegate(fromType, toType);
 
             return converter(input);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertNameValueCollectionWithUnMatchedKey_ShouldReturnObjectWithDefaultValue()
+        {
+            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
+            var input = new NameValueCollection { { "Value2", "37" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ClassProperty<int>>(result);
+            Assert.AreEqual(0, result.Value);
         }
 
         [Test]

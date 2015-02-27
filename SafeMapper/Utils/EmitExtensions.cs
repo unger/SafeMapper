@@ -279,6 +279,23 @@
             {
                 il.EmitCallToString(fromType);
             }
+            else
+            {
+                var underlayingFromType = fromType.GetEnumUnderlyingType();
+
+                if (toType != underlayingFromType)
+                {
+                    var converter = ReflectionUtils.GetConvertMethod(
+                        underlayingFromType,
+                        toType,
+                        new[] { typeof(SafeConvert) });
+
+                    if (converter != null && converter.GetParameters().Length == 1)
+                    {
+                        il.EmitCall(OpCodes.Call, converter, null);
+                    }
+                }
+            }
         }
 
         public static void EmitConvertToEnum(this ILGenerator il, Type fromType, Type toType)
