@@ -1104,21 +1104,6 @@
 
         #endregion
 
-        #region Enums
-
-        public static TEnum EnumTryParse<TEnum>(string value) where TEnum : struct
-        {
-            TEnum enumObject;
-            if (Enum.TryParse(value, out enumObject))
-            {
-                return enumObject;
-            }
-
-            return (TEnum)Enum.GetValues(typeof(TEnum)).GetValue(0);
-        }
-
-        #endregion
-
         #region Other
 
         public static char[] ToCharArray(string value)
