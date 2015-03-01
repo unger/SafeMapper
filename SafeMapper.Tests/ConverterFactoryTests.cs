@@ -695,6 +695,26 @@
             return converter(input);
         }
 
+        [TestCase(DisplayAttributeEnum.Undefined, Result = "Undefined")]
+        [TestCase(DisplayAttributeEnum.Value1, Result = "Value 1")]
+        [TestCase(DisplayAttributeEnum.Value2, Result = "Value 2")]
+        [TestCase(DisplayAttributeEnum.Value3, Result = "Value 3")]
+        public string ToString_FromDisplayAttributeEnum(DisplayAttributeEnum input)
+        {
+            var converter = ConverterFactory.CreateDelegate<DisplayAttributeEnum, string>();
+            return converter(input);
+        }
+
+        [TestCase(DescriptionAttributeEnum.Undefined, Result = "Undefined")]
+        [TestCase(DescriptionAttributeEnum.Value1, Result = "Value 1")]
+        [TestCase(DescriptionAttributeEnum.Value2, Result = "Value 2")]
+        [TestCase(DescriptionAttributeEnum.Value3, Result = "Value 3")]
+        public string ToString_FromDisplayAttributeEnum(DescriptionAttributeEnum input)
+        {
+            var converter = ConverterFactory.CreateDelegate<DescriptionAttributeEnum, string>();
+            return converter(input);
+        }
+
         /************************************************************************/
         /*                                                                      
         /*   Misc                                                              

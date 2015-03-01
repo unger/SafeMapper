@@ -17,6 +17,7 @@
     using SafeMapper.Profiler.AutoMapperHelpers;
     using SafeMapper.Tests.Model;
     using SafeMapper.Tests.Model.Benchmark;
+    using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.Person;
 
     public class ProfileConversion : ProfileBase
@@ -41,6 +42,11 @@
             var personStringArray = new PersonStringDto[maxIterations];
             var addressArray = new Address[maxIterations];
             var benchSourceArray = new BenchSource[maxIterations];
+            var displayResourceEnumArray = new DisplayAttributeResourceEnum[maxIterations];
+            var displayResxEnumArray = new DisplayAttributeResxEnum[maxIterations];
+            var displayEnumArray = new DisplayAttributeEnum[maxIterations];
+            var descriptionEnumArray = new DescriptionAttributeEnum[maxIterations];
+            var int32EnumArray = new Int32Enum[maxIterations];
 
             var benchSource = new BenchSource();
 
@@ -81,6 +87,12 @@
                                           Street = "Street 1"
                                       };
                 benchSourceArray[i] = benchSource;
+
+                displayResourceEnumArray[i] = (DisplayAttributeResourceEnum)(i % 4);
+                displayResxEnumArray[i] = (DisplayAttributeResxEnum)(i % 4);
+                displayEnumArray[i] = (DisplayAttributeEnum)(i % 4);
+                descriptionEnumArray[i] = (DescriptionAttributeEnum)(i % 4);
+                int32EnumArray[i] = (Int32Enum)(i % 4);
             }
 
             // FromString conversions
@@ -92,7 +104,7 @@
 
             //this.ProfileConvert<int, ExampleEnum>(intArray, formatProvider, null);
 
-            this.ProfileConvert<double, decimal>(doubleArray, formatProvider, i => Convert.ToDecimal(doubleArray[i]));
+            //this.ProfileConvert<double, decimal>(doubleArray, formatProvider, i => Convert.ToDecimal(doubleArray[i]));
             //this.ProfileConvert<decimal, double>(decimalArray, formatProvider, i => Convert.ToDouble(decimalArray[i]));
             //this.ProfileConvert<int, string>(intArray, formatProvider, i => intArray[i].ToString(formatProvider));
             /*this.ProfileConvert<int, int>(intArray, formatProvider, i => Convert.ChangeType(i, typeof(int)));
@@ -120,10 +132,16 @@
             //this.ProfileConvert<Person, PersonStruct>(personArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
+
+            this.ProfileConvert<DisplayAttributeResourceEnum, string>(displayResourceEnumArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<DisplayAttributeResxEnum, string>(displayResxEnumArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<DisplayAttributeEnum, string>(displayEnumArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<DescriptionAttributeEnum, string>(descriptionEnumArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<Int32Enum, string>(int32EnumArray, CultureInfo.CurrentCulture, null);
             
         }
 
-        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc) where TDestination : new()
+        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
         {
             var safeMapper = SafeMap.GetConverter<TSource, TDestination>();
             var sourceType = typeof(TSource);
@@ -165,12 +183,13 @@
 
             //this.AddResult("fFastMapper", i => fFastMapper.Map(input[i]));
 
+            /*
             this.AddResult("ValueInjecter",
                 i =>
                     {
                         var result = new TDestination();
                         result.InjectFrom(input[i]);
-                    });
+                    });*/
 
             /*
             this.AddResult(

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -10,21 +11,21 @@
 
     public static class EmitExtensions
     {
-        public static void EmitConvertArray(this ILGenerator il, Type fromType, Type toType)
+        public static void EmitConvertArray(this ILGeneratorAdapter il, Type fromType, Type toType)
         {
             var fromLocal = il.DeclareLocal(fromType);
             var toLocal = il.DeclareLocal(toType);
 
             // Store value on top of stack into fromLocal
-            il.Emit(OpCodes.Stloc, fromLocal);
+            il.EmitLocal(OpCodes.Stloc, fromLocal);
 
             // Load length from fromLocal
-            il.Emit(OpCodes.Ldloc, fromLocal);
+            il.EmitLocal(OpCodes.Ldloc, fromLocal);
             il.Emit(OpCodes.Ldlen);
 
             // Create new array and store it in toLocal
             il.Emit(OpCodes.Newarr, toLocal.LocalType.GetElementType());
-            il.Emit(OpCodes.Stloc, toLocal);
+            il.EmitLocal(OpCodes.Stloc, toLocal);
 
             var fromElementType = fromType.GetElementType();
             var toElementType = toType.GetElementType();
@@ -33,26 +34,26 @@
             Label afterLoop = il.DefineLabel();
             LocalBuilder arrayIndex = il.DeclareLocal(typeof(int));
 
-            il.Emit(OpCodes.Ldloc, fromLocal);
+            il.EmitLocal(OpCodes.Ldloc, fromLocal);
             il.Emit(OpCodes.Ldlen);
-            il.Emit(OpCodes.Stloc, arrayIndex);
+            il.EmitLocal(OpCodes.Stloc, arrayIndex);
 
             il.MarkLabel(startLoop);
-            il.Emit(OpCodes.Ldloc, arrayIndex);
-            il.Emit(OpCodes.Brfalse, afterLoop);
+            il.EmitLocal(OpCodes.Ldloc, arrayIndex);
+            il.EmitBreak(OpCodes.Brfalse, afterLoop);
 
-            il.Emit(OpCodes.Ldloc, arrayIndex);
+            il.EmitLocal(OpCodes.Ldloc, arrayIndex);
             il.Emit(OpCodes.Ldc_I4_1);
             il.Emit(OpCodes.Sub);
-            il.Emit(OpCodes.Stloc, arrayIndex);
+            il.EmitLocal(OpCodes.Stloc, arrayIndex);
 
             // Ladda in toarray på stacken
-            il.Emit(OpCodes.Ldloc, toLocal);
-            il.Emit(OpCodes.Ldloc, arrayIndex);
+            il.EmitLocal(OpCodes.Ldloc, toLocal);
+            il.EmitLocal(OpCodes.Ldloc, arrayIndex);
 
             // Ladda in fromarray på stacken
-            il.Emit(OpCodes.Ldloc, fromLocal);
-            il.Emit(OpCodes.Ldloc, arrayIndex);
+            il.EmitLocal(OpCodes.Ldloc, fromLocal);
+            il.EmitLocal(OpCodes.Ldloc, arrayIndex);
             il.Emit(OpCodes.Ldelem, fromElementType);
 
             // Convert the element at the top of the stack to toElementType
@@ -62,42 +63,42 @@
             il.Emit(OpCodes.Stelem, toElementType);
 
             // End loop
-            il.Emit(OpCodes.Br, startLoop);
+            il.EmitBreak(OpCodes.Br, startLoop);
             il.MarkLabel(afterLoop);
 
-            il.Emit(OpCodes.Ldloc, toLocal);
+            il.EmitLocal(OpCodes.Ldloc, toLocal);
         }
 
         public static void EmitMemberMap(
-            this ILGenerator il,
+            this ILGeneratorAdapter il,
             LocalBuilder fromLocal,
             LocalBuilder toLocal,
             MemberWrapper fromMember,
             MemberWrapper toMember)
         {
             // Load toLocal as parameter for the setter
-            il.Emit(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
+            il.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
             if (toMember.MemberSetterType == MemberType.StringIndexer)
             {
-                il.Emit(OpCodes.Ldstr, toMember.Name);
+                il.EmitString(toMember.Name);
             }
 
             // Load fromLocal as parameter for the getter
-            il.Emit(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+            il.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
 
             if (fromMember.MemberGetter is PropertyInfo)
             {
                 var getter = (fromMember.MemberGetter as PropertyInfo).GetGetMethod();
                 if (fromMember.MemberGetterType == MemberType.StringIndexer)
                 {
-                    il.Emit(OpCodes.Ldstr, fromMember.Name);
+                    il.EmitString(fromMember.Name);
                 }
 
-                il.Emit(OpCodes.Callvirt, getter);
+                il.EmitCall(OpCodes.Callvirt, getter, null);
             }
             else if (fromMember.MemberGetter is FieldInfo)
             {
-                il.Emit(OpCodes.Ldfld, fromMember.MemberGetter as FieldInfo);
+                il.EmitField(OpCodes.Ldfld, fromMember.MemberGetter as FieldInfo);
             }
 
             // Convert the value on top of the stack to the correct toType
@@ -106,31 +107,36 @@
             if (toMember.MemberSetter is PropertyInfo)
             {
                 var setter = (toMember.MemberSetter as PropertyInfo).GetSetMethod();
-                il.Emit(OpCodes.Callvirt, setter);
+                il.EmitCall(OpCodes.Callvirt, setter, null);
             }
             else if (toMember.MemberSetter is FieldInfo)
             {
-                il.Emit(OpCodes.Stfld, toMember.MemberSetter as FieldInfo);
+                il.EmitField(OpCodes.Stfld, toMember.MemberSetter as FieldInfo);
             }
         }
 
-        public static void EmitCallToString(this ILGenerator il, Type fromType)
+        public static void EmitValueTypeBox(this ILGeneratorAdapter il, Type fromType)
         {
             if (fromType.IsValueType)
             {
                 // Put property/field value in a local variable to be able to call instance method on it
                 LocalBuilder localReturnType = il.DeclareLocal(fromType);
-                il.Emit(OpCodes.Stloc, localReturnType);
+                il.EmitLocal(OpCodes.Stloc, localReturnType);
                 if (fromType.IsEnum)
                 {
-                    il.Emit(OpCodes.Ldloc, localReturnType);
+                    il.EmitLocal(OpCodes.Ldloc, localReturnType);
                     il.Emit(OpCodes.Box, fromType);
                 }
                 else
                 {
-                    il.Emit(OpCodes.Ldloca, localReturnType);
+                    il.EmitLocal(OpCodes.Ldloca, localReturnType);
                 }
             }
+        }
+
+        public static void EmitCallToString(this ILGeneratorAdapter il, Type fromType)
+        {
+            il.EmitValueTypeBox(fromType);
 
             var toStringMethod = fromType.GetMethod("ToString", new[] { typeof(IFormatProvider) });
             if (toStringMethod != null)
@@ -145,7 +151,7 @@
             }
         }
 
-        public static void EmitConvertValue(this ILGenerator il, Type fromType, Type toType)
+        public static void EmitConvertValue(this ILGeneratorAdapter il, Type fromType, Type toType)
         {
             Label skipConversion = il.DefineLabel();
 
@@ -162,28 +168,28 @@
                 Label nonNull = il.DefineLabel();
 
                 // Store value on top of stack into fromLocal
-                il.Emit(OpCodes.Stloc, fromLocal);
+                il.EmitLocal(OpCodes.Stloc, fromLocal);
 
                 if (Nullable.GetUnderlyingType(fromType) != null)
                 {
-                    il.Emit(OpCodes.Ldloca, fromLocal);
+                    il.EmitLocal(OpCodes.Ldloca, fromLocal);
                     MethodInfo mi = fromType.GetMethod("get_HasValue", BindingFlags.Instance | BindingFlags.Public);
-                    il.Emit(OpCodes.Call, mi);
+                    il.EmitCall(OpCodes.Call, mi, null);
                 }
                 else
                 {
-                    il.Emit(OpCodes.Ldloc, fromLocal);
+                    il.EmitLocal(OpCodes.Ldloc, fromLocal);
                 }
 
-                il.Emit(OpCodes.Brtrue_S, nonNull);
+                il.EmitBreak(OpCodes.Brtrue_S, nonNull);
 
                 // Load toLocal with default value on stack and skip rest of conversion logic
-                il.Emit(OpCodes.Ldloc, toLocal);
-                il.Emit(OpCodes.Br, skipConversion);
+                il.EmitLocal(OpCodes.Ldloc, toLocal);
+                il.EmitBreak(OpCodes.Br, skipConversion);
 
                 // Not null, put the fromValue back on stack
                 il.MarkLabel(nonNull);
-                il.Emit(OpCodes.Ldloc, fromLocal);
+                il.EmitLocal(OpCodes.Ldloc, fromLocal);
             }
 
             var converter = ReflectionUtils.GetConvertMethod(
@@ -254,7 +260,7 @@
 
                         if (toConstructor != null)
                         {
-                            il.Emit(OpCodes.Newobj, toConstructor);
+                            il.EmitNewobj(toConstructor);
                         }
                     }
                 }
@@ -267,17 +273,39 @@
             il.MarkLabel(skipConversion);
         }
 
-        public static void EmitConvertFromEnum(this ILGenerator il, Type fromType, Type toType)
+        public static void EmitConvertFromEnum(this ILGeneratorAdapter il, Type fromType, Type toType)
         {
             if (!fromType.IsEnum)
             {
                 throw new ArgumentException("fromType needs to be an enum", "fromType");
             }
 
-            // TODO: Add handling for all numeric values
             if (toType == typeof(string))
             {
-                il.EmitCallToString(fromType);
+                var enumValues = Enum.GetValues(fromType);
+                var switchType = fromType.GetEnumUnderlyingType();
+                var switchReturnValues = new List<Tuple<object, object>>();
+
+                foreach (var enumValue in enumValues)
+                {
+                    var enumDisplay = AttributeHelper.GetEnumDisplayValue((Enum)enumValue);
+                    var enumDescription = AttributeHelper.GetEnumDescriptionValue((Enum)enumValue);
+
+                    if (!string.IsNullOrEmpty(enumDisplay))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumValue, enumDisplay));
+                    }
+                    else if (!string.IsNullOrEmpty(enumDescription))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumValue, enumDescription));
+                    }
+                    else
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumValue, enumValue.ToString()));
+                    }
+                }
+
+                il.EmitSwitchCases(switchType, toType, switchReturnValues);
             }
             else
             {
@@ -298,7 +326,7 @@
             }
         }
 
-        public static void EmitConvertToEnum(this ILGenerator il, Type fromType, Type toType)
+        public static void EmitConvertToEnum(this ILGeneratorAdapter il, Type fromType, Type toType)
         {
             if (!toType.IsEnum)
             {
@@ -316,8 +344,8 @@
                 if (fromType == typeof(string))
                 {
                     var enumText = enumValue.ToString();
-                    var enumDisplay = AttributeHelper.GetDisplayValue((Enum)enumValue);
-                    var enumDescription = AttributeHelper.GetDescriptionValue((Enum)enumValue);
+                    var enumDisplay = AttributeHelper.GetEnumDisplayValue((Enum)enumValue);
+                    var enumDescription = AttributeHelper.GetEnumDescriptionValue((Enum)enumValue);
 
                     if (!string.IsNullOrEmpty(enumDisplay))
                     {
@@ -357,58 +385,63 @@
                 }
             }
 
+            il.EmitSwitchCases(switchType, underlayingToType, switchReturnValues);
+        }
+
+        public static void EmitSwitchCases(this ILGeneratorAdapter il, Type switchType, Type returnType, List<Tuple<object, object>> switchReturnValues)
+        {
             Label defaultCase = il.DefineLabel();
             Label endOfMethod = il.DefineLabel();
             LocalBuilder switchValue = il.DeclareLocal(switchType);
 
-            il.Emit(OpCodes.Stloc, switchValue);
+            il.EmitLocal(OpCodes.Stloc, switchValue);
 
             var jumpTable = new Label[switchReturnValues.Count];
             for (int i = 0; i < switchReturnValues.Count; i++)
             {
                 jumpTable[i] = il.DefineLabel();
-                il.Emit(OpCodes.Ldloc, switchValue);
+                il.EmitLocal(OpCodes.Ldloc, switchValue);
                 il.EmitLoadEnumValue(switchType, switchReturnValues[i].Item1);
-                if (fromType == typeof(string))
+                if (switchType == typeof(string))
                 {
                     var stringEquals = typeof(string).GetMethod("op_Equality", new[] { typeof(string), typeof(string) });
                     il.EmitCall(OpCodes.Call, stringEquals, null);
                     il.Emit(OpCodes.Ldc_I4_1);
                 }
 
-                il.Emit(OpCodes.Beq, jumpTable[i]);
+                il.EmitBreak(OpCodes.Beq, jumpTable[i]);
             }
 
             // Branch on default case
-            il.Emit(OpCodes.Br_S, defaultCase);
+            il.EmitBreak(OpCodes.Br_S, defaultCase);
 
             for (int i = 0; i < switchReturnValues.Count; i++)
             {
                 il.MarkLabel(jumpTable[i]);
-                il.EmitLoadEnumValue(underlayingToType, switchReturnValues[i].Item2);
-                il.Emit(OpCodes.Br_S, endOfMethod);
+                il.EmitLoadEnumValue(returnType, switchReturnValues[i].Item2);
+                il.EmitBreak(OpCodes.Br_S, endOfMethod);
             }
 
             // Default case
             il.MarkLabel(defaultCase);
-            il.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
+            il.EmitLoadEnumValue(returnType, switchReturnValues[0].Item2);
 
             il.MarkLabel(endOfMethod);
         }
 
-        public static void EmitConvertClass(this ILGenerator il, Type fromType, Type toType)
+        public static void EmitConvertClass(this ILGeneratorAdapter il, Type fromType, Type toType)
         {
             var fromLocal = il.DeclareLocal(fromType);
             var toLocal = il.DeclareLocal(toType);
 
             // Store value on top of stack into fromLocal
-            il.Emit(OpCodes.Stloc, fromLocal);
+            il.EmitLocal(OpCodes.Stloc, fromLocal);
 
             var ctor = toLocal.LocalType.GetConstructor(Type.EmptyTypes);
             if (ctor != null)
             {
-                il.Emit(OpCodes.Newobj, ctor);
-                il.Emit(OpCodes.Stloc, toLocal);
+                il.EmitNewobj(ctor);
+                il.EmitLocal(OpCodes.Stloc, toLocal);
             }
 
             var memberMaps = ReflectionUtils.GetMemberMaps(fromType, toType);
@@ -417,52 +450,46 @@
                 il.EmitMemberMap(fromLocal, toLocal, memberMaps[i].Item1, memberMaps[i].Item2);
             }
 
-            il.Emit(OpCodes.Ldloc, toLocal);
+            il.EmitLocal(OpCodes.Ldloc, toLocal);
         }
 
-        private static void EmitLoadEnumValue(this ILGenerator il, Type type, object enumValue)
+        private static void EmitLoadEnumValue(this ILGeneratorAdapter il, Type type, object enumValue)
         {
             if (type == typeof(string))
             {
-                il.Emit(OpCodes.Ldstr, (string)enumValue);
+                il.EmitString((string)enumValue);
             }
             else if (type == typeof(byte))
             {
-                il.Emit(OpCodes.Ldc_I4, (int)(byte)enumValue);
-                il.Emit(OpCodes.Conv_U1);
+                il.EmitByte((byte)enumValue);
             }
             else if (type == typeof(sbyte))
             {
-                il.Emit(OpCodes.Ldc_I4, (int)(sbyte)enumValue);
-                il.Emit(OpCodes.Conv_I1);
+                il.EmitSByte((sbyte)enumValue);
             }
             else if (type == typeof(short))
             {
-                il.Emit(OpCodes.Ldc_I4, (int)(short)enumValue);
-                il.Emit(OpCodes.Conv_I2);
+                il.EmitShort((short)enumValue);
             }
             else if (type == typeof(ushort))
             {
-                il.Emit(OpCodes.Ldc_I4, (ushort)enumValue);
-                il.Emit(OpCodes.Conv_U2);
+                il.EmitUShort((ushort)enumValue);
             }
             else if (type == typeof(int))
             {
-                il.Emit(OpCodes.Ldc_I4, (int)enumValue);
+                il.EmitInt((int)enumValue);
             }
             else if (type == typeof(uint))
             {
-                il.Emit(OpCodes.Ldc_I4, (int)(uint)enumValue);
-                il.Emit(OpCodes.Conv_U4);
+                il.EmitUInt((uint)enumValue);
             }
             else if (type == typeof(long))
             {
-                il.Emit(OpCodes.Ldc_I8, (long)enumValue);
+                il.EmitLong((long)enumValue);
             }
             else if (type == typeof(ulong))
             {
-                il.Emit(OpCodes.Ldc_I8, (long)(ulong)enumValue);
-                il.Emit(OpCodes.Conv_U8);
+                il.EmitULong((ulong)enumValue);
             }
         }
     }

@@ -19,7 +19,7 @@
                 new[] { typeof(IFormatProvider), typeof(object) },
                 typeof(ConverterFactory).Module);
 
-            var il = convertDynamicMethod.GetILGenerator();
+            var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
 
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(fromType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, fromType); // cast input to correct type
@@ -46,7 +46,7 @@
                 new[] { typeof(IFormatProvider), fromType },
                 typeof(ConverterFactory).Module);
 
-            var il = convertDynamicMethod.GetILGenerator();
+            var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
 
             il.Emit(OpCodes.Ldarg_1);
             il.EmitConvertValue(fromType, toType);

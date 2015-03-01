@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="ConverterFactoryTests.cs" />
     <Compile Include="EmitExtensionsTests.cs" />
+    <Compile Include="ILGeneratorAdapterTests.cs" />
     <Compile Include="MemberWrapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionUtilsTests.cs" />

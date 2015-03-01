@@ -11,7 +11,7 @@
     [TestFixture]
     public class EmitExtensionsTests
     {
-        private ILGenerator ilgenerator;
+        private ILGeneratorAdapter ilgenerator;
 
         [SetUp]
         public void Setup()
@@ -22,8 +22,7 @@
                 null,
                 typeof(EmitExtensionsTests).Module);
 
-            this.ilgenerator = convertDynamicMethod.GetILGenerator();
-            
+            this.ilgenerator = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
         }
 
         [Test]
@@ -55,7 +54,5 @@
             Assert.DoesNotThrow(
                 () => EmitExtensions.EmitConvertToEnum(this.ilgenerator, typeof(string), typeof(Int32Enum)));
         }
-
-
     }
 }

@@ -7,20 +7,20 @@
 
     public class AttributeHelper
     {
-        public static string GetDisplayValue(Enum value)
+        public static string GetEnumDisplayValue(Enum value)
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
-            var displayAttribute = GetAttribute<DisplayAttribute>(fieldInfo);
+            var attribute = GetAttribute<DisplayAttribute>(fieldInfo);
 
-            return (displayAttribute != null) ? displayAttribute.GetName() : string.Empty;
+            return (attribute != null) ? attribute.GetName() : string.Empty;
         }
 
-        public static string GetDescriptionValue(Enum value)
+        public static string GetEnumDescriptionValue(Enum value)
         {
             var fieldInfo = value.GetType().GetField(value.ToString());
-            var displayAttribute = GetAttribute<DescriptionAttribute>(fieldInfo);
+            var attribute = GetAttribute<DescriptionAttribute>(fieldInfo);
 
-            return (displayAttribute != null) ? displayAttribute.Description : string.Empty;
+            return (attribute != null) ? attribute.Description : string.Empty;
         }
 
         public static T GetAttribute<T>(MemberInfo member) where T : Attribute
