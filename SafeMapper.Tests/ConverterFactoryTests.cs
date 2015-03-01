@@ -5,6 +5,7 @@
     using System.Collections.Specialized;
     using System.Data.SqlTypes;
     using System.Globalization;
+    using System.Threading;
 
     using NUnit.Framework;
 
@@ -624,14 +625,51 @@
             return converter(input);
         }
 
-        [TestCase("Undefined", Result = DisplayAttributeEnum.Undefined)]
-        [TestCase("Value 1", Result = DisplayAttributeEnum.Value1)]
-        [TestCase("Value 2", Result = DisplayAttributeEnum.Value2)]
-        [TestCase("Value 3", Result = DisplayAttributeEnum.Value3)]
-        [TestCase("Value 4", Result = DisplayAttributeEnum.Undefined)]
-        public DisplayAttributeEnum ToDisplayNameEnum_FromString(string input)
+        [TestCase("Odefinerat", Result = DisplayAttributeResourceEnum.Undefined)]
+        [TestCase("Värde 1", Result = DisplayAttributeResourceEnum.Value1)]
+        [TestCase("Värde 2", Result = DisplayAttributeResourceEnum.Value2)]
+        [TestCase("Värde 3", Result = DisplayAttributeResourceEnum.Value3)]
+        [TestCase("Värde 4", Result = DisplayAttributeResourceEnum.Undefined)]
+        public DisplayAttributeResourceEnum ToDisplayAttributeResourceEnum_FromString_CultureSv(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeEnum>();
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("sv-SE");
+            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResourceEnum>();
+            return converter(input);
+        }
+
+        [TestCase("Undefined", Result = DisplayAttributeResourceEnum.Undefined)]
+        [TestCase("Value 1", Result = DisplayAttributeResourceEnum.Value1)]
+        [TestCase("Value 2", Result = DisplayAttributeResourceEnum.Value2)]
+        [TestCase("Value 3", Result = DisplayAttributeResourceEnum.Value3)]
+        [TestCase("Value 4", Result = DisplayAttributeResourceEnum.Undefined)]
+        public DisplayAttributeResourceEnum ToDisplayAttributeResourceEnum_FromString_CultureEn(string input)
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResourceEnum>();
+            return converter(input);
+        }
+
+        [TestCase("Odefinerat", Result = DisplayAttributeResxEnum.Undefined)]
+        [TestCase("Värde 1", Result = DisplayAttributeResxEnum.Value1)]
+        [TestCase("Värde 2", Result = DisplayAttributeResxEnum.Value2)]
+        [TestCase("Värde 3", Result = DisplayAttributeResxEnum.Value3)]
+        [TestCase("Värde 4", Result = DisplayAttributeResxEnum.Undefined)]
+        public DisplayAttributeResxEnum ToDisplayAttributeResxEnum_FromString_CultureSv(string input)
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("sv-SE");
+            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResxEnum>();
+            return converter(input);
+        }
+
+        [TestCase("Undefined", Result = DisplayAttributeResxEnum.Undefined)]
+        [TestCase("Value 1", Result = DisplayAttributeResxEnum.Value1)]
+        [TestCase("Value 2", Result = DisplayAttributeResxEnum.Value2)]
+        [TestCase("Value 3", Result = DisplayAttributeResxEnum.Value3)]
+        [TestCase("Value 4", Result = DisplayAttributeResxEnum.Undefined)]
+        public DisplayAttributeResxEnum ToDisplayAttributeResxEnum_FromString_CultureEn(string input)
+        {
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResxEnum>();
             return converter(input);
         }
 
@@ -643,6 +681,17 @@
         public DescriptionAttributeEnum ToDescriptionEnum_FromString(string input)
         {
             var converter = ConverterFactory.CreateDelegate<string, DescriptionAttributeEnum>();
+            return converter(input);
+        }
+
+        [TestCase("Undefined", Result = DisplayAttributeEnum.Undefined)]
+        [TestCase("Value 1", Result = DisplayAttributeEnum.Value1)]
+        [TestCase("Value 2", Result = DisplayAttributeEnum.Value2)]
+        [TestCase("Value 3", Result = DisplayAttributeEnum.Value3)]
+        [TestCase("Value 4", Result = DisplayAttributeEnum.Undefined)]
+        public DisplayAttributeEnum ToDisplayAttributeEnum_FromString(string input)
+        {
+            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeEnum>();
             return converter(input);
         }
 

@@ -12,7 +12,7 @@
             var fieldInfo = value.GetType().GetField(value.ToString());
             var displayAttribute = GetAttribute<DisplayAttribute>(fieldInfo);
 
-            return (displayAttribute != null) ? displayAttribute.Name : string.Empty;
+            return (displayAttribute != null) ? displayAttribute.GetName() : string.Empty;
         }
 
         public static string GetDescriptionValue(Enum value)

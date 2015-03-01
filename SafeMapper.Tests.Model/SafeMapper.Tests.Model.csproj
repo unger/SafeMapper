@@ -45,6 +45,8 @@
     <Compile Include="AddressDto.cs" />
     <Compile Include="Enums\DescriptionAttributeEnum.cs" />
     <Compile Include="Enums\DisplayAttributeEnum.cs" />
+    <Compile Include="Enums\DisplayAttributeResourceEnum.cs" />
+    <Compile Include="Enums\DisplayAttributeResxEnum.cs" />
     <Compile Include="Enums\AnotherEnum.cs" />
     <Compile Include="Benchmark\BenchSource.cs" />
     <Compile Include="Benchmark\BenchDestination.cs" />
@@ -71,6 +73,27 @@
     <Compile Include="Person\PersonStruct.cs" />
     <Compile Include="Person\PersonStructDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\ResourceStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourceStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ResourceStrings.sv.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourceStrings.sv.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\ResourceStringsClass.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ResourceStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ResourceStrings.sv.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourceStrings.sv.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
