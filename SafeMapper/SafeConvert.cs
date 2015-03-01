@@ -250,7 +250,7 @@
 
         public static ushort ToUInt16(byte value)
         {
-            return (ushort)value;
+            return value;
         }
 
         public static ushort ToUInt16(sbyte value)
@@ -470,8 +470,8 @@
         public static long ToInt64(string value)
         {
             long result = 0;
-            //return long.TryParse(value, out result) ? result : 0;
-            
+
+            // return long.TryParse(value, out result) ? result : 0;            
             if (string.IsNullOrEmpty(value))
             {
                 return 0;
@@ -867,22 +867,34 @@
             return value;
         }
 
-        public static decimal ToDecimal(float d)
+        public static decimal ToDecimal(float value)
         {
-            return d == MaxDecimalAsDouble
-                       ? Decimal.MaxValue
-                       : d == MinDecimalAsDouble
-                             ? Decimal.MinValue
-                             : d > MaxDecimalAsSingle ? 0m : d < MinDecimalAsSingle ? 0m : (decimal)d;
+            return value == MaxDecimalAsSingle
+                       ? decimal.MaxValue
+                       : value == MinDecimalAsSingle
+                             ? decimal.MinValue
+                             : value > MaxDecimalAsSingle ? 0m : value < MinDecimalAsSingle ? 0m : (decimal)value;
+            /*
+            return Math.Abs(value - MaxDecimalAsSingle) < float.Epsilon
+                       ? decimal.MaxValue
+                       : Math.Abs(value - MinDecimalAsSingle) < float.Epsilon
+                             ? decimal.MinValue
+                             : value > MaxDecimalAsSingle ? 0m : value < MinDecimalAsSingle ? 0m : (decimal)value;*/
         }
 
-        public static decimal ToDecimal(double d)
+        public static decimal ToDecimal(double value)
         {
-            return d == MaxDecimalAsDouble
-                       ? Decimal.MaxValue
-                       : d == MinDecimalAsDouble
-                             ? Decimal.MinValue
-                             : d > MaxDecimalAsDouble ? 0m : d < MinDecimalAsDouble ? 0m : (decimal)d;
+            return value == MaxDecimalAsDouble
+                       ? decimal.MaxValue
+                       : value == MinDecimalAsDouble
+                             ? decimal.MinValue
+                             : value > MaxDecimalAsDouble ? 0m : value < MinDecimalAsDouble ? 0m : (decimal)value;
+            /*
+            return Math.Abs(value - MaxDecimalAsDouble) < double.Epsilon
+                       ? decimal.MaxValue
+                       : Math.Abs(value - MinDecimalAsDouble) < double.Epsilon
+                             ? decimal.MinValue
+                             : value > MaxDecimalAsDouble ? 0m : value < MinDecimalAsDouble ? 0m : (decimal)value;*/
         }
 
         public static decimal ToDecimal(decimal value)
@@ -950,9 +962,9 @@
             return value != 0;
         }
 
-        public static bool ToBoolean(decimal value)
+        public static bool ToBoolean(float value)
         {
-            return value != 0m;
+            return value != 0;
         }
 
         public static bool ToBoolean(double value)
@@ -960,9 +972,9 @@
             return value != 0;
         }
 
-        public static bool ToBoolean(float value)
+        public static bool ToBoolean(decimal value)
         {
-            return value != 0;
+            return value != 0m;
         }
 
         public static bool ToBoolean(bool value)

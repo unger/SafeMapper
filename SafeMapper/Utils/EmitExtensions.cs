@@ -305,21 +305,35 @@
                 throw new ArgumentException("toType needs to be an enum", "toType");
             }
 
-            var enumReturnValues = Enum.GetValues(toType);
+            var enumValues = Enum.GetValues(toType);
             var underlayingToType = toType.GetEnumUnderlyingType();
             var underlayingFromType = fromType.IsEnum ? fromType.GetEnumUnderlyingType() : fromType;
             var switchType = fromType == typeof(string) ? typeof(string) : underlayingToType;
-            var switchValues = new List<object>();
+            var switchReturnValues = new List<Tuple<object, object>>();
 
-            foreach (var enumValue in enumReturnValues)
+            foreach (var enumValue in enumValues)
             {
                 if (fromType == typeof(string))
                 {
-                    switchValues.Add(enumValue.ToString());
+                    var enumText = enumValue.ToString();
+                    var enumDisplay = AttributeHelper.GetDisplayValue((Enum)enumValue);
+                    var enumDescription = AttributeHelper.GetDescriptionValue((Enum)enumValue);
+
+                    if (!string.IsNullOrEmpty(enumDisplay))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumDisplay, enumValue));
+                    }
+
+                    if (!string.IsNullOrEmpty(enumDescription))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumDescription, enumValue));
+                    }
+
+                    switchReturnValues.Add(new Tuple<object, object>(enumText, enumValue));
                 }
                 else
                 {
-                    switchValues.Add(enumValue);
+                    switchReturnValues.Add(new Tuple<object, object>(enumValue, enumValue));
                 }
             }
 
@@ -338,7 +352,7 @@
                 {
                     // if it is not possible to convert load enum default value
                     il.Emit(OpCodes.Pop);
-                    il.EmitLoadEnumValue(underlayingToType, enumReturnValues.GetValue(0));
+                    il.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
                     return;
                 }
             }
@@ -349,12 +363,12 @@
 
             il.Emit(OpCodes.Stloc, switchValue);
 
-            var jumpTable = new Label[switchValues.Count];
-            for (int i = 0; i < switchValues.Count; i++)
+            var jumpTable = new Label[switchReturnValues.Count];
+            for (int i = 0; i < switchReturnValues.Count; i++)
             {
                 jumpTable[i] = il.DefineLabel();
                 il.Emit(OpCodes.Ldloc, switchValue);
-                il.EmitLoadEnumValue(switchType, switchValues[i]);
+                il.EmitLoadEnumValue(switchType, switchReturnValues[i].Item1);
                 if (fromType == typeof(string))
                 {
                     var stringEquals = typeof(string).GetMethod("op_Equality", new[] { typeof(string), typeof(string) });
@@ -368,16 +382,16 @@
             // Branch on default case
             il.Emit(OpCodes.Br_S, defaultCase);
 
-            for (int i = 0; i < enumReturnValues.Length; i++)
+            for (int i = 0; i < switchReturnValues.Count; i++)
             {
                 il.MarkLabel(jumpTable[i]);
-                il.EmitLoadEnumValue(underlayingToType, enumReturnValues.GetValue(i));
+                il.EmitLoadEnumValue(underlayingToType, switchReturnValues[i].Item2);
                 il.Emit(OpCodes.Br_S, endOfMethod);
             }
 
             // Default case
             il.MarkLabel(defaultCase);
-            il.EmitLoadEnumValue(underlayingToType, enumReturnValues.GetValue(0));
+            il.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
 
             il.MarkLabel(endOfMethod);
         }

@@ -18,7 +18,8 @@ The project is highly influenced by AutoMapper, EmitMapper and FastMapper.
 - Support for nested objects
 - Support for public Fields and Properties
 - Support for interfaces IEnumerable<T>, IList<T>, ICollection<T> etc
-- Basic Enum conversion to and from int and string
+- Enum conversion to and from int and string
+- Support for Enums with DisplayAttribute/DescriptionAttribute
 - Conversion from NameValueCollection to Object
 - Conversion from Object to NameValueCollection
 
@@ -55,7 +56,6 @@ Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests
 
 ##Planned features
 
-- Extended support for Enums with DisplayNameAttribute/DescriptionAttribute
 - Support for circular referencies between objects
 - Mapping support to and from Dictionary<sting, T>
 - Configuration support to enable mapping fields/properties with different names
