@@ -1,11 +1,13 @@
 ﻿namespace SafeMapper.Tests
 {
     using System;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using NUnit.Framework;
 
     using SafeMapper.Tests.Model.Enums;
+    using SafeMapper.Tests.Model.Person;
     using SafeMapper.Utils;
 
     [TestFixture]
@@ -53,6 +55,30 @@
         {
             Assert.DoesNotThrow(
                 () => EmitExtensions.EmitConvertToEnum(this.ilgenerator, typeof(string), typeof(Int32Enum)));
+        }
+
+        [Test]
+        public void EmitValueTypeBox_FromInt_ShouldLoadLocalAdress()
+        {
+            EmitExtensions.EmitValueTypeBox(this.ilgenerator, typeof(int));
+
+            Assert.AreEqual(OpCodes.Ldloca, this.ilgenerator.Instructions.Last().OpCode);
+        }
+
+        [Test]
+        public void EmitValueTypeBox_FromPerson_ShouldNotResultAnyInstructions()
+        {
+            EmitExtensions.EmitValueTypeBox(this.ilgenerator, typeof(Person));
+
+            Assert.AreEqual(0, this.ilgenerator.Instructions.Length);
+        }
+
+        [Test]
+        public void EmitValueTypeBox_FromEnum_ShouldBoxValue()
+        {
+            EmitExtensions.EmitValueTypeBox(this.ilgenerator, typeof(Int32Enum));
+
+            Assert.AreEqual(OpCodes.Box, this.ilgenerator.Instructions.Last().OpCode);
         }
     }
 }
