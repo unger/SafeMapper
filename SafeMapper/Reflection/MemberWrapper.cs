@@ -5,13 +5,21 @@
 
     public enum MemberType
     {
-        Undefined, Property, Field, StringIndexer, Method  
+        Undefined,
+
+        Property,
+
+        Field,
+
+        StringIndexer,
+
+        Method
     }
 
     public class MemberWrapper
     {
         public MemberWrapper(MemberInfo member)
-            : this(member.Name, member, member)
+            : this(member.Name, member)
         {
         }
 
@@ -23,29 +31,40 @@
         public MemberWrapper(string name, MemberInfo member)
             : this(name, member, member)
         {
+            if (member is MethodInfo)
+            {
+                this.CanWrite = false;
+            }
         }
-        
+
         public MemberWrapper(string name, MemberInfo memberGetter, MemberInfo memberSetter)
         {
             this.Name = name;
             this.MemberGetter = memberGetter;
             this.MemberSetter = memberSetter;
-            this.Type = ReflectionUtils.GetMemberType(memberGetter);
+            this.GetterType = ReflectionUtils.GetMemberType(memberGetter);
+            this.SetterType = this.GetSetterType(memberSetter);
 
             this.MemberGetterType = this.GetMemberTypeEnum(memberGetter);
             this.MemberSetterType = this.GetMemberTypeEnum(memberSetter);
 
             this.CanRead = this.CanReadMember(memberGetter);
             this.CanWrite = this.CanWriteMember(memberSetter);
+
+            this.SetterNeedsStringIndex = this.CheckNeedsStringIndex(memberSetter, this.MemberSetterType);
         }
 
         public string Name { get; private set; }
 
-        public Type Type { get; private set; }
+        public Type GetterType { get; private set; }
+
+        public Type SetterType { get; private set; }
 
         public bool CanRead { get; private set; }
 
         public bool CanWrite { get; private set; }
+
+        public bool SetterNeedsStringIndex { get; private set; }
 
         public MemberInfo MemberGetter { get; private set; }
 
@@ -65,6 +84,11 @@
             if (member is FieldInfo)
             {
                 return !(member as FieldInfo).IsInitOnly;
+            }
+
+            if (member is MethodInfo)
+            {
+                return true;
             }
 
             return false;
@@ -99,7 +123,7 @@
                 {
                     return MemberType.Property;
                 }
-                
+
                 if (indexParams.Length == 1 && indexParams[0].ParameterType == typeof(string))
                 {
                     return MemberType.StringIndexer;
@@ -110,13 +134,48 @@
             {
                 return MemberType.Field;
             }
-                
+
             if (member is MethodInfo)
             {
                 return MemberType.Method;
             }
 
             return MemberType.Undefined;
+        }
+
+        private bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType)
+        {
+            if (memberType == MemberType.StringIndexer)
+            {
+                return true;
+            }
+
+            var method = member as MethodInfo;
+            if (method != null)
+            {
+                var parameters = method.GetParameters();
+                if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private Type GetSetterType(MemberInfo member)
+        {
+            var method = member as MethodInfo;
+            if (method != null)
+            {
+                var parameters = method.GetParameters();
+                if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string))
+                {
+                    return parameters[1].ParameterType;
+                }
+            }
+
+            return ReflectionUtils.GetMemberType(member);
         }
     }
 }

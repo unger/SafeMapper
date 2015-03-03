@@ -722,6 +722,26 @@
         /************************************************************************/
 
         [Test]
+        public void CreateDelegate_StringToStringArray()
+        {
+            var converter = ConverterFactory.CreateDelegate<string, string[]>();
+            var input = "Test";
+            var result = converter(input);
+
+            Assert.AreEqual(new[] { input }, result);
+        }
+
+        [Test]
+        public void CreateDelegate_StringArrayToString()
+        {
+            var converter = ConverterFactory.CreateDelegate<string[], string>();
+            var input = new[] { "Test", "Test1" };
+            var result = converter(input);
+
+            Assert.AreEqual(input[0], result);
+        }
+
+        [Test]
         public void CreateDelegate_NonGenericDateTimeToSqlDateTime()
         {
             var converter = ConverterFactory.CreateDelegate(typeof(DateTime), typeof(SqlDateTime));
@@ -765,6 +785,30 @@
             var converter = ConverterFactory.CreateDelegate(fromType, toType);
 
             return converter(input);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertNameValueCollectionToClassPropertyWithIntArray()
+        {
+            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<int[]>>();
+            var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ClassProperty<int[]>>(result);
+            Assert.AreEqual(new[] { 1, 2, 3 }, result.Value);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertNameValueCollectionToClassPropertyString_ShouldConcatValues()
+        {
+            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<string>>();
+            var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ClassProperty<string>>(result);
+            Assert.AreEqual("1,2,3", result.Value);
         }
 
         [Test]

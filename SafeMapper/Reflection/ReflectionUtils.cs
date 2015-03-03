@@ -22,7 +22,7 @@
             return GetPublicFieldsAndProperties(type).Select(m => new MemberWrapper(m)).ToArray();
         }
 
-        public static MemberWrapper GetMember(Type type, string name)
+        public static MemberWrapper GetMember(Type type, string name, Type returnType = null)
         {
             if (type.IsGenericType)
             {
@@ -42,17 +42,17 @@
             }
             else if (type == typeof(NameValueCollection))
             {
-                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
-                if (itemIndexer != null)
+                var addMethod = type.GetMethod("Add", new[] { typeof(string), typeof(string) });
+                if (returnType != null && IsCollection(returnType))
                 {
-                    return new MemberWrapper(name, itemIndexer);
+                    var getValuesMethod = type.GetMethod("GetValues", new[] { typeof(string) });
+                    return new MemberWrapper(name, getValuesMethod, addMethod);
                 }
-                /*
-                var getValuesMethod = type.GetMethod("GetValues", new[] { typeof(string) });
-                if (getValuesMethod != null)
+                else
                 {
-                    return new MemberWrapper(name, getValuesMethod);
-                }*/
+                    var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                    return new MemberWrapper(name, itemIndexer, addMethod);
+                }
             }
 
             var propertyInfo = type.GetProperty(name);
@@ -75,6 +75,11 @@
             if (type.IsArray)
             {
                 return true;
+            }
+
+            if (type == typeof(string))
+            {
+                return false;
             }
 
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
@@ -177,7 +182,7 @@
                 {
                     if (toMember.CanWrite)
                     {
-                        var fromMember = GetMember(fromType, toMember.Name);
+                        var fromMember = GetMember(fromType, toMember.Name, toMember.SetterType);
                         if (fromMember.CanRead)
                         {
                             result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
@@ -217,7 +222,6 @@
                     }
                 }
             }
-
 
             return result;
         }

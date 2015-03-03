@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -78,7 +77,7 @@
         {
             // Load toLocal as parameter for the setter
             il.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
-            if (toMember.MemberSetterType == MemberType.StringIndexer)
+            if (toMember.SetterNeedsStringIndex)
             {
                 il.EmitString(toMember.Name);
             }
@@ -100,9 +99,19 @@
             {
                 il.EmitField(OpCodes.Ldfld, fromMember.MemberGetter as FieldInfo);
             }
+            else if (fromMember.MemberGetter is MethodInfo)
+            {
+                var method = fromMember.MemberGetter as MethodInfo;
+                il.EmitString(fromMember.Name);
+                il.EmitCall(OpCodes.Callvirt, method, null);
+            }
+            /*else
+            {
+                throw new Exception(string.Format("Membertype getter [{0}] not supported", fromMember.MemberGetterType));
+            }*/
 
             // Convert the value on top of the stack to the correct toType
-            il.EmitConvertValue(fromMember.Type, toMember.Type);
+            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType);
 
             if (toMember.MemberSetter is PropertyInfo)
             {
@@ -113,6 +122,14 @@
             {
                 il.EmitField(OpCodes.Stfld, toMember.MemberSetter as FieldInfo);
             }
+            else if (toMember.MemberSetter is MethodInfo)
+            {
+                il.EmitCall(OpCodes.Call, toMember.MemberSetter as MethodInfo, null);
+            }
+            /*else
+            {
+                throw new Exception(string.Format("Membertype setter [{0}] not supported", toMember.MemberSetterType));
+            }*/
         }
 
         public static void EmitValueTypeBox(this ILGeneratorAdapter il, Type fromType)
@@ -215,62 +232,138 @@
             {
                 il.EmitConvertFromEnum(fromType, toType);
             }
+            else if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
+            {
+                il.EmitConvertCollection(fromType, toType);
+            }
+            else if (ReflectionUtils.IsCollection(fromType))
+            {
+                var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
+                var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
+
+                il.EmitFirstCollectionValue(concreteFromType, fromElementType);
+
+                // Convert the element at the top of the stack to toType
+                il.EmitConvertValue(fromElementType, toType);
+            }
+            else if (ReflectionUtils.IsCollection(toType))
+            {
+                var concreteToType = ReflectionUtils.GetConcreteType(toType);
+                var toElementType = ReflectionUtils.GetElementType(concreteToType);
+
+                // Convert the element at the top of the stack to toElementType
+                il.EmitConvertValue(fromType, toElementType);
+
+                il.AddValueToNewCollection(concreteToType, toElementType);
+            }
             else if (toType == typeof(string) && fromType != typeof(string))
             {
                 il.EmitCallToString(fromType);
             }
             else
             {
-                if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
-                {
-                    var fromArrayType = fromType;
-                    var toArrayType = toType;
-                    var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
-                    var concreteToType = ReflectionUtils.GetConcreteType(toType);
-                    var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
-                    var toElementType = ReflectionUtils.GetElementType(concreteToType);
-
-                    if (!fromType.IsArray)
-                    {
-                        var toArrayMethod = concreteFromType.GetMethod("ToArray", Type.EmptyTypes);
-
-                        if (toArrayMethod == null)
-                        {
-                            toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
-                        }
-
-                        if (toArrayMethod != null)
-                        {
-                            il.EmitCall(OpCodes.Call, toArrayMethod, null);
-                            fromArrayType = fromElementType.MakeArrayType();
-                        }
-                    }
-
-                    if (!toType.IsArray)
-                    {
-                        toArrayType = toElementType.MakeArrayType();
-                    }
-
-                    il.EmitConvertArray(fromArrayType, toArrayType);
-
-                    if (!toType.IsArray)
-                    {
-                        var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
-                        var toConstructor = toType.GetConstructor(new[] { toEnumerableType });
-
-                        if (toConstructor != null)
-                        {
-                            il.EmitNewobj(toConstructor);
-                        }
-                    }
-                }
-                else
-                {
-                    il.EmitConvertClass(fromType, toType);
-                }
+                il.EmitConvertClass(fromType, toType);
             }
 
             il.MarkLabel(skipConversion);
+        }
+
+        public static void AddValueToNewCollection(this ILGeneratorAdapter il, Type collectionType, Type elementType)
+        {
+            if (collectionType.IsArray)
+            {
+                var elementLocal = il.DeclareLocal(elementType);
+                var collectionLocal = il.DeclareLocal(collectionType);
+
+                // Store value on top of stack into elementLocal
+                il.EmitLocal(OpCodes.Stloc, elementLocal);
+
+                // length 1
+                il.Emit(OpCodes.Ldc_I4_1);
+
+                // Create new array and store it in collectionLocal
+                il.Emit(OpCodes.Newarr, elementType);
+                il.EmitLocal(OpCodes.Stloc, collectionLocal);
+
+                il.EmitLocal(OpCodes.Ldloc, collectionLocal);
+                il.Emit(OpCodes.Ldc_I4_0);
+                il.EmitLocal(OpCodes.Ldloc, elementLocal);
+                il.Emit(OpCodes.Stelem, elementType);
+
+                il.EmitLocal(OpCodes.Ldloc, collectionLocal);
+            }
+        }
+
+        public static void EmitFirstCollectionValue(this ILGeneratorAdapter il, Type collectionType, Type elementType)
+        {
+            if (collectionType.IsArray)
+            {
+                var defaultLabel = il.DefineLabel();
+                var fromLocal = il.DeclareLocal(collectionType);
+                var fromElementLocal = il.DeclareLocal(elementType);
+
+                // Store value on top of stack into fromLocal
+                il.EmitLocal(OpCodes.Stloc, fromLocal);
+
+                // Load length from fromLocal
+                il.EmitLocal(OpCodes.Ldloc, fromLocal);
+                il.Emit(OpCodes.Ldlen);
+                il.EmitBreak(OpCodes.Brfalse, defaultLabel);
+                
+                il.EmitLocal(OpCodes.Ldloc, fromLocal);
+                il.Emit(OpCodes.Ldc_I4_0);
+                il.Emit(OpCodes.Ldelem, elementType);
+
+                il.EmitLocal(OpCodes.Stloc, fromElementLocal);
+
+                il.MarkLabel(defaultLabel);
+                il.EmitLocal(OpCodes.Ldloc, fromElementLocal);
+            }
+        }
+
+        public static void EmitConvertCollection(this ILGeneratorAdapter il, Type fromType, Type toType)
+        {
+            var fromArrayType = fromType;
+            var toArrayType = toType;
+            var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
+            var concreteToType = ReflectionUtils.GetConcreteType(toType);
+            var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
+            var toElementType = ReflectionUtils.GetElementType(concreteToType);
+
+            if (!fromType.IsArray)
+            {
+                var toArrayMethod = concreteFromType.GetMethod("ToArray", Type.EmptyTypes);
+
+                if (toArrayMethod == null)
+                {
+                    toArrayMethod =
+                        typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
+                }
+
+                if (toArrayMethod != null)
+                {
+                    il.EmitCall(OpCodes.Call, toArrayMethod, null);
+                    fromArrayType = fromElementType.MakeArrayType();
+                }
+            }
+
+            if (!toType.IsArray)
+            {
+                toArrayType = toElementType.MakeArrayType();
+            }
+
+            il.EmitConvertArray(fromArrayType, toArrayType);
+
+            if (!toType.IsArray)
+            {
+                var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
+                var toConstructor = toType.GetConstructor(new[] { toEnumerableType });
+
+                if (toConstructor != null)
+                {
+                    il.EmitNewobj(toConstructor);
+                }
+            }
         }
 
         public static void EmitConvertFromEnum(this ILGeneratorAdapter il, Type fromType, Type toType)

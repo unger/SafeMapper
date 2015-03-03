@@ -36,7 +36,7 @@ namespace SafeMapper.Tests
         }
 
         [Test]
-        public void CanWrite_MethodInfo_ReturnsTrue()
+        public void CanWrite_MethodInfo_ReturnsFalse()
         {
             var method = typeof(NameValueCollection).GetMethod("GetValues", new[] { typeof(string) });
 
