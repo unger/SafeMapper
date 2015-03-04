@@ -105,10 +105,6 @@
                 il.EmitString(fromMember.Name);
                 il.EmitCall(OpCodes.Callvirt, method, null);
             }
-            /*else
-            {
-                throw new Exception(string.Format("Membertype getter [{0}] not supported", fromMember.MemberGetterType));
-            }*/
 
             // Convert the value on top of the stack to the correct toType
             il.EmitConvertValue(fromMember.GetterType, toMember.SetterType);
@@ -126,10 +122,6 @@
             {
                 il.EmitCall(OpCodes.Call, toMember.MemberSetter as MethodInfo, null);
             }
-            /*else
-            {
-                throw new Exception(string.Format("Membertype setter [{0}] not supported", toMember.MemberSetterType));
-            }*/
         }
 
         public static void EmitValueTypeBox(this ILGeneratorAdapter il, Type fromType)

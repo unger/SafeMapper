@@ -812,6 +812,18 @@
         }
 
         [Test]
+        public void CreateDelegate_ConvertNameValueCollectionToClassPropertyInt_ShouldReturnFirstValue()
+        {
+            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
+            var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ClassProperty<int>>(result);
+            Assert.AreEqual(1, result.Value);
+        }
+
+        [Test]
         public void CreateDelegate_ConvertNameValueCollectionWithUnMatchedKey_ShouldReturnObjectWithDefaultValue()
         {
             var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
@@ -821,6 +833,18 @@
 
             Assert.IsInstanceOf<ClassProperty<int>>(result);
             Assert.AreEqual(0, result.Value);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertDictionaryToClassProperty_ShouldReturnObjectWithDefaultValue()
+        {
+            var converter = ConverterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
+            var input = new Dictionary<string, string> { { "Value", "37" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ClassProperty<int>>(result);
+            Assert.AreEqual(37, result.Value);
         }
 
         [Test]

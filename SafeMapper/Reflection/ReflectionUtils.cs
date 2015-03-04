@@ -43,16 +43,14 @@
             else if (type == typeof(NameValueCollection))
             {
                 var addMethod = type.GetMethod("Add", new[] { typeof(string), typeof(string) });
-                if (returnType != null && IsCollection(returnType))
+                if (returnType != null && (IsCollection(returnType) || returnType != typeof(string)))
                 {
                     var getValuesMethod = type.GetMethod("GetValues", new[] { typeof(string) });
                     return new MemberWrapper(name, getValuesMethod, addMethod);
                 }
-                else
-                {
-                    var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
-                    return new MemberWrapper(name, itemIndexer, addMethod);
-                }
+
+                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                return new MemberWrapper(name, itemIndexer, addMethod);
             }
 
             var propertyInfo = type.GetProperty(name);
@@ -77,17 +75,15 @@
                 return true;
             }
 
-            if (type == typeof(string))
+            if (type == typeof(string) || IsDictionary(type))
             {
                 return false;
             }
 
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-            {
-                return true;
-            }
+            var interfaces = new List<Type>(type.GetInterfaces());
+            interfaces.Insert(0, type);
 
-            foreach (var intType in type.GetInterfaces())
+            foreach (var intType in interfaces)
             {
                 if (intType.IsGenericType && intType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 {
@@ -100,7 +96,28 @@
 
         public static bool IsDictionary(Type type)
         {
-            return type == typeof(NameValueCollection);
+            if (type == typeof(NameValueCollection))
+            {
+                return true;
+            }
+
+            return IsStringKeyDictionary(type);
+        }
+
+        public static bool IsStringKeyDictionary(Type type)
+        {
+            var interfaces = new List<Type>(type.GetInterfaces());
+            interfaces.Insert(0, type);
+
+            foreach (var intType in interfaces)
+            {
+                if (intType.IsGenericType && intType.GetGenericTypeDefinition() == typeof(IDictionary<,>) && intType.GetGenericArguments()[0] == typeof(string))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public static Type GetElementType(Type type)
@@ -169,15 +186,13 @@
             var fromIsDictionary = IsDictionary(fromType);
             var toIsDictionary = IsDictionary(toType);
 
-            var fromMembers = GetMembers(fromType);
-            var toMembers = GetMembers(toType);
-
             if (fromIsDictionary && toIsDictionary)
             {
                 // Do nothing
             }
             else if (fromIsDictionary)
             {
+                var toMembers = GetMembers(toType);
                 foreach (var toMember in toMembers)
                 {
                     if (toMember.CanWrite)
@@ -192,6 +207,8 @@
             }
             else if (toIsDictionary)
             {
+                var fromMembers = GetMembers(fromType);
+
                 foreach (var fromMember in fromMembers)
                 {
                     if (fromMember.CanRead)
@@ -206,6 +223,8 @@
             }
             else
             {
+                var toMembers = GetMembers(toType);
+                var fromMembers = GetMembers(fromType);
                 var toMembersDict = toMembers.ToDictionary(m => m.Name);
                 foreach (var fromMember in fromMembers)
                 {

@@ -2,12 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
     public class ILGeneratorAdapter
     {
         private readonly ILGenerator il;
+
+        /*private Stack<Type> currentStack = new Stack<Type>();*/
 
         private List<ILInstruction> instructions = new List<ILInstruction>();
 
@@ -58,11 +61,23 @@
 
         public void EmitField(OpCode opcode, FieldInfo field)
         {
+            var supportedOpcodes = new[] { OpCodes.Ldfld, OpCodes.Stfld };
+            if (!supportedOpcodes.Contains(opcode))
+            {
+                throw new Exception("Unsupported Opcode, only Ldfld and Stfld supported");
+            }
+
             this.AddInstruction(opcode, field);
         }
 
         public void EmitLocal(OpCode opcode, LocalBuilder local)
         {
+            var supportedOpcodes = new[] { OpCodes.Ldloc, OpCodes.Stloc, OpCodes.Ldloca };
+            if (!supportedOpcodes.Contains(opcode))
+            {
+                throw new Exception("Unsupported Opcode, only Ldloc, Ldloca and Stloc supported");
+            }
+
             this.AddInstruction(opcode, local);
         }
 
@@ -73,6 +88,11 @@
 
         public void EmitBreak(OpCode opcode, Label label)
         {
+            if (!opcode.Name.StartsWith("b") || opcode == OpCodes.Break || opcode == OpCodes.Box)
+            {
+                throw new Exception("Unsupported Opcode, only 'break'-opcodes supported");
+            }
+
             this.AddInstruction(opcode, label);
         }
 
@@ -221,5 +241,40 @@
             this.il.EmitCall(opcode, methodInfo, optionalParameterTypes);
             this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, methodInfo.DeclaringType + "." + methodInfo.Name));
         }
+        /*
+        private void PopStackWithCheck(Type expectedType)
+        {
+            var type = this.currentStack.Pop();
+            if (type != expectedType)
+            {
+                throw new Exception(
+                    string.Format(
+                        "Wrong type on stack expected '{0}' was '{1}'",
+                        expectedType.FullName,
+                        type.FullName));
+            }
+        }
+
+        private void CallMethodOnStack(MethodInfo methodInfo, Type[] optionalParameterTypes)
+        {
+            var parameters = methodInfo.GetParameters().Reverse();
+            foreach (var parameter in parameters)
+            {
+                var type = this.currentStack.Pop();
+                if (parameter.ParameterType != type)
+                {
+                    throw new Exception(
+                        string.Format(
+                            "Wrong type on stack for parameter '{2}' in '{0}.{1}' should be '{3}' was '{4}'",
+                            methodInfo.DeclaringType,
+                            methodInfo.Name,
+                            parameter.Name,
+                            parameter.ParameterType.FullName,
+                            type.FullName));
+                }
+            }
+
+            this.currentStack.Push(methodInfo.ReturnType);
+        }*/
     }
 }
