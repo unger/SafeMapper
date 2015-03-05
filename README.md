@@ -22,6 +22,7 @@ The project is highly influenced by AutoMapper, EmitMapper and FastMapper.
 - Support for Enums with DisplayAttribute/DescriptionAttribute
 - Conversion from NameValueCollection to Object
 - Conversion from Object to NameValueCollection
+- Mapping support to and from IDictionary&lt;string, T&gt;
 
 ##Installation
 
@@ -56,8 +57,7 @@ Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests
 
 ##Planned features
 
-- Support for circular referencies between objects
-- Mapping support to and from Dictionary<sting, T>
+- Support for circular references between objects
 - Configuration support to enable mapping fields/properties with different names
 - Map from Database queries to c# object
 - Map Lucene documents to c# object
