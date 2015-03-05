@@ -848,6 +848,31 @@
         }
 
         [Test]
+        public void CreateDelegate_ConvertDictionaryToClassPropertyWithUnmatchedKey_ShouldReturnObjectWithDefaultValue()
+        {
+            var converter = ConverterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
+            var input = new Dictionary<string, string> { { "Value2", "37" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ClassProperty<int>>(result);
+            Assert.AreEqual(0, result.Value);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertClassPropertyWithStringToDictionary()
+        {
+            var converter = ConverterFactory.CreateDelegate<ClassProperty<string>, Dictionary<string, int>>();
+            var input = new ClassProperty<string> { Value = "1337" };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<Dictionary<string, int>>(result);
+            Assert.AreEqual(1337, result["Value"]);
+        }
+
+
+        [Test]
         public void CreateDelegate_ConvertNameValueCollectionToPerson_ShouldReturnPersonWithCorrectValues()
         {
             var converter = ConverterFactory.CreateDelegate<NameValueCollection, Person>();

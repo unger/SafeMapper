@@ -75,6 +75,16 @@
             MemberWrapper fromMember,
             MemberWrapper toMember)
         {
+            var skipMemberMap = il.DefineLabel();
+            if (fromMember.GetterNeedsContainsCheck)
+            {
+                var containsKey = fromLocal.LocalType.GetMethod("ContainsKey", new[] { typeof(string) });
+                il.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+                il.EmitString(fromMember.Name);
+                il.EmitCall(OpCodes.Call, containsKey, null);
+                il.EmitBreak(OpCodes.Brfalse, skipMemberMap);
+            }
+
             // Load toLocal as parameter for the setter
             il.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
             if (toMember.SetterNeedsStringIndex)
@@ -121,6 +131,11 @@
             else if (toMember.MemberSetter is MethodInfo)
             {
                 il.EmitCall(OpCodes.Call, toMember.MemberSetter as MethodInfo, null);
+            }
+
+            if (fromMember.GetterNeedsContainsCheck)
+            {
+                il.MarkLabel(skipMemberMap);
             }
         }
 

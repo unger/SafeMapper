@@ -52,6 +52,11 @@
             this.CanWrite = this.CanWriteMember(memberSetter);
 
             this.SetterNeedsStringIndex = this.CheckNeedsStringIndex(memberSetter, this.MemberSetterType);
+
+            if (ReflectionUtils.IsStringKeyDictionary(memberGetter.DeclaringType))
+            {
+                this.GetterNeedsContainsCheck = true;
+            }
         }
 
         public string Name { get; private set; }
@@ -65,6 +70,8 @@
         public bool CanWrite { get; private set; }
 
         public bool SetterNeedsStringIndex { get; private set; }
+
+        public bool GetterNeedsContainsCheck { get; private set; }
 
         public MemberInfo MemberGetter { get; private set; }
 

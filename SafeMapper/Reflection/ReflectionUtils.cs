@@ -29,6 +29,7 @@
                 var genericType = type.GetGenericTypeDefinition();
                 if (genericType == typeof(Dictionary<,>))
                 {
+                    IDictionary<string, int> dict = new Dictionary<string, int>();
                     var genericArguments = type.GetGenericArguments();
                     if (genericArguments[0] == typeof(string))
                     {

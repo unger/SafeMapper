@@ -102,42 +102,5 @@ namespace SafeMapper.Tests
         {
             Assert.Throws<Exception>(() => this.ilgenerator.EmitBreak(OpCodes.Ldfld, this.ilgenerator.DefineLabel()));
         }
-
-        [Test]
-        public void EmitMemberMap_ConstructorInfo_ShouldReturnDefaultValue()
-        {
-            var convertDynamicMethod = new DynamicMethod(
-                "TestDenamicMethod",
-                typeof(void),
-                new[] { typeof(ClassProperty<string>), typeof(ClassProperty<int>) },
-                typeof(EmitExtensionsTests).Module);
-
-            var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
-
-            var fromLocal = il.DeclareLocal(typeof(ClassProperty<string>));
-            var toLocal = il.DeclareLocal(typeof(ClassProperty<int>));
-
-            il.Emit(OpCodes.Ldarg_0);
-            il.EmitLocal(OpCodes.Stloc, fromLocal);
-
-            il.Emit(OpCodes.Ldarg_1);
-            il.EmitLocal(OpCodes.Stloc, toLocal);
-
-            var fromMemberWrapper = new MemberWrapper(typeof(ClassProperty<string>).GetConstructor(Type.EmptyTypes));
-            var toMemberWrapper = new MemberWrapper(typeof(ClassProperty<int>).GetConstructor(Type.EmptyTypes));
-            //var fromMemberWrapper = new MemberWrapper(typeof(ClassProperty<string>).GetProperty("Value"));
-            //var toMemberWrapper = new MemberWrapper(typeof(ClassProperty<int>).GetProperty("Value"));
-            
-            il.EmitMemberMap(fromLocal, toLocal, fromMemberWrapper, toMemberWrapper);
-
-            var from = new ClassProperty<string> { Value = "1337" };
-            var to = new ClassProperty<int>();
-
-            var membermap = (Action<ClassProperty<string>, ClassProperty<int>>)convertDynamicMethod.CreateDelegate(typeof(Action<ClassProperty<string>, ClassProperty<int>>));
-
-            membermap(from, to);
-
-            Assert.AreEqual(0, to.Value);
-        }
     }
 }
