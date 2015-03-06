@@ -6,6 +6,7 @@
     using System.Collections.Specialized;
     using System.Linq;
     using System.Reflection;
+    using System.Security.Policy;
 
     public class ReflectionUtils
     {
@@ -307,6 +308,53 @@
             }
 
             return typeof(void);
+        }
+
+        public static bool CanHaveCircularReference(Type type)
+        {
+            return CanHaveCircularReferenceRecursive(type, new HashSet<Type>());
+        }
+
+        private static bool CanHaveCircularReferenceRecursive(Type type, HashSet<Type> addedTypes)
+        {
+            if (IsCollection(type))
+            {
+                return CanHaveCircularReferenceRecursive(GetElementType(type), addedTypes);
+            }
+
+            if (type.IsGenericType)
+            {
+                var returnValue = false;
+
+                foreach (var genericArg in type.GetGenericArguments())
+                {
+                    returnValue |= CanHaveCircularReferenceRecursive(genericArg, addedTypes);
+                }
+
+                return returnValue;
+            }
+
+            if (addedTypes.Contains(type))
+            {
+                return true;
+            }
+
+            if (!type.IsValueType && type != typeof(string))
+            {
+                addedTypes.Add(type);
+
+                foreach (var prop in type.GetProperties())
+                {
+                    return CanHaveCircularReferenceRecursive(prop.PropertyType, addedTypes);
+                }
+
+                foreach (var prop in type.GetFields())
+                {
+                    return CanHaveCircularReferenceRecursive(prop.FieldType, addedTypes);
+                }
+            }
+
+            return false;
         }
     }
 }

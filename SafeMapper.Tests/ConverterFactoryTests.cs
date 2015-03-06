@@ -871,7 +871,6 @@
             Assert.AreEqual(1337, result["Value"]);
         }
 
-
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToPerson_ShouldReturnPersonWithCorrectValues()
         {

@@ -8,7 +8,10 @@
     using NUnit.Framework;
 
     using SafeMapper.Reflection;
+    using SafeMapper.Tests.Model.Benchmark;
+    using SafeMapper.Tests.Model.Circular;
     using SafeMapper.Tests.Model.GenericClasses;
+    using SafeMapper.Tests.Model.Person;
 
     [TestFixture]
     public class ReflectionUtilsTests
@@ -162,6 +165,62 @@
             var type = ReflectionUtils.GetMemberType(constructor);
 
             Assert.AreEqual(typeof(void), type);
+        }
+
+        [Test]
+        public void CanHaveCircularReference_Person_ShouldReturnFalse()
+        {
+            var result = ReflectionUtils.CanHaveCircularReference(typeof(Person));
+
+            Assert.False(result);
+        }
+
+        [Test]
+        public void CanHaveCircularReference_Parent_ShouldReturnTrue()
+        {
+            var result = ReflectionUtils.CanHaveCircularReference(typeof(Parent));
+
+            Assert.True(result);
+        }
+
+        [Test]
+        public void CanHaveCircularReference_String_ShouldReturnFalse()
+        {
+            var result = ReflectionUtils.CanHaveCircularReference(typeof(string));
+
+            Assert.False(result);
+        }
+
+        [Test]
+        public void CanHaveCircularReference_DateTime_ShouldReturnFalse()
+        {
+            var result = ReflectionUtils.CanHaveCircularReference(typeof(DateTime));
+
+            Assert.False(result);
+        }
+
+        [Test]
+        public void CanHaveCircularReference_ClassFieldPerson_ShouldReturnFalse()
+        {
+            var result = ReflectionUtils.CanHaveCircularReference(typeof(ClassField<Person>));
+
+            Assert.False(result);
+        }
+
+        [Test]
+        public void CanHaveCircularReference_BenchSource_ShouldReturnFalse()
+        {
+            var result = ReflectionUtils.CanHaveCircularReference(typeof(BenchSource));
+
+            Assert.False(result);
+        }
+
+        [Test]
+        public void CanHaveCircularReference_Root_ShouldReturnTrue()
+        {
+            var result = ReflectionUtils.CanHaveCircularReference(typeof(Root));
+
+            Assert.True(result);
         }
     }
 }
