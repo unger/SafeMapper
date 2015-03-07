@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -267,12 +268,146 @@
             {
                 il.EmitCallToString(fromType);
             }
+            else if (ReflectionUtils.IsDictionary(fromType) && ReflectionUtils.IsDictionary(toType))
+            {
+                il.EmitMapDictionary(fromType, toType);
+            }
             else
             {
                 il.EmitConvertClass(fromType, toType);
             }
 
             il.MarkLabel(skipConversion);
+        }
+
+        public static void EmitMapDictionary(this ILGeneratorAdapter il, Type fromType, Type toType)
+        {
+            var fromLocal = il.DeclareLocal(fromType);
+            var toLocal = il.DeclareLocal(toType);
+            var keysArray = il.DeclareLocal(typeof(string[]));
+            var key = il.DeclareLocal(typeof(string));
+
+            // Store value on top of stack into fromLocal
+            il.EmitLocal(OpCodes.Stloc, fromLocal);
+
+            var ctor = toLocal.LocalType.GetConstructor(Type.EmptyTypes);
+            if (ctor != null)
+            {
+                il.EmitNewobj(ctor);
+                il.EmitLocal(OpCodes.Stloc, toLocal);
+            }
+
+            var keysFound = false;
+            var allKeys = fromType.GetProperty("AllKeys");
+            if (allKeys != null)
+            {
+                var getter = allKeys.GetGetMethod();
+                il.EmitLocal(OpCodes.Ldloc, fromLocal);
+                il.EmitCall(OpCodes.Call, getter, null);
+                keysFound = true;
+            }
+
+            if (!keysFound)
+            {
+                var keys = fromType.GetProperty("Keys");
+                if (keys != null)
+                {
+                    var getter = keys.GetGetMethod();
+                    il.EmitLocal(OpCodes.Ldloc, fromLocal);
+                    il.EmitCall(OpCodes.Call, getter, null);
+                    var toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { typeof(string) });
+                    il.EmitCall(OpCodes.Call, toArrayMethod, null);
+                    keysFound = true;
+                }
+            }
+
+            if (!keysFound)
+            {
+                il.Emit(OpCodes.Ldc_I4_0);
+                il.Emit(OpCodes.Newarr, typeof(string[]));
+            }
+
+            il.EmitLocal(OpCodes.Stloc, keysArray);
+
+            // Loop over all keys
+            Label startLoop = il.DefineLabel();
+            Label afterLoop = il.DefineLabel();
+            var keysIndex = il.DeclareLocal(typeof(int));
+
+            il.EmitLocal(OpCodes.Ldloc, keysArray);
+            il.Emit(OpCodes.Ldlen);
+            il.EmitLocal(OpCodes.Stloc, keysIndex);
+
+            il.MarkLabel(startLoop);
+            il.EmitLocal(OpCodes.Ldloc, keysIndex);
+            il.EmitBreak(OpCodes.Brfalse, afterLoop);
+
+            il.EmitLocal(OpCodes.Ldloc, keysIndex);
+            il.Emit(OpCodes.Ldc_I4_1);
+            il.Emit(OpCodes.Sub);
+            il.EmitLocal(OpCodes.Stloc, keysIndex);
+
+            // loop body
+            il.EmitLocal(OpCodes.Ldloc, keysArray);
+            il.EmitLocal(OpCodes.Ldloc, keysIndex);
+            il.Emit(OpCodes.Ldelem, typeof(string));
+            il.EmitLocal(OpCodes.Stloc, key);
+
+            var fromMember = ReflectionUtils.GetMember(fromType, "dummy");
+            var toMember = ReflectionUtils.GetMember(toType, "dummy");
+
+            var skipMemberMap = il.DefineLabel();
+
+            // Load toLocal as parameter for the setter
+            il.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
+            if (toMember.SetterNeedsStringIndex)
+            {
+                il.EmitLocal(OpCodes.Ldloc, key);
+            }
+
+            // Load fromLocal as parameter for the getter
+            il.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+
+            if (fromMember.MemberGetter is PropertyInfo)
+            {
+                var getter = (fromMember.MemberGetter as PropertyInfo).GetGetMethod();
+                if (fromMember.MemberGetterType == MemberType.StringIndexer)
+                {
+                    il.EmitLocal(OpCodes.Ldloc, key);
+                }
+
+                il.EmitCall(OpCodes.Callvirt, getter, null);
+            }
+            else if (fromMember.MemberGetter is MethodInfo)
+            {
+                var method = fromMember.MemberGetter as MethodInfo;
+                il.EmitLocal(OpCodes.Ldloc, key);
+                il.EmitCall(OpCodes.Callvirt, method, null);
+            }
+
+            // Convert the value on top of the stack to the correct toType
+            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType);
+
+            if (toMember.MemberSetter is PropertyInfo)
+            {
+                var setter = (toMember.MemberSetter as PropertyInfo).GetSetMethod();
+                il.EmitCall(OpCodes.Callvirt, setter, null);
+            }
+            else if (toMember.MemberSetter is MethodInfo)
+            {
+                il.EmitCall(OpCodes.Call, toMember.MemberSetter as MethodInfo, null);
+            }
+
+            if (fromMember.GetterNeedsContainsCheck)
+            {
+                il.MarkLabel(skipMemberMap);
+            }
+
+            // End loop
+            il.EmitBreak(OpCodes.Br, startLoop);
+            il.MarkLabel(afterLoop);
+
+            il.EmitLocal(OpCodes.Ldloc, toLocal);
         }
 
         public static void AddValueToNewCollection(this ILGeneratorAdapter il, Type collectionType, Type elementType)
@@ -343,8 +478,7 @@
 
                 if (toArrayMethod == null)
                 {
-                    toArrayMethod =
-                        typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
+                    toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
                 }
 
                 if (toArrayMethod != null)

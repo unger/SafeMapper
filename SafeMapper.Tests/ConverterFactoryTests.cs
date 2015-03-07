@@ -872,6 +872,34 @@
         }
 
         [Test]
+        public void CreateDelegate_ConvertNameValueCollectionToDictionary()
+        {
+            var converter = ConverterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int>>();
+            var input = new NameValueCollection { { "Value1", "1" }, { "Value2", "2" }, { "Value3", "3" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<Dictionary<string, int>>(result);
+            Assert.AreEqual(1, result["Value1"]);
+            Assert.AreEqual(2, result["Value2"]);
+            Assert.AreEqual(3, result["Value3"]);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertDictionaryToNameValueCollection()
+        {
+            var converter = ConverterFactory.CreateDelegate<Dictionary<string, int>, NameValueCollection>();
+            var input = new Dictionary<string, int> { { "Value1", 1 }, { "Value2", 2 }, { "Value3", 3 } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<NameValueCollection>(result);
+            Assert.AreEqual("1", result["Value1"]);
+            Assert.AreEqual("2", result["Value2"]);
+            Assert.AreEqual("3", result["Value3"]);
+        }
+
+        [Test]
         public void CreateDelegate_ConvertNameValueCollectionToPerson_ShouldReturnPersonWithCorrectValues()
         {
             var converter = ConverterFactory.CreateDelegate<NameValueCollection, Person>();
