@@ -412,13 +412,14 @@
 
         public static void AddValueToNewCollection(this ILGeneratorAdapter il, Type collectionType, Type elementType)
         {
+            var elementLocal = il.DeclareLocal(elementType);
+            
+            // Store value on top of stack into elementLocal
+            il.EmitLocal(OpCodes.Stloc, elementLocal);
+
             if (collectionType.IsArray)
             {
-                var elementLocal = il.DeclareLocal(elementType);
                 var collectionLocal = il.DeclareLocal(collectionType);
-
-                // Store value on top of stack into elementLocal
-                il.EmitLocal(OpCodes.Stloc, elementLocal);
 
                 // length 1
                 il.Emit(OpCodes.Ldc_I4_1);
@@ -434,24 +435,48 @@
 
                 il.EmitLocal(OpCodes.Ldloc, collectionLocal);
             }
+            else if (collectionType.IsGenericType)
+            {
+                var concreteCollectionType = ReflectionUtils.GetConcreteType(collectionType);
+                var collectionLocal = il.DeclareLocal(concreteCollectionType);
+
+                var con = concreteCollectionType.GetConstructor(Type.EmptyTypes);
+                if (con != null)
+                {
+                    il.EmitNewobj(con);
+                    il.EmitLocal(OpCodes.Stloc, collectionLocal);
+
+                    var addMethod = concreteCollectionType.GetMethod("Add", new[] { elementType });
+                    if (addMethod != null)
+                    {
+                        il.EmitLocal(OpCodes.Ldloc, collectionLocal);
+                        il.EmitLocal(OpCodes.Ldloc, elementLocal);
+                        il.EmitCall(OpCodes.Call, addMethod, null);
+                    }
+                }
+
+                il.EmitLocal(OpCodes.Ldloc, collectionLocal);
+                il.Emit(OpCodes.Castclass, collectionType);
+            }
         }
 
         public static void EmitFirstCollectionValue(this ILGeneratorAdapter il, Type collectionType, Type elementType)
         {
+            var fromLocal = il.DeclareLocal(collectionType);
+
+            // Store value on top of stack into fromLocal
+            il.EmitLocal(OpCodes.Stloc, fromLocal);
+            
             if (collectionType.IsArray)
             {
                 var defaultLabel = il.DefineLabel();
-                var fromLocal = il.DeclareLocal(collectionType);
                 var fromElementLocal = il.DeclareLocal(elementType);
-
-                // Store value on top of stack into fromLocal
-                il.EmitLocal(OpCodes.Stloc, fromLocal);
 
                 // Load length from fromLocal
                 il.EmitLocal(OpCodes.Ldloc, fromLocal);
                 il.Emit(OpCodes.Ldlen);
                 il.EmitBreak(OpCodes.Brfalse, defaultLabel);
-                
+
                 il.EmitLocal(OpCodes.Ldloc, fromLocal);
                 il.Emit(OpCodes.Ldc_I4_0);
                 il.Emit(OpCodes.Ldelem, elementType);
@@ -460,6 +485,16 @@
 
                 il.MarkLabel(defaultLabel);
                 il.EmitLocal(OpCodes.Ldloc, fromElementLocal);
+            }
+            else if (collectionType.IsGenericType)
+            {
+                var firstMethod = typeof(Enumerable).GetMethods().Single(method => method.Name == "FirstOrDefault" && method.IsStatic && method.GetParameters().Length == 1).MakeGenericMethod(elementType);
+
+                if (firstMethod != null)
+                {
+                    il.EmitLocal(OpCodes.Ldloc, fromLocal);
+                    il.EmitCall(OpCodes.Call, firstMethod, null);
+                }
             }
         }
 
@@ -478,7 +513,7 @@
 
                 if (toArrayMethod == null)
                 {
-                    toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { fromElementType });
+                    toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(fromElementType);
                 }
 
                 if (toArrayMethod != null)

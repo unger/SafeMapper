@@ -724,21 +724,41 @@
         [Test]
         public void CreateDelegate_StringToStringArray()
         {
-            var converter = ConverterFactory.CreateDelegate<string, string[]>();
-            var input = "Test";
+            var converter = ConverterFactory.CreateDelegate<string, int[]>();
+            var input = "1";
             var result = converter(input);
 
-            Assert.AreEqual(new[] { input }, result);
+            Assert.AreEqual(new[] { 1 }, result);
+        }
+
+        [Test]
+        public void CreateDelegate_StringToStringList()
+        {
+            var converter = ConverterFactory.CreateDelegate<string, List<int>>();
+            var input = "1";
+            var result = converter(input);
+
+            Assert.AreEqual(new List<int> { 1 }, result);
         }
 
         [Test]
         public void CreateDelegate_StringArrayToString()
         {
-            var converter = ConverterFactory.CreateDelegate<string[], string>();
-            var input = new[] { "Test", "Test1" };
+            var converter = ConverterFactory.CreateDelegate<string[], int>();
+            var input = new[] { "1", "2", "3" };
             var result = converter(input);
 
-            Assert.AreEqual(input[0], result);
+            Assert.AreEqual(1, result);
+        }
+
+        [Test]
+        public void CreateDelegate_StringListToString()
+        {
+            var converter = ConverterFactory.CreateDelegate<List<string>, int>();
+            var input = new List<string> { "1", "2", "3" };
+            var result = converter(input);
+
+            Assert.AreEqual(1, result);
         }
 
         [Test]

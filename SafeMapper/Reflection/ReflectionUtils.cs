@@ -82,18 +82,26 @@
                 return false;
             }
 
-            var interfaces = new List<Type>(type.GetInterfaces());
-            interfaces.Insert(0, type);
+            return ImplementsGenericTypeDefinition(type, typeof(IEnumerable<>));
+        }
 
-            foreach (var intType in interfaces)
+        public static bool ImplementsGenericTypeDefinition(Type searchType, Type genericTypeDefinition)
+        {
+            var type = GetTypeWithGenericTypeDefinition(searchType, genericTypeDefinition);
+            return type != null;
+        }
+
+        public static Type GetTypeWithGenericTypeDefinition(Type searchType, Type genericTypeDefinition)
+        {
+            if (!genericTypeDefinition.IsGenericTypeDefinition)
             {
-                if (intType.IsGenericType && intType.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                {
-                    return true;
-                }
+                return null;
             }
 
-            return false;
+            var interfaces = new List<Type>(searchType.GetInterfaces());
+            interfaces.Insert(0, searchType);
+
+            return interfaces.FirstOrDefault(intType => intType.IsGenericType && intType.GetGenericTypeDefinition() == genericTypeDefinition);
         }
 
         public static bool IsDictionary(Type type)
@@ -108,15 +116,11 @@
 
         public static bool IsStringKeyDictionary(Type type)
         {
-            var interfaces = new List<Type>(type.GetInterfaces());
-            interfaces.Insert(0, type);
+            var dictType = GetTypeWithGenericTypeDefinition(type, typeof(IDictionary<,>));
 
-            foreach (var intType in interfaces)
+            if (dictType != null)
             {
-                if (intType.IsGenericType && intType.GetGenericTypeDefinition() == typeof(IDictionary<,>) && intType.GetGenericArguments()[0] == typeof(string))
-                {
-                    return true;
-                }
+                return dictType.GetGenericArguments()[0] == typeof(string);
             }
 
             return false;
