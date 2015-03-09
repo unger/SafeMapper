@@ -11,7 +11,7 @@
 
     public static class EmitExtensions
     {
-        public static void EmitConvertArray(this ILGeneratorAdapter il, Type fromType, Type toType)
+        public static void EmitConvertArray(this ILGeneratorAdapter il, Type fromType, Type toType, HashSet<Type> convertedTypes)
         {
             var fromLocal = il.DeclareLocal(fromType);
             var toLocal = il.DeclareLocal(toType);
@@ -57,7 +57,7 @@
             il.Emit(OpCodes.Ldelem, fromElementType);
 
             // Convert the element at the top of the stack to toElementType
-            il.EmitConvertValue(fromElementType, toElementType);
+            il.EmitConvertValue(fromElementType, toElementType, new HashSet<Type>(convertedTypes));
 
             // Store the converted value
             il.Emit(OpCodes.Stelem, toElementType);
@@ -74,7 +74,8 @@
             LocalBuilder fromLocal,
             LocalBuilder toLocal,
             MemberWrapper fromMember,
-            MemberWrapper toMember)
+            MemberWrapper toMember,
+            HashSet<Type> convertedTypes)
         {
             var skipMemberMap = il.DefineLabel();
             if (fromMember.GetterNeedsContainsCheck)
@@ -118,7 +119,7 @@
             }
 
             // Convert the value on top of the stack to the correct toType
-            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType);
+            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType, new HashSet<Type>(convertedTypes));
 
             if (toMember.MemberSetter is PropertyInfo)
             {
@@ -176,8 +177,22 @@
             }
         }
 
-        public static void EmitConvertValue(this ILGeneratorAdapter il, Type fromType, Type toType)
+        public static void EmitConvertValue(this ILGeneratorAdapter il, Type fromType, Type toType, HashSet<Type> convertedTypes)
         {
+            // Circular reference check
+            if (!fromType.IsValueType && fromType != typeof(string))
+            {
+                if (convertedTypes.Contains(fromType))
+                {
+                    var toLocal = il.DeclareLocal(toType);
+                    il.Emit(OpCodes.Pop);
+                    il.EmitLocal(OpCodes.Ldloc, toLocal);
+                    return;
+                }
+
+                convertedTypes.Add(fromType);
+            }
+
             Label skipConversion = il.DefineLabel();
 
             if (toType.IsAssignableFrom(fromType))
@@ -242,7 +257,7 @@
             }
             else if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
             {
-                il.EmitConvertCollection(fromType, toType);
+                il.EmitConvertCollection(fromType, toType, convertedTypes);
             }
             else if (ReflectionUtils.IsCollection(fromType))
             {
@@ -252,7 +267,7 @@
                 il.EmitFirstCollectionValue(concreteFromType, fromElementType);
 
                 // Convert the element at the top of the stack to toType
-                il.EmitConvertValue(fromElementType, toType);
+                il.EmitConvertValue(fromElementType, toType, new HashSet<Type>(convertedTypes));
             }
             else if (ReflectionUtils.IsCollection(toType))
             {
@@ -260,7 +275,7 @@
                 var toElementType = ReflectionUtils.GetElementType(concreteToType);
 
                 // Convert the element at the top of the stack to toElementType
-                il.EmitConvertValue(fromType, toElementType);
+                il.EmitConvertValue(fromType, toElementType, new HashSet<Type>(convertedTypes));
 
                 il.AddValueToNewCollection(concreteToType, toElementType);
             }
@@ -270,17 +285,17 @@
             }
             else if (ReflectionUtils.IsDictionary(fromType) && ReflectionUtils.IsDictionary(toType))
             {
-                il.EmitMapDictionary(fromType, toType);
+                il.EmitMapDictionary(fromType, toType, convertedTypes);
             }
             else
             {
-                il.EmitConvertClass(fromType, toType);
+                il.EmitConvertClass(fromType, toType, convertedTypes);
             }
 
             il.MarkLabel(skipConversion);
         }
 
-        public static void EmitMapDictionary(this ILGeneratorAdapter il, Type fromType, Type toType)
+        public static void EmitMapDictionary(this ILGeneratorAdapter il, Type fromType, Type toType, HashSet<Type> convertedTypes)
         {
             var fromLocal = il.DeclareLocal(fromType);
             var toLocal = il.DeclareLocal(toType);
@@ -353,8 +368,8 @@
             il.Emit(OpCodes.Ldelem, typeof(string));
             il.EmitLocal(OpCodes.Stloc, key);
 
-            var fromMember = ReflectionUtils.GetMember(fromType, "dummy");
             var toMember = ReflectionUtils.GetMember(toType, "dummy");
+            var fromMember = ReflectionUtils.GetMember(fromType, "dummy", toMember.SetterType);
 
             var skipMemberMap = il.DefineLabel();
 
@@ -386,7 +401,7 @@
             }
 
             // Convert the value on top of the stack to the correct toType
-            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType);
+            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType, new HashSet<Type>(convertedTypes));
 
             if (toMember.MemberSetter is PropertyInfo)
             {
@@ -498,7 +513,7 @@
             }
         }
 
-        public static void EmitConvertCollection(this ILGeneratorAdapter il, Type fromType, Type toType)
+        public static void EmitConvertCollection(this ILGeneratorAdapter il, Type fromType, Type toType, HashSet<Type> convertedTypes)
         {
             var fromArrayType = fromType;
             var toArrayType = toType;
@@ -528,7 +543,7 @@
                 toArrayType = toElementType.MakeArrayType();
             }
 
-            il.EmitConvertArray(fromArrayType, toArrayType);
+            il.EmitConvertArray(fromArrayType, toArrayType, convertedTypes);
 
             if (!toType.IsArray)
             {
@@ -698,7 +713,7 @@
             il.MarkLabel(endOfMethod);
         }
 
-        public static void EmitConvertClass(this ILGeneratorAdapter il, Type fromType, Type toType)
+        public static void EmitConvertClass(this ILGeneratorAdapter il, Type fromType, Type toType, HashSet<Type> convertedTypes)
         {
             var fromLocal = il.DeclareLocal(fromType);
             var toLocal = il.DeclareLocal(toType);
@@ -716,7 +731,7 @@
             var memberMaps = ReflectionUtils.GetMemberMaps(fromType, toType);
             for (int i = 0; i < memberMaps.Count; i++)
             {
-                il.EmitMemberMap(fromLocal, toLocal, memberMaps[i].Item1, memberMaps[i].Item2);
+                il.EmitMemberMap(fromLocal, toLocal, memberMaps[i].Item1, memberMaps[i].Item2, convertedTypes);
             }
 
             il.EmitLocal(OpCodes.Ldloc, toLocal);

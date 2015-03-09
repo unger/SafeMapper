@@ -57,6 +57,14 @@
         }
 
         [Test]
+        public void GetMember_IntObjectDictionary_ShouldReturnNull()
+        {
+            var member = ReflectionUtils.GetMember(typeof(Dictionary<int, string>), "MemberName");
+
+            Assert.Null(member);
+        }
+
+        [Test]
         public void GetMember_NameValueCollection_ShouldReturnStringIndexer()
         {
             var member = ReflectionUtils.GetMember(typeof(NameValueCollection), "MemberName");
@@ -222,5 +230,31 @@
 
             Assert.True(result);
         }
+
+        [Test]
+        public void GetTypeWithGenericTypeDefinition_GenericTypeDefinition_ShouldReturnCorrectType()
+        {
+            var result = ReflectionUtils.GetTypeWithGenericTypeDefinition(typeof(List<string>), typeof(IEnumerable<>));
+
+            Assert.AreEqual(typeof(IEnumerable<string>), result);
+        }
+
+        [Test]
+        public void GetTypeWithGenericTypeDefinition_NotGenericTypeDefinition_ShouldReturnNull()
+        {
+            var result = ReflectionUtils.GetTypeWithGenericTypeDefinition(typeof(List<string>), typeof(IEnumerable<string>));
+
+            Assert.IsNull(result);
+        }
+
+
+        [Test]
+        public void GetMemberMaps_NameValueCollectionAndDictionary_ShouldReturnEmptyList()
+        {
+            var result = ReflectionUtils.GetMemberMaps(typeof(NameValueCollection), typeof(Dictionary<string, int>));
+
+            Assert.IsEmpty(result);
+        }
+        
     }
 }

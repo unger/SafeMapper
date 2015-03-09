@@ -43,10 +43,12 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="AddressDto.cs" />
+    <Compile Include="Circular\ChildDto.cs" />
     <Compile Include="Circular\Child.cs" />
     <Compile Include="Circular\Level1.cs" />
     <Compile Include="Circular\Level2.cs" />
     <Compile Include="Circular\Level3.cs" />
+    <Compile Include="Circular\ParentDto.cs" />
     <Compile Include="Circular\Parent.cs" />
     <Compile Include="Circular\Root.cs" />
     <Compile Include="Enums\DescriptionAttributeEnum.cs" />

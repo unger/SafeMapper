@@ -1,6 +1,7 @@
 ﻿namespace SafeMapper.Utils
 {
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Reflection.Emit;
 
@@ -23,7 +24,7 @@
 
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(fromType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, fromType); // cast input to correct type
-            il.EmitConvertValue(fromType, toType);
+            il.EmitConvertValue(fromType, toType, new HashSet<Type>());
             il.Emit(OpCodes.Box, toType);
             il.Emit(OpCodes.Ret);
 
@@ -49,7 +50,7 @@
             var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
 
             il.Emit(OpCodes.Ldarg_1);
-            il.EmitConvertValue(fromType, toType);
+            il.EmitConvertValue(fromType, toType, new HashSet<Type>());
             il.Emit(OpCodes.Ret);
 
             return (Converter<TFrom, TTo>)convertDynamicMethod.CreateDelegate(typeof(Converter<TFrom, TTo>), provider);

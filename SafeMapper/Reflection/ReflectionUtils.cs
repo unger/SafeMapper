@@ -27,19 +27,10 @@
         {
             if (type.IsGenericType)
             {
-                var genericType = type.GetGenericTypeDefinition();
-                if (genericType == typeof(Dictionary<,>))
+                if (IsStringKeyDictionary(type))
                 {
-                    IDictionary<string, int> dict = new Dictionary<string, int>();
-                    var genericArguments = type.GetGenericArguments();
-                    if (genericArguments[0] == typeof(string))
-                    {
-                        var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
-                        if (itemIndexer != null)
-                        {
-                            return new MemberWrapper(name, itemIndexer);
-                        }
-                    }
+                    var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                    return new MemberWrapper(name, itemIndexer);
                 }
             }
             else if (type == typeof(NameValueCollection))
@@ -321,26 +312,24 @@
 
         private static bool CanHaveCircularReferenceRecursive(Type type, HashSet<Type> addedTypes)
         {
-            if (IsCollection(type))
-            {
-                return CanHaveCircularReferenceRecursive(GetElementType(type), addedTypes);
-            }
-
-            if (type.IsGenericType)
-            {
-                var returnValue = false;
-
-                foreach (var genericArg in type.GetGenericArguments())
-                {
-                    returnValue |= CanHaveCircularReferenceRecursive(genericArg, addedTypes);
-                }
-
-                return returnValue;
-            }
+            var returnValue = false;
 
             if (addedTypes.Contains(type))
             {
                 return true;
+            }
+
+            if (IsCollection(type))
+            {
+                return CanHaveCircularReferenceRecursive(GetElementType(type), new HashSet<Type>(addedTypes));
+            }
+
+            if (type.IsGenericType)
+            {
+                foreach (var genericArg in type.GetGenericArguments())
+                {
+                    returnValue |= CanHaveCircularReferenceRecursive(genericArg, new HashSet<Type>(addedTypes));
+                }
             }
 
             if (!type.IsValueType && type != typeof(string))
@@ -349,16 +338,16 @@
 
                 foreach (var prop in type.GetProperties())
                 {
-                    return CanHaveCircularReferenceRecursive(prop.PropertyType, addedTypes);
+                    returnValue |= CanHaveCircularReferenceRecursive(prop.PropertyType, new HashSet<Type>(addedTypes));
                 }
 
                 foreach (var prop in type.GetFields())
                 {
-                    return CanHaveCircularReferenceRecursive(prop.FieldType, addedTypes);
+                    returnValue |= CanHaveCircularReferenceRecursive(prop.FieldType, new HashSet<Type>(addedTypes));
                 }
             }
 
-            return false;
+            return returnValue;
         }
     }
 }

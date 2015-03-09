@@ -10,6 +10,7 @@
     using NUnit.Framework;
 
     using SafeMapper.Tests.Model;
+    using SafeMapper.Tests.Model.Circular;
     using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.GenericClasses;
     using SafeMapper.Tests.Model.Person;
@@ -917,6 +918,33 @@
             Assert.AreEqual("1", result["Value1"]);
             Assert.AreEqual("2", result["Value2"]);
             Assert.AreEqual("3", result["Value3"]);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertNameValueCollectionMultiKeysToDictionary()
+        {
+            var converter = ConverterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int[]>>();
+            var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value2", "3" } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<Dictionary<string, int[]>>(result);
+            Assert.AreEqual(new[] { 1, 2 }, result["Value"]);
+            Assert.AreEqual(new[] { 3 }, result["Value2"]);
+        }
+
+        [Test]
+        public void CreateDelegate_ConvertCircularReference_Parent_Child()
+        {
+            var converter = ConverterFactory.CreateDelegate<Parent, ParentDto>();
+            var input = new Parent();
+            input.Children = new Child[1] { new Child { Parent = input } };
+
+            var result = converter(input);
+
+            Assert.IsInstanceOf<ParentDto>(result);
+            Assert.AreEqual(1, result.Children.Length);
+            Assert.Null(result.Children[0].Parent);
         }
 
         [Test]
