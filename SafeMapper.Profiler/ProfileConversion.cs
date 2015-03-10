@@ -119,7 +119,7 @@
             */
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
-            //this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
+            this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<BenchSource, BenchDestination>(benchSourceArray, CultureInfo.CurrentCulture, null);
 
@@ -133,12 +133,13 @@
 
             //this.ProfileConvert<int, decimal>(intArray, formatProvider, i => Convert.ToDecimal(intArray[i], formatProvider));
 
+            /*
             this.ProfileConvert<DisplayAttributeResourceEnum, string>(displayResourceEnumArray, CultureInfo.CurrentCulture, null);
             this.ProfileConvert<DisplayAttributeResxEnum, string>(displayResxEnumArray, CultureInfo.CurrentCulture, null);
             this.ProfileConvert<DisplayAttributeEnum, string>(displayEnumArray, CultureInfo.CurrentCulture, null);
             this.ProfileConvert<DescriptionAttributeEnum, string>(descriptionEnumArray, CultureInfo.CurrentCulture, null);
             this.ProfileConvert<Int32Enum, string>(int32EnumArray, CultureInfo.CurrentCulture, null);
-            
+            */
         }
 
         private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)

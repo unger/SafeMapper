@@ -84,6 +84,7 @@
     <Compile Include="ProfileConversion.cs" />
     <Compile Include="ProfileArrayToArray.cs" />
     <Compile Include="ProfileArrayCreation.cs" />
+    <Compile Include="Profiler.cs" />
     <Compile Include="ProfileStringConcat.cs" />
     <Compile Include="ProfileTypeOf.cs" />
     <Compile Include="ProfilePropertyGetSet.cs" />

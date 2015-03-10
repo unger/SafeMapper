@@ -49,12 +49,15 @@
   <ItemGroup>
     <Compile Include="PerformanceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\Profiler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SafeMapper.Profiler\SafeMapper.Profiler.csproj">
+      <Project>{ab4705b8-874d-47d0-bf6d-2414c6f436be}</Project>
+      <Name>SafeMapper.Profiler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj">
       <Project>{955aa075-d841-4bb9-9487-dac42eebcecc}</Project>
       <Name>SafeMapper.Tests.Model</Name>

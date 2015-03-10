@@ -47,11 +47,11 @@ But it is also possible to call Convert directly
 
 Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests.Model for definition
 
-    SafeMapper:     12.6 ms
-    EmitMapper:     18.8 ms
-    FastMapper:    139.8 ms
+    SafeMapper:     13.7 ms
+    EmitMapper:     17.0 ms
+    FastMapper:    142.1 ms
     ValueInjector: 337.3 ms
-    AutoMapper:   2088.8 ms
+    AutoMapper:   2092.0 ms
 
 [More speed tests](SPEEDTESTS.md)
 

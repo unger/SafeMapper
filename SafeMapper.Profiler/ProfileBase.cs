@@ -24,7 +24,7 @@
             foreach (var iteration in this.iterations)
             {
                 var result = this.Profile(description, iteration, func);
-                Console.Write("{0, 12}", result.Item2);
+                Console.Write("{0, 12:0.0000}", result.Item2);
             }
 
             Console.WriteLine();
@@ -47,24 +47,10 @@
         {
             try
             {
-                // warm up 
-                func(0);
+                var ticks = Profiler.Profile(() => func(0), iterations, 100);
+                var result = ((double)ticks / Stopwatch.Frequency) * 1000;
 
-                var watch = new Stopwatch();
-
-                // clean up
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                GC.Collect();
-
-                watch.Start();
-                for (int i = 0; i < iterations; i++)
-                {
-                    func(i);
-                }
-
-                watch.Stop();
-                return new Tuple<string, double>(string.Format("{0,-40}{1} ms", description, watch.Elapsed.TotalMilliseconds), watch.Elapsed.TotalMilliseconds);
+                return new Tuple<string, double>(string.Format("{0,-40}{1} ms", description, result), result);
             }
             catch (Exception e)
             {

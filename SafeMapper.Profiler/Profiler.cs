@@ -1,4 +1,4 @@
-﻿namespace SafeMapper.Tests.Performance.Util
+﻿namespace SafeMapper.Profiler
 {
     using System;
     using System.Collections.Generic;

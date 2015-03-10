@@ -7,8 +7,8 @@
 
     using NUnit.Framework;
 
+    using SafeMapper.Profiler;
     using SafeMapper.Tests.Model.Person;
-    using SafeMapper.Tests.Performance.Util;
 
     [Ignore]
     [TestFixture]
