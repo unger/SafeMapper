@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\MemberMap.cs" />
+    <Compile Include="Configuration\TypeMapping.cs" />
     <Compile Include="SafeMap.cs" />
     <Compile Include="Reflection\MemberWrapper.cs" />
     <Compile Include="Reflection\ReflectionUtils.cs" />
@@ -52,6 +54,7 @@
     <Compile Include="Utils\ILGeneratorAdapter.cs" />
     <Compile Include="Utils\ILInstruction.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

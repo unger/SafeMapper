@@ -7,6 +7,7 @@
     using System.Reflection;
     using System.Reflection.Emit;
 
+    using SafeMapper.Configuration;
     using SafeMapper.Reflection;
 
     public static class EmitExtensions
@@ -728,10 +729,10 @@
                 il.EmitLocal(OpCodes.Stloc, toLocal);
             }
 
-            var memberMaps = ReflectionUtils.GetMemberMaps(fromType, toType);
-            for (int i = 0; i < memberMaps.Count; i++)
+            var typeMapping = TypeMapping.GetTypeMapping(fromType, toType);
+            foreach (var memberMap in typeMapping.MemberMaps)
             {
-                il.EmitMemberMap(fromLocal, toLocal, memberMaps[i].Item1, memberMaps[i].Item2, convertedTypes);
+                il.EmitMemberMap(fromLocal, toLocal, memberMap.FromMember, memberMap.ToMember, convertedTypes);
             }
 
             il.EmitLocal(OpCodes.Ldloc, toLocal);
