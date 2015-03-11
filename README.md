@@ -10,8 +10,7 @@ The project is influenced by AutoMapper, EmitMapper and FastMapper.
 ##Key features
 
 - High speed performance
-- Map between primitive types
-- Map to and from string 
+- Map between primitive types and string
 - Map array and collections
 - Exception free conversion between most types, fallback to default value for the type
 - Support for both Structs and Classes
@@ -23,6 +22,7 @@ The project is influenced by AutoMapper, EmitMapper and FastMapper.
 - Conversion from NameValueCollection to Object
 - Conversion from Object to NameValueCollection
 - Mapping support to and from IDictionary&lt;string, T&gt;
+- Simple circular reference check on type-level
 
 ##Installation
 
@@ -57,8 +57,10 @@ Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests
 
 ##Planned features
 
-- Support for circular references between objects
+- Full Support for circular references between objects
 - Configuration support to enable mapping fields/properties with different names
+- Support for flattening
+- Plugin support to extend core functionality (Converters and Membermapping etc)
 - Map from Database queries to c# object
 - Map Lucene documents to c# object
 
