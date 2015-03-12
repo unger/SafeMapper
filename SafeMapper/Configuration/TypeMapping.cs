@@ -11,11 +11,20 @@
     {
         private static readonly ConcurrentDictionary<string, TypeMapping> TypeMappingCache = new ConcurrentDictionary<string, TypeMapping>();
 
-        public TypeMapping(Type fromType, Type toType)
+        public TypeMapping(Type fromType, Type toType) 
+            : this(fromType, toType, null)
+        {
+        }
+
+        public TypeMapping(Type fromType, Type toType, IEnumerable<MemberMap> memberMaps)
         {
             this.FromType = fromType;
             this.ToType = toType;
             this.MemberMaps = ReflectionUtils.GetMemberMaps(fromType, toType).Select(tup => new MemberMap(tup.Item1, tup.Item2)).ToList();
+            if (memberMaps != null)
+            {
+                this.MemberMaps.AddRange(memberMaps);
+            }
         }
 
         public Type FromType { get; private set; }

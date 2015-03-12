@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\MemberMap.cs" />
+    <Compile Include="Configuration\TypeMap.cs" />
     <Compile Include="Configuration\TypeMapping.cs" />
     <Compile Include="SafeMap.cs" />
     <Compile Include="Reflection\MemberWrapper.cs" />

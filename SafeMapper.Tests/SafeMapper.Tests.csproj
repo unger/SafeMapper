@@ -56,6 +56,7 @@
     <Compile Include="TestData.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="TypeMappingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">
