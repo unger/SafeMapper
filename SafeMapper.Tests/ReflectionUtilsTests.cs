@@ -17,33 +17,33 @@
     public class ReflectionUtilsTests
     {
         [Test]
-        public void GetMember_StringPropertyClassExistingMember_ShouldReturnMember()
+        public void GetMemberSetter_StringPropertyClassExistingMember_ShouldReturnMember()
         {
-            var member = ReflectionUtils.GetMember(typeof(ClassProperty<string>), "Value");
+            var member = ReflectionUtils.GetMemberSetter(typeof(ClassProperty<string>), "Value");
 
             Assert.NotNull(member);
         }
 
         [Test]
-        public void GetMember_StringPropertyClassNonExistingMember_ShouldReturnNull()
+        public void GetMemberSetter_StringPropertyClassNonExistingMember_ShouldReturnNull()
         {
-            var member = ReflectionUtils.GetMember(typeof(ClassProperty<string>), "NotExisting");
+            var member = ReflectionUtils.GetMemberSetter(typeof(ClassProperty<string>), "NotExisting");
 
             Assert.Null(member);
         }
 
         [Test]
-        public void GetMember_StringFieldClassExistingMember_ShouldReturnMember()
+        public void GetMemberGetter_StringFieldClassExistingMember_ShouldReturnMember()
         {
-            var member = ReflectionUtils.GetMember(typeof(ClassField<string>), "Value");
+            var member = ReflectionUtils.GetMemberGetter(typeof(ClassField<string>), "Value");
 
             Assert.NotNull(member);
         }
 
         [Test]
-        public void GetMember_StringFieldClassNonExistingMember_ShouldReturnNull()
+        public void GetMemberGetter_StringFieldClassNonExistingMember_ShouldReturnNull()
         {
-            var member = ReflectionUtils.GetMember(typeof(ClassField<string>), "NotExisting");
+            var member = ReflectionUtils.GetMemberGetter(typeof(ClassField<string>), "NotExisting");
 
             Assert.Null(member);
         }
@@ -51,31 +51,31 @@
         [Test]
         public void GetMember_StringObjectDictionary_ShouldReturnStringIndexer()
         {
-            var member = ReflectionUtils.GetMember(typeof(Dictionary<string, string>), "MemberName");
+            var member = ReflectionUtils.GetMemberGetter(typeof(Dictionary<string, string>), "MemberName");
 
             Assert.NotNull(member);
         }
 
         [Test]
-        public void GetMember_IntObjectDictionary_ShouldReturnNull()
+        public void GetMemberGetter_IntObjectDictionary_ShouldReturnNull()
         {
-            var member = ReflectionUtils.GetMember(typeof(Dictionary<int, string>), "MemberName");
+            var member = ReflectionUtils.GetMemberGetter(typeof(Dictionary<int, string>), "MemberName");
 
             Assert.Null(member);
         }
 
         [Test]
-        public void GetMember_NameValueCollection_ShouldReturnStringIndexer()
+        public void GetMemberGetter_NameValueCollection_ShouldReturnStringIndexer()
         {
-            var member = ReflectionUtils.GetMember(typeof(NameValueCollection), "MemberName");
+            var member = ReflectionUtils.GetMemberGetter(typeof(NameValueCollection), "MemberName");
 
             Assert.NotNull(member);
         }
 
         [Test]
-        public void GetMember_MethodInfo_ShouldReturnNull()
+        public void GetMemberGetter_MethodInfo_ShouldReturnNull()
         {
-            var member = ReflectionUtils.GetMember(typeof(int), "ToString");
+            var member = ReflectionUtils.GetMemberGetter(typeof(int), "ToString");
 
             Assert.Null(member);
         }

@@ -41,11 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\MemberMap.cs" />
+    <Compile Include="Reflection\MemberMap.cs" />
     <Compile Include="Configuration\TypeMap.cs" />
     <Compile Include="Configuration\TypeMapping.cs" />
+    <Compile Include="Reflection\Member.cs" />
+    <Compile Include="Reflection\MemberGetter.cs" />
+    <Compile Include="Reflection\MemberSetter.cs" />
+    <Compile Include="Reflection\MemberType.cs" />
     <Compile Include="SafeMap.cs" />
-    <Compile Include="Reflection\MemberWrapper.cs" />
     <Compile Include="Reflection\ReflectionUtils.cs" />
     <Compile Include="SafeConvert.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

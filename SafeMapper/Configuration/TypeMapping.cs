@@ -20,7 +20,7 @@
         {
             this.FromType = fromType;
             this.ToType = toType;
-            this.MemberMaps = ReflectionUtils.GetMemberMaps(fromType, toType).Select(tup => new MemberMap(tup.Item1, tup.Item2)).ToList();
+            this.MemberMaps = ReflectionUtils.GetMemberMaps(fromType, toType).ToList();
             if (memberMaps != null)
             {
                 this.MemberMaps.AddRange(memberMaps);

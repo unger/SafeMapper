@@ -15,8 +15,8 @@
 
         protected void Map(string fromName, string toName)
         {
-            var fromMember = ReflectionUtils.GetMember(typeof(TFrom), fromName);
-            var toMember = ReflectionUtils.GetMember(typeof(TTo), toName);
+            var fromMember = ReflectionUtils.GetMemberGetter(typeof(TFrom), fromName);
+            var toMember = ReflectionUtils.GetMemberSetter(typeof(TTo), toName);
 
             if (fromMember != null && toMember != null)
             {

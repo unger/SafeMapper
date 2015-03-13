@@ -6,7 +6,6 @@
     using System.Collections.Specialized;
     using System.Linq;
     using System.Reflection;
-    using System.Security.Policy;
 
     public class ReflectionUtils
     {
@@ -18,11 +17,80 @@
                 .ToArray();
         }
 
-        public static MemberWrapper[] GetMembers(Type type)
+        public static MemberSetter[] GetMemberSetters(Type type)
         {
-            return GetPublicFieldsAndProperties(type).Select(m => new MemberWrapper(m)).ToArray();
+            return GetPublicFieldsAndProperties(type).Select(m => new MemberSetter(m)).ToArray();
         }
 
+        public static MemberGetter[] GetMemberGetters(Type type)
+        {
+            return GetPublicFieldsAndProperties(type).Select(m => new MemberGetter(m)).ToArray();
+        }
+
+        public static MemberGetter GetMemberGetter(Type type, string name, Type returnType = null)
+        {
+            if (IsStringKeyDictionary(type))
+            {
+                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                return new MemberGetter(itemIndexer, name);
+            }
+
+            if (type == typeof(NameValueCollection))
+            {
+                if (returnType != null && (IsCollection(returnType) || returnType != typeof(string)))
+                {
+                    var getValuesMethod = type.GetMethod("GetValues", new[] { typeof(string) });
+                    return new MemberGetter(getValuesMethod, name);
+                }
+
+                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                return new MemberGetter(itemIndexer, name);
+            }
+
+            var propertyInfo = type.GetProperty(name);
+            if (propertyInfo != null)
+            {
+                return new MemberGetter(propertyInfo);
+            }
+
+            var fieldInfo = type.GetField(name);
+            if (fieldInfo != null)
+            {
+                return new MemberGetter(fieldInfo);
+            }
+
+            return null;
+        }
+
+        public static MemberSetter GetMemberSetter(Type type, string name, Type returnType = null)
+        {
+            if (IsStringKeyDictionary(type))
+            {
+                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                return new MemberSetter(itemIndexer, name);
+            }
+
+            if (type == typeof(NameValueCollection))
+            {
+                var addMethod = type.GetMethod("Add", new[] { typeof(string), typeof(string) });
+                return new MemberSetter(addMethod, name);
+            }
+
+            var propertyInfo = type.GetProperty(name);
+            if (propertyInfo != null)
+            {
+                return new MemberSetter(propertyInfo);
+            }
+
+            var fieldInfo = type.GetField(name);
+            if (fieldInfo != null)
+            {
+                return new MemberSetter(fieldInfo);
+            }
+
+            return null;
+        }
+        /*
         public static MemberWrapper GetMember(Type type, string name, Type returnType = null)
         {
             if (type.IsGenericType)
@@ -59,7 +127,7 @@
             }
 
             return null;
-        }
+        }*/
 
         public static bool IsCollection(Type type)
         {
@@ -176,9 +244,9 @@
             return typedefinition;
         }
 
-        public static List<Tuple<MemberWrapper, MemberWrapper>> GetMemberMaps(Type fromType, Type toType)
+        public static List<MemberMap> GetMemberMaps(Type fromType, Type toType)
         {
-            var result = new List<Tuple<MemberWrapper, MemberWrapper>>();
+            var result = new List<MemberMap>();
 
             var fromIsDictionary = IsDictionary(fromType);
             var toIsDictionary = IsDictionary(toType);
@@ -189,52 +257,37 @@
             }
             else if (fromIsDictionary)
             {
-                var toMembers = GetMembers(toType);
+                var toMembers = GetMemberSetters(toType);
                 foreach (var toMember in toMembers)
                 {
-                    if (toMember.CanWrite)
+                    var fromMember = GetMemberGetter(fromType, toMember.Name, toMember.Type);
+                    if (fromMember != null)
                     {
-                        var fromMember = GetMember(fromType, toMember.Name, toMember.SetterType);
-                        if (fromMember.CanRead)
-                        {
-                            result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
-                        }
+                        result.Add(new MemberMap(fromMember, toMember));
                     }
                 }
             }
             else if (toIsDictionary)
             {
-                var fromMembers = GetMembers(fromType);
+                var fromMembers = GetMemberGetters(fromType);
 
                 foreach (var fromMember in fromMembers)
                 {
-                    if (fromMember.CanRead)
-                    {
-                        var toMember = GetMember(toType, fromMember.Name);
-                        if (toMember.CanWrite)
-                        {
-                            result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
-                        }
-                    }
+                    var toMember = GetMemberSetter(toType, fromMember.Name);
+                    result.Add(new MemberMap(fromMember, toMember));
                 }
             }
             else
             {
-                var toMembers = GetMembers(toType);
-                var fromMembers = GetMembers(fromType);
+                var toMembers = GetMemberSetters(toType);
+                var fromMembers = GetMemberGetters(fromType);
                 var toMembersDict = toMembers.ToDictionary(m => m.Name);
                 foreach (var fromMember in fromMembers)
                 {
-                    if (fromMember.CanRead)
+                    if (toMembersDict.ContainsKey(fromMember.Name))
                     {
-                        if (toMembersDict.ContainsKey(fromMember.Name))
-                        {
-                            var toMember = toMembersDict[fromMember.Name];
-                            if (toMember.CanWrite)
-                            {
-                                result.Add(new Tuple<MemberWrapper, MemberWrapper>(fromMember, toMember));
-                            }
-                        }
+                        var toMember = toMembersDict[fromMember.Name];
+                        result.Add(new MemberMap(fromMember, toMember));
                     }
                 }
             }

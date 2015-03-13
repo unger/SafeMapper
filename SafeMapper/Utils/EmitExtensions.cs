@@ -74,69 +74,68 @@
             this ILGeneratorAdapter il,
             LocalBuilder fromLocal,
             LocalBuilder toLocal,
-            MemberWrapper fromMember,
-            MemberWrapper toMember,
+            MemberMap memberMap,
             HashSet<Type> convertedTypes)
         {
             var skipMemberMap = il.DefineLabel();
-            if (fromMember.GetterNeedsContainsCheck)
+            if (memberMap.FromMember.NeedsContainsCheck)
             {
                 var containsKey = fromLocal.LocalType.GetMethod("ContainsKey", new[] { typeof(string) });
                 il.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
-                il.EmitString(fromMember.Name);
+                il.EmitString(memberMap.FromMember.Name);
                 il.EmitCall(OpCodes.Call, containsKey, null);
                 il.EmitBreak(OpCodes.Brfalse, skipMemberMap);
             }
 
             // Load toLocal as parameter for the setter
             il.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
-            if (toMember.SetterNeedsStringIndex)
+            if (memberMap.ToMember.NeedsStringIndex)
             {
-                il.EmitString(toMember.Name);
+                il.EmitString(memberMap.ToMember.Name);
             }
 
             // Load fromLocal as parameter for the getter
             il.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
 
-            if (fromMember.MemberGetter is PropertyInfo)
+            if (memberMap.FromMember.MemberInfo is PropertyInfo)
             {
-                var getter = (fromMember.MemberGetter as PropertyInfo).GetGetMethod();
-                if (fromMember.MemberGetterType == MemberType.StringIndexer)
+                var getter = (memberMap.FromMember.MemberInfo as PropertyInfo).GetGetMethod();
+                if (memberMap.FromMember.MemberType == MemberType.StringIndexer)
                 {
-                    il.EmitString(fromMember.Name);
+                    il.EmitString(memberMap.FromMember.Name);
                 }
 
                 il.EmitCall(OpCodes.Callvirt, getter, null);
             }
-            else if (fromMember.MemberGetter is FieldInfo)
+            else if (memberMap.FromMember.MemberInfo is FieldInfo)
             {
-                il.EmitField(OpCodes.Ldfld, fromMember.MemberGetter as FieldInfo);
+                il.EmitField(OpCodes.Ldfld, memberMap.FromMember.MemberInfo as FieldInfo);
             }
-            else if (fromMember.MemberGetter is MethodInfo)
+            else if (memberMap.FromMember.MemberInfo is MethodInfo)
             {
-                var method = fromMember.MemberGetter as MethodInfo;
-                il.EmitString(fromMember.Name);
+                var method = memberMap.FromMember.MemberInfo as MethodInfo;
+                il.EmitString(memberMap.FromMember.Name);
                 il.EmitCall(OpCodes.Callvirt, method, null);
             }
 
             // Convert the value on top of the stack to the correct toType
-            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType, new HashSet<Type>(convertedTypes));
+            il.EmitConvertValue(memberMap.FromMember.Type, memberMap.ToMember.Type, new HashSet<Type>(convertedTypes));
 
-            if (toMember.MemberSetter is PropertyInfo)
+            if (memberMap.ToMember.MemberInfo is PropertyInfo)
             {
-                var setter = (toMember.MemberSetter as PropertyInfo).GetSetMethod();
+                var setter = (memberMap.ToMember.MemberInfo as PropertyInfo).GetSetMethod();
                 il.EmitCall(OpCodes.Callvirt, setter, null);
             }
-            else if (toMember.MemberSetter is FieldInfo)
+            else if (memberMap.ToMember.MemberInfo is FieldInfo)
             {
-                il.EmitField(OpCodes.Stfld, toMember.MemberSetter as FieldInfo);
+                il.EmitField(OpCodes.Stfld, memberMap.ToMember.MemberInfo as FieldInfo);
             }
-            else if (toMember.MemberSetter is MethodInfo)
+            else if (memberMap.ToMember.MemberInfo is MethodInfo)
             {
-                il.EmitCall(OpCodes.Call, toMember.MemberSetter as MethodInfo, null);
+                il.EmitCall(OpCodes.Call, memberMap.ToMember.MemberInfo as MethodInfo, null);
             }
 
-            if (fromMember.GetterNeedsContainsCheck)
+            if (memberMap.FromMember.NeedsContainsCheck)
             {
                 il.MarkLabel(skipMemberMap);
             }
@@ -369,14 +368,14 @@
             il.Emit(OpCodes.Ldelem, typeof(string));
             il.EmitLocal(OpCodes.Stloc, key);
 
-            var toMember = ReflectionUtils.GetMember(toType, "dummy");
-            var fromMember = ReflectionUtils.GetMember(fromType, "dummy", toMember.SetterType);
+            var toMember = ReflectionUtils.GetMemberSetter(toType, "dummy");
+            var fromMember = ReflectionUtils.GetMemberGetter(fromType, "dummy", toMember.Type);
 
             var skipMemberMap = il.DefineLabel();
 
             // Load toLocal as parameter for the setter
             il.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
-            if (toMember.SetterNeedsStringIndex)
+            if (toMember.NeedsStringIndex)
             {
                 il.EmitLocal(OpCodes.Ldloc, key);
             }
@@ -384,37 +383,37 @@
             // Load fromLocal as parameter for the getter
             il.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
 
-            if (fromMember.MemberGetter is PropertyInfo)
+            if (fromMember.MemberInfo is PropertyInfo)
             {
-                var getter = (fromMember.MemberGetter as PropertyInfo).GetGetMethod();
-                if (fromMember.MemberGetterType == MemberType.StringIndexer)
+                var getter = (fromMember.MemberInfo as PropertyInfo).GetGetMethod();
+                if (fromMember.MemberType == MemberType.StringIndexer)
                 {
                     il.EmitLocal(OpCodes.Ldloc, key);
                 }
 
                 il.EmitCall(OpCodes.Callvirt, getter, null);
             }
-            else if (fromMember.MemberGetter is MethodInfo)
+            else if (fromMember.MemberInfo is MethodInfo)
             {
-                var method = fromMember.MemberGetter as MethodInfo;
+                var method = fromMember.MemberInfo as MethodInfo;
                 il.EmitLocal(OpCodes.Ldloc, key);
                 il.EmitCall(OpCodes.Callvirt, method, null);
             }
 
             // Convert the value on top of the stack to the correct toType
-            il.EmitConvertValue(fromMember.GetterType, toMember.SetterType, new HashSet<Type>(convertedTypes));
+            il.EmitConvertValue(fromMember.Type, toMember.Type, new HashSet<Type>(convertedTypes));
 
-            if (toMember.MemberSetter is PropertyInfo)
+            if (toMember.MemberInfo is PropertyInfo)
             {
-                var setter = (toMember.MemberSetter as PropertyInfo).GetSetMethod();
+                var setter = (toMember.MemberInfo as PropertyInfo).GetSetMethod();
                 il.EmitCall(OpCodes.Callvirt, setter, null);
             }
-            else if (toMember.MemberSetter is MethodInfo)
+            else if (toMember.MemberInfo is MethodInfo)
             {
-                il.EmitCall(OpCodes.Call, toMember.MemberSetter as MethodInfo, null);
+                il.EmitCall(OpCodes.Call, toMember.MemberInfo as MethodInfo, null);
             }
 
-            if (fromMember.GetterNeedsContainsCheck)
+            if (fromMember.NeedsContainsCheck)
             {
                 il.MarkLabel(skipMemberMap);
             }
@@ -732,7 +731,7 @@
             var typeMapping = TypeMapping.GetTypeMapping(fromType, toType);
             foreach (var memberMap in typeMapping.MemberMaps)
             {
-                il.EmitMemberMap(fromLocal, toLocal, memberMap.FromMember, memberMap.ToMember, convertedTypes);
+                il.EmitMemberMap(fromLocal, toLocal, memberMap, convertedTypes);
             }
 
             il.EmitLocal(OpCodes.Ldloc, toLocal);
