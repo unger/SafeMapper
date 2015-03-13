@@ -44,8 +44,8 @@
         {
             TypeMappingCache.AddOrUpdate(
                 string.Concat(typeMapping.FromType.FullName, typeMapping.ToType.FullName), 
-                typeMapping, 
-                (s, o) => o);
+                typeMapping,
+                (key, oldValue) => typeMapping);
         }
     }
 }
