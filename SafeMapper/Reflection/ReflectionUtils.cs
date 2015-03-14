@@ -90,44 +90,6 @@
 
             return null;
         }
-        /*
-        public static MemberWrapper GetMember(Type type, string name, Type returnType = null)
-        {
-            if (type.IsGenericType)
-            {
-                if (IsStringKeyDictionary(type))
-                {
-                    var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
-                    return new MemberWrapper(name, itemIndexer);
-                }
-            }
-            else if (type == typeof(NameValueCollection))
-            {
-                var addMethod = type.GetMethod("Add", new[] { typeof(string), typeof(string) });
-                if (returnType != null && (IsCollection(returnType) || returnType != typeof(string)))
-                {
-                    var getValuesMethod = type.GetMethod("GetValues", new[] { typeof(string) });
-                    return new MemberWrapper(name, getValuesMethod, addMethod);
-                }
-
-                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
-                return new MemberWrapper(name, itemIndexer, addMethod);
-            }
-
-            var propertyInfo = type.GetProperty(name);
-            if (propertyInfo != null)
-            {
-                return new MemberWrapper(propertyInfo);
-            }
-
-            var fieldInfo = type.GetField(name);
-            if (fieldInfo != null)
-            {
-                return new MemberWrapper(fieldInfo);
-            }
-
-            return null;
-        }*/
 
         public static bool IsCollection(Type type)
         {

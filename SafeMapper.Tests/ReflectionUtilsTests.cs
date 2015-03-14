@@ -25,6 +25,14 @@
         }
 
         [Test]
+        public void GetMemberSetter_StringFieldClassExistingMember_ShouldReturnMember()
+        {
+            var member = ReflectionUtils.GetMemberSetter(typeof(ClassField<string>), "Value");
+
+            Assert.NotNull(member);
+        }
+
+        [Test]
         public void GetMemberSetter_StringPropertyClassNonExistingMember_ShouldReturnNull()
         {
             var member = ReflectionUtils.GetMemberSetter(typeof(ClassProperty<string>), "NotExisting");
