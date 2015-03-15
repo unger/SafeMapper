@@ -25,9 +25,9 @@
 
             this.AddResult("SafeMapper", i => ConverterFactory.CreateDelegate<TSource, TDestination>(formatProvider));
 
-            this.AddResult("EmitMapper", i => ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>());
+            //this.AddResult("EmitMapper", i => ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>());
 
-            this.AddResult("AutoMapper", i => Mapper.CreateMap<TSource, TDestination>());
+            //this.AddResult("AutoMapper", i => Mapper.CreateMap<TSource, TDestination>());
         }
     }
 }

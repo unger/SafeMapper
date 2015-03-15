@@ -16,11 +16,11 @@ namespace SafeMapper.Tests
     public class MemberTests
     {
         [Test]
-        public void Ctor_ConstructorInfo_SHouldBeMethodTypeUndefined()
+        public void Ctor_ConstructorInfo_ShouldBeMethodTypeUndefined()
         {
             var constructor = typeof(NameValueCollection).GetConstructor(Type.EmptyTypes);
 
-            var member = new Member(constructor);
+            var member = new MemberGetter(constructor);
 
             Assert.AreEqual(MemberType.Undefined, member.MemberType);
         }

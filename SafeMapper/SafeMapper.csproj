@@ -20,6 +20,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -55,6 +58,7 @@
     <Compile Include="Utils\AttributeHelper.cs" />
     <Compile Include="Utils\ConverterFactory.cs" />
     <Compile Include="Utils\EmitExtensions.cs" />
+    <Compile Include="Utils\ExpressionHelper.cs" />
     <Compile Include="Utils\ILGeneratorAdapter.cs" />
     <Compile Include="Utils\ILInstruction.cs" />
   </ItemGroup>

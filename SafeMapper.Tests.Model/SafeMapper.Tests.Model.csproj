@@ -66,6 +66,7 @@
     <Compile Include="Enums\ByteEnum.cs" />
     <Compile Include="Enums\Int32Enum.cs" />
     <Compile Include="Enums\Int64Enum.cs" />
+    <Compile Include="GenericClasses\ClassMethod.cs" />
     <Compile Include="GenericClasses\StructField.cs" />
     <Compile Include="GenericClasses\ClassField.cs" />
     <Compile Include="GenericClasses\StructProperty.cs" />

@@ -11,6 +11,26 @@
             this.Type = this.GetSetterType(member);
         }
 
+        protected override bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType)
+        {
+            if (memberType == MemberType.StringIndexer)
+            {
+                return true;
+            }
+
+            var method = member as MethodInfo;
+            if (method != null)
+            {
+                var parameters = method.GetParameters();
+                if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private Type GetSetterType(MemberInfo member)
         {
             var method = member as MethodInfo;

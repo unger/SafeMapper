@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
 
-    public class Member
+    public abstract class Member
     {
         public Member(MemberInfo member, string key = null)
         {
@@ -23,6 +23,8 @@
         public MemberInfo MemberInfo { get; protected set; }
 
         public bool NeedsStringIndex { get; protected set; }
+
+        protected abstract bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType);
 
         protected MemberType GetMemberTypeEnum(MemberInfo member)
         {
@@ -51,26 +53,6 @@
             }
 
             return MemberType.Undefined;
-        }
-
-        private bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType)
-        {
-            if (memberType == MemberType.StringIndexer)
-            {
-                return true;
-            }
-
-            var method = member as MethodInfo;
-            if (method != null)
-            {
-                var parameters = method.GetParameters();
-                if (parameters.Length == 2 && parameters[0].ParameterType == typeof(string))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

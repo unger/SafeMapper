@@ -114,7 +114,11 @@
             else if (memberMap.FromMember.MemberInfo is MethodInfo)
             {
                 var method = memberMap.FromMember.MemberInfo as MethodInfo;
-                il.EmitString(memberMap.FromMember.Name);
+                if (memberMap.FromMember.NeedsStringIndex)
+                {
+                    il.EmitString(memberMap.FromMember.Name);
+                }
+
                 il.EmitCall(OpCodes.Callvirt, method, null);
             }
 

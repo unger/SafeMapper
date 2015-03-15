@@ -13,7 +13,7 @@ namespace SafeMapper.Tests
     using SafeMapper.Tests.Model.Person;
 
     [TestFixture]
-    public class TypeMappingTests
+    public class Map_PropertyToDifferenrDictionaryKey
     {
         [Test]
         public void TestMappingToDifferentMemberNames()
@@ -28,6 +28,35 @@ namespace SafeMapper.Tests
             Assert.True(value.ContainsKey("Value2"));
             Assert.AreEqual(1337, value["Value2"]);
         }
+
+        [Test]
+        public void Map_MethodToProperty()
+        {
+            var typeMap = new ClassMethodClassPropertyMap();
+            TypeMapping.SetTypeMapping(typeMap.GetTypeMapping());
+
+            var input = new ClassMethod<int>();
+            input.SetValue(1337);
+
+            var result = SafeMap.Convert<ClassMethod<int>, ClassProperty<string>>(input);
+
+            Assert.AreEqual("1337", result.Value);
+        }
+
+        /*
+        [Test]
+        public void Map_PropertyToMethod()
+        {
+            var typeMap = new ClassPropertyClassMethodMap();
+            TypeMapping.SetTypeMapping(typeMap.GetTypeMapping());
+
+            var input = new ClassProperty<string> { Value = "1337" };
+
+            var result = SafeMap.Convert<ClassProperty<string>, ClassMethod<int>>(input);
+
+            Assert.AreEqual(1337, result.GetValue());
+        }*/
+
     }
 
     public class ClassPropertyDictionaryMap : TypeMap<ClassProperty<string>, Dictionary<string, int>>
@@ -35,6 +64,23 @@ namespace SafeMapper.Tests
         public ClassPropertyDictionaryMap()
         {
             this.Map("Value", "Value2");
+        }
+    }
+
+    public class ClassMethodClassPropertyMap : TypeMap<ClassMethod<int>, ClassProperty<string>>
+    {
+        public ClassMethodClassPropertyMap()
+        {
+            this.Map(x => x.GetValue(), x => x.Value);
+        }
+    }
+
+
+    public class ClassPropertyClassMethodMap : TypeMap<ClassProperty<string>, ClassMethod<int>>
+    {
+        public ClassPropertyClassMethodMap()
+        {
+            this.Map<string, int>(x => x.Value, (x, y) => x.SetValue(y));
         }
     }
 }
