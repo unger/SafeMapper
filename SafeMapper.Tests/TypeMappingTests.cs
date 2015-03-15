@@ -13,7 +13,7 @@ namespace SafeMapper.Tests
     using SafeMapper.Tests.Model.Person;
 
     [TestFixture]
-    public class Map_PropertyToDifferenrDictionaryKey
+    public class Map_PropertyToDifferentDictionaryKey
     {
         [Test]
         public void TestMappingToDifferentMemberNames()
@@ -43,7 +43,6 @@ namespace SafeMapper.Tests
             Assert.AreEqual("1337", result.Value);
         }
 
-        /*
         [Test]
         public void Map_PropertyToMethod()
         {
@@ -55,7 +54,7 @@ namespace SafeMapper.Tests
             var result = SafeMap.Convert<ClassProperty<string>, ClassMethod<int>>(input);
 
             Assert.AreEqual(1337, result.GetValue());
-        }*/
+        }
 
     }
 

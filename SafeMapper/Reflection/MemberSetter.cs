@@ -41,6 +41,11 @@
                 {
                     return parameters[1].ParameterType;
                 }
+
+                if (parameters.Length == 1)
+                {
+                    return parameters[0].ParameterType;
+                }
             }
 
             return ReflectionUtils.GetMemberType(member);
