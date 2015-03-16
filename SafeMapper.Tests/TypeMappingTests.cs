@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SafeMapper.Tests
+﻿namespace SafeMapper.Tests
 {
+    using System.Collections.Generic;
+
     using NUnit.Framework;
 
     using SafeMapper.Configuration;
     using SafeMapper.Tests.Model.GenericClasses;
-    using SafeMapper.Tests.Model.Person;
 
     [TestFixture]
-    public class Map_PropertyToDifferentDictionaryKey
+    public class TypeMappingTests
     {
         [Test]
         public void TestMappingToDifferentMemberNames()

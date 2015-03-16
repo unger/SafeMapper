@@ -5,13 +5,12 @@
 
     public abstract class Member
     {
-        public Member(MemberInfo member, string key = null)
+        protected Member(MemberInfo member, string key = null)
         {
             this.Name = key ?? member.Name;
             this.Type = ReflectionUtils.GetMemberType(member);
             this.MemberType = this.GetMemberTypeEnum(member);
             this.MemberInfo = member;
-            this.NeedsStringIndex = this.CheckNeedsStringIndex(this.MemberInfo, this.MemberType);
         }
 
         public string Name { get; protected set; }
@@ -23,8 +22,6 @@
         public MemberInfo MemberInfo { get; protected set; }
 
         public bool NeedsStringIndex { get; protected set; }
-
-        protected abstract bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType);
 
         protected MemberType GetMemberTypeEnum(MemberInfo member)
         {

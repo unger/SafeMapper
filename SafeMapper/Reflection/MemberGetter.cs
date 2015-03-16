@@ -6,12 +6,13 @@
     {
         public MemberGetter(MemberInfo member, string key = null) : base(member, key)
         {
+            this.NeedsStringIndex = this.CheckNeedsStringIndex(this.MemberInfo, this.MemberType);
             this.NeedsContainsCheck = ReflectionUtils.IsStringKeyDictionary(member.DeclaringType);
         }
 
         public bool NeedsContainsCheck { get; private set; }
 
-        protected override bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType)
+        private bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType)
         {
             if (memberType == MemberType.StringIndexer)
             {

@@ -236,10 +236,7 @@
                 il.EmitLocal(OpCodes.Ldloc, fromLocal);
             }
 
-            var converter = ReflectionUtils.GetConvertMethod(
-                fromType,
-                toType,
-                new[] { typeof(SafeConvert) });
+            var converter = ConvertMethodHelper.GetConvertMethod(fromType, toType);
 
             if (converter != null)
             {
@@ -601,10 +598,7 @@
 
                 if (toType != underlayingFromType)
                 {
-                    var converter = ReflectionUtils.GetConvertMethod(
-                        underlayingFromType,
-                        toType,
-                        new[] { typeof(SafeConvert) });
+                    var converter = ConvertMethodHelper.GetConvertMethod(underlayingFromType, toType);
 
                     if (converter != null && converter.GetParameters().Length == 1)
                     {
@@ -655,10 +649,7 @@
 
             if (fromType != typeof(string) && underlayingToType != underlayingFromType)
             {
-                var converter = ReflectionUtils.GetConvertMethod(
-                    underlayingFromType,
-                    underlayingToType,
-                    new[] { typeof(SafeConvert) });
+                var converter = ConvertMethodHelper.GetConvertMethod(underlayingFromType, underlayingToType);
 
                 if (converter != null && converter.GetParameters().Length == 1)
                 {

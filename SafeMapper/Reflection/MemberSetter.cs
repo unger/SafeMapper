@@ -9,9 +9,10 @@
             : base(member, key)
         {
             this.Type = this.GetSetterType(member);
+            this.NeedsStringIndex = this.CheckNeedsStringIndex(this.MemberInfo, this.MemberType);
         }
 
-        protected override bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType)
+        private bool CheckNeedsStringIndex(MemberInfo member, MemberType memberType)
         {
             if (memberType == MemberType.StringIndexer)
             {
