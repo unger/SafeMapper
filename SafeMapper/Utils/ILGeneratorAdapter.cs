@@ -6,275 +6,767 @@
     using System.Reflection;
     using System.Reflection.Emit;
 
-    public class ILGeneratorAdapter
+    using SafeMapper.Configuration;
+    using SafeMapper.Reflection;
+
+    public class ILGeneratorAdapter : ILGeneratorAdapterBase
     {
-        private readonly ILGenerator il;
-
-        /*private Stack<Type> currentStack = new Stack<Type>();*/
-
-        private List<ILInstruction> instructions = new List<ILInstruction>();
-
-        private List<Label> labels = new List<Label>(); 
-
-        public ILGeneratorAdapter(ILGenerator il)
+        public ILGeneratorAdapter(ILGenerator il) 
+            : base(il)
         {
-            this.il = il;
         }
 
-        public int Offset
+        public void EmitConvertArray(Type fromType, Type toType, HashSet<Type> convertedTypes)
         {
-            get
+            var fromLocal = this.DeclareLocal(fromType);
+            var toLocal = this.DeclareLocal(toType);
+
+            // Store value on top of stack into fromLocal
+            this.EmitLocal(OpCodes.Stloc, fromLocal);
+
+            // Load length from fromLocal
+            this.EmitLocal(OpCodes.Ldloc, fromLocal);
+            this.Emit(OpCodes.Ldlen);
+
+            // Create new array and store it in toLocal
+            this.Emit(OpCodes.Newarr, toLocal.LocalType.GetElementType());
+            this.EmitLocal(OpCodes.Stloc, toLocal);
+
+            var fromElementType = fromType.GetElementType();
+            var toElementType = toType.GetElementType();
+
+            Label startLoop = this.DefineLabel();
+            Label afterLoop = this.DefineLabel();
+            LocalBuilder arrayIndex = this.DeclareLocal(typeof(int));
+
+            this.EmitLocal(OpCodes.Ldloc, fromLocal);
+            this.Emit(OpCodes.Ldlen);
+            this.EmitLocal(OpCodes.Stloc, arrayIndex);
+
+            this.MarkLabel(startLoop);
+            this.EmitLocal(OpCodes.Ldloc, arrayIndex);
+            this.EmitBreak(OpCodes.Brfalse, afterLoop);
+
+            this.EmitLocal(OpCodes.Ldloc, arrayIndex);
+            this.Emit(OpCodes.Ldc_I4_1);
+            this.Emit(OpCodes.Sub);
+            this.EmitLocal(OpCodes.Stloc, arrayIndex);
+
+            // Ladda in toarray på stacken
+            this.EmitLocal(OpCodes.Ldloc, toLocal);
+            this.EmitLocal(OpCodes.Ldloc, arrayIndex);
+
+            // Ladda in fromarray på stacken
+            this.EmitLocal(OpCodes.Ldloc, fromLocal);
+            this.EmitLocal(OpCodes.Ldloc, arrayIndex);
+            this.Emit(OpCodes.Ldelem, fromElementType);
+
+            // Convert the element at the top of the stack to toElementType
+            this.EmitConvertValue(fromElementType, toElementType, new HashSet<Type>(convertedTypes));
+
+            // Store the converted value
+            this.Emit(OpCodes.Stelem, toElementType);
+
+            // End loop
+            this.EmitBreak(OpCodes.Br, startLoop);
+            this.MarkLabel(afterLoop);
+
+            this.EmitLocal(OpCodes.Ldloc, toLocal);
+        }
+
+        public void EmitMemberMap(
+            LocalBuilder fromLocal,
+            LocalBuilder toLocal,
+            MemberMap memberMap,
+            HashSet<Type> convertedTypes)
+        {
+            var skipMemberMap = this.DefineLabel();
+            if (memberMap.FromMember.NeedsContainsCheck)
             {
-                return this.il.ILOffset;
-            }
-        }
-
-        public ILInstruction[] Instructions
-        {
-            get
-            {
-                return this.instructions.ToArray();
-            }
-        }
-
-        public LocalBuilder DeclareLocal(Type type)
-        {
-            return this.il.DeclareLocal(type);
-        }
-
-        public Label DefineLabel()
-        {
-            var label = this.il.DefineLabel();
-            this.labels.Add(label);
-            return label;
-        }
-
-        public void Emit(OpCode opcode)
-        {
-            this.AddInstruction(opcode);
-        }
-
-        public void Emit(OpCode opcode, Type type)
-        {
-            this.AddInstruction(opcode, type);
-        }
-
-        public void EmitField(OpCode opcode, FieldInfo field)
-        {
-            var supportedOpcodes = new[] { OpCodes.Ldfld, OpCodes.Stfld };
-            if (!supportedOpcodes.Contains(opcode))
-            {
-                throw new Exception("Unsupported Opcode, only Ldfld and Stfld supported");
-            }
-
-            this.AddInstruction(opcode, field);
-        }
-
-        public void EmitLocal(OpCode opcode, LocalBuilder local)
-        {
-            var supportedOpcodes = new[] { OpCodes.Ldloc, OpCodes.Stloc, OpCodes.Ldloca };
-            if (!supportedOpcodes.Contains(opcode))
-            {
-                throw new Exception("Unsupported Opcode, only Ldloc, Ldloca and Stloc supported");
-            }
-
-            this.AddInstruction(opcode, local);
-        }
-
-        public void EmitNewobj(ConstructorInfo con)
-        {
-            this.AddInstruction(OpCodes.Newobj, con);
-        }
-
-        public void EmitBreak(OpCode opcode, Label label)
-        {
-            if (!opcode.Name.StartsWith("b") || opcode == OpCodes.Break || opcode == OpCodes.Box)
-            {
-                throw new Exception("Unsupported Opcode, only 'break'-opcodes supported");
+                var containsKey = fromLocal.LocalType.GetMethod("ContainsKey", new[] { typeof(string) });
+                this.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+                this.EmitString(memberMap.FromMember.Name);
+                this.EmitCall(OpCodes.Call, containsKey, null);
+                this.EmitBreak(OpCodes.Brfalse, skipMemberMap);
             }
 
-            this.AddInstruction(opcode, label);
-        }
-
-        public void EmitByte(byte value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
-            this.AddInstruction(OpCodes.Conv_U1);
-        }
-
-        public void EmitDouble(double value)
-        {
-            this.AddInstruction(OpCodes.Ldc_R8, value);
-        }
-
-        public void EmitFloat(float value)
-        {
-            this.AddInstruction(OpCodes.Ldc_R4, value);
-        }
-
-        public void EmitInt(int value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I4, value);
-        }
-
-        public void EmitUInt(uint value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
-            this.AddInstruction(OpCodes.Conv_U4);
-        }
-
-        public void EmitLong(long value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I8, value);
-        }
-
-        public void EmitULong(ulong value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I8, (long)value);
-            this.AddInstruction(OpCodes.Conv_U8);
-        }
-
-        public void EmitSByte(sbyte value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
-            this.AddInstruction(OpCodes.Conv_I1);
-        }
-
-        public void EmitShort(short value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
-            this.AddInstruction(OpCodes.Conv_I2);
-        }
-
-        public void EmitUShort(ushort value)
-        {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
-            this.AddInstruction(OpCodes.Conv_U2);
-        }
-
-        public void EmitString(string value)
-        {
-            this.AddInstruction(OpCodes.Ldstr, value);
-        }
-
-        public void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
-        {
-            this.AddInstruction(opcode, methodInfo, optionalParameterTypes);
-        }
-
-        public void MarkLabel(Label label)
-        {
-            var index = this.labels.IndexOf(label);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, OpCodes.Nop, "Label_" + index));
-            this.il.MarkLabel(label);
-        }
-
-        private void AddInstruction(OpCode opcode)
-        {
-            this.il.Emit(opcode);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode));
-        }
-
-        private void AddInstruction(OpCode opcode, ConstructorInfo con)
-        {
-            this.il.Emit(opcode, con);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, con.DeclaringType + "." + con.Name));
-        }
-
-        private void AddInstruction(OpCode opcode, FieldInfo field)
-        {
-            this.il.Emit(opcode, field);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, field.DeclaringType + "." + field.Name));
-        }
-
-        private void AddInstruction(OpCode opcode, Label label)
-        {
-            var index = this.labels.IndexOf(label);
-            this.il.Emit(opcode, label);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, "Label_" + index));
-        }
-
-        private void AddInstruction(OpCode opcode, Type type)
-        {
-            this.il.Emit(opcode, type);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, type.FullName));
-        }
-
-        private void AddInstruction(OpCode opcode, int value)
-        {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
-        }
-
-        private void AddInstruction(OpCode opcode, long value)
-        {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
-        }
-
-        private void AddInstruction(OpCode opcode, double value)
-        {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
-        }
-
-        private void AddInstruction(OpCode opcode, float value)
-        {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
-        }
-
-        private void AddInstruction(OpCode opcode, LocalBuilder local)
-        {
-            this.il.Emit(opcode, local);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, local.LocalIndex.ToString()));
-        }
-
-        private void AddInstruction(OpCode opcode, string argument)
-        {
-            this.il.Emit(opcode, argument);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, argument));
-        }
-
-        private void AddInstruction(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
-        {
-            this.il.EmitCall(opcode, methodInfo, optionalParameterTypes);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, methodInfo.DeclaringType + "." + methodInfo.Name));
-        }
-        /*
-        private void PopStackWithCheck(Type expectedType)
-        {
-            var type = this.currentStack.Pop();
-            if (type != expectedType)
+            // Load toLocal as parameter for the setter
+            this.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
+            if (memberMap.ToMember.NeedsStringIndex)
             {
-                throw new Exception(
-                    string.Format(
-                        "Wrong type on stack expected '{0}' was '{1}'",
-                        expectedType.FullName,
-                        type.FullName));
+                this.EmitString(memberMap.ToMember.Name);
             }
-        }
 
-        private void CallMethodOnStack(MethodInfo methodInfo, Type[] optionalParameterTypes)
-        {
-            var parameters = methodInfo.GetParameters().Reverse();
-            foreach (var parameter in parameters)
+            // Load fromLocal as parameter for the getter
+            this.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+
+            if (memberMap.FromMember.MemberInfo is PropertyInfo)
             {
-                var type = this.currentStack.Pop();
-                if (parameter.ParameterType != type)
+                var getter = (memberMap.FromMember.MemberInfo as PropertyInfo).GetGetMethod();
+                if (memberMap.FromMember.MemberType == MemberType.StringIndexer)
                 {
-                    throw new Exception(
-                        string.Format(
-                            "Wrong type on stack for parameter '{2}' in '{0}.{1}' should be '{3}' was '{4}'",
-                            methodInfo.DeclaringType,
-                            methodInfo.Name,
-                            parameter.Name,
-                            parameter.ParameterType.FullName,
-                            type.FullName));
+                    this.EmitString(memberMap.FromMember.Name);
+                }
+
+                this.EmitCall(OpCodes.Callvirt, getter, null);
+            }
+            else if (memberMap.FromMember.MemberInfo is FieldInfo)
+            {
+                this.EmitField(OpCodes.Ldfld, memberMap.FromMember.MemberInfo as FieldInfo);
+            }
+            else if (memberMap.FromMember.MemberInfo is MethodInfo)
+            {
+                var method = memberMap.FromMember.MemberInfo as MethodInfo;
+                if (memberMap.FromMember.NeedsStringIndex)
+                {
+                    this.EmitString(memberMap.FromMember.Name);
+                }
+
+                this.EmitCall(OpCodes.Callvirt, method, null);
+            }
+
+            // Convert the value on top of the stack to the correct toType
+            this.EmitConvertValue(memberMap.FromMember.Type, memberMap.ToMember.Type, new HashSet<Type>(convertedTypes));
+
+            if (memberMap.ToMember.MemberInfo is PropertyInfo)
+            {
+                var setter = (memberMap.ToMember.MemberInfo as PropertyInfo).GetSetMethod();
+                this.EmitCall(OpCodes.Callvirt, setter, null);
+            }
+            else if (memberMap.ToMember.MemberInfo is FieldInfo)
+            {
+                this.EmitField(OpCodes.Stfld, memberMap.ToMember.MemberInfo as FieldInfo);
+            }
+            else if (memberMap.ToMember.MemberInfo is MethodInfo)
+            {
+                this.EmitCall(OpCodes.Call, memberMap.ToMember.MemberInfo as MethodInfo, null);
+            }
+
+            if (memberMap.FromMember.NeedsContainsCheck)
+            {
+                this.MarkLabel(skipMemberMap);
+            }
+        }
+
+        public void EmitValueTypeBox(Type fromType)
+        {
+            if (fromType.IsValueType)
+            {
+                // Put property/field value in a local variable to be able to call instance method on it
+                LocalBuilder localReturnType = this.DeclareLocal(fromType);
+                this.EmitLocal(OpCodes.Stloc, localReturnType);
+                if (fromType.IsEnum)
+                {
+                    this.EmitLocal(OpCodes.Ldloc, localReturnType);
+                    this.Emit(OpCodes.Box, fromType);
+                }
+                else
+                {
+                    this.EmitLocal(OpCodes.Ldloca, localReturnType);
+                }
+            }
+        }
+
+        public void EmitCallToString(Type fromType)
+        {
+            this.EmitValueTypeBox(fromType);
+
+            var toStringMethod = fromType.GetMethod("ToString", new[] { typeof(IFormatProvider) });
+            if (toStringMethod != null)
+            {
+                this.Emit(OpCodes.Ldarg_0); // IFormatProvider
+                this.EmitCall(OpCodes.Callvirt, toStringMethod, null);
+            }
+            else
+            {
+                toStringMethod = fromType.GetMethod("ToString", Type.EmptyTypes);
+                this.EmitCall(OpCodes.Callvirt, toStringMethod, null);
+            }
+        }
+
+        public void EmitConvertValue(Type fromType, Type toType, HashSet<Type> convertedTypes)
+        {
+            // Circular reference check
+            if (!fromType.IsValueType && fromType != typeof(string))
+            {
+                if (convertedTypes.Contains(fromType))
+                {
+                    var toLocal = this.DeclareLocal(toType);
+                    this.Emit(OpCodes.Pop);
+                    this.EmitLocal(OpCodes.Ldloc, toLocal);
+                    return;
+                }
+
+                convertedTypes.Add(fromType);
+            }
+
+            Label skipConversion = this.DefineLabel();
+
+            if (toType.IsAssignableFrom(fromType))
+            {
+                return;
+            }
+
+            // Check if fromValue is null
+            if (!fromType.IsValueType || Nullable.GetUnderlyingType(fromType) != null)
+            {
+                var fromLocal = this.DeclareLocal(fromType);
+                var toLocal = this.DeclareLocal(toType);
+                Label nonNull = this.DefineLabel();
+
+                // Store value on top of stack into fromLocal
+                this.EmitLocal(OpCodes.Stloc, fromLocal);
+
+                if (Nullable.GetUnderlyingType(fromType) != null)
+                {
+                    this.EmitLocal(OpCodes.Ldloca, fromLocal);
+                    MethodInfo mi = fromType.GetMethod("get_HasValue", BindingFlags.Instance | BindingFlags.Public);
+                    this.EmitCall(OpCodes.Call, mi, null);
+                }
+                else
+                {
+                    this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                }
+
+                this.EmitBreak(OpCodes.Brtrue_S, nonNull);
+
+                // Load toLocal with default value on stack and skip rest of conversion logic
+                this.EmitLocal(OpCodes.Ldloc, toLocal);
+                this.EmitBreak(OpCodes.Br, skipConversion);
+
+                // Not null, put the fromValue back on stack
+                this.MarkLabel(nonNull);
+                this.EmitLocal(OpCodes.Ldloc, fromLocal);
+            }
+
+            var converter = ConvertMethodHelper.GetConvertMethod(fromType, toType);
+
+            if (converter != null)
+            {
+                // Load IFormatProvider as second argument
+                if (converter.GetParameters().Length == 2)
+                {
+                    this.Emit(OpCodes.Ldarg_0);
+                }
+
+                this.EmitCall(OpCodes.Call, converter, null);
+            }
+            else if (toType.IsEnum)
+            {
+                this.EmitConvertToEnum(fromType, toType);
+            }
+            else if (fromType.IsEnum)
+            {
+                this.EmitConvertFromEnum(fromType, toType);
+            }
+            else if (ReflectionUtils.IsCollection(fromType) && ReflectionUtils.IsCollection(toType))
+            {
+                this.EmitConvertCollection(fromType, toType, convertedTypes);
+            }
+            else if (ReflectionUtils.IsCollection(fromType))
+            {
+                var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
+                var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
+
+                this.EmitFirstCollectionValue(concreteFromType, fromElementType);
+
+                // Convert the element at the top of the stack to toType
+                this.EmitConvertValue(fromElementType, toType, new HashSet<Type>(convertedTypes));
+            }
+            else if (ReflectionUtils.IsCollection(toType))
+            {
+                var concreteToType = ReflectionUtils.GetConcreteType(toType);
+                var toElementType = ReflectionUtils.GetElementType(concreteToType);
+
+                // Convert the element at the top of the stack to toElementType
+                this.EmitConvertValue(fromType, toElementType, new HashSet<Type>(convertedTypes));
+
+                this.AddValueToNewCollection(concreteToType, toElementType);
+            }
+            else if (toType == typeof(string) && fromType != typeof(string))
+            {
+                this.EmitCallToString(fromType);
+            }
+            else if (ReflectionUtils.IsDictionary(fromType) && ReflectionUtils.IsDictionary(toType))
+            {
+                this.EmitMapDictionary(fromType, toType, convertedTypes);
+            }
+            else
+            {
+                this.EmitConvertClass(fromType, toType, convertedTypes);
+            }
+
+            this.MarkLabel(skipConversion);
+        }
+
+        public void EmitMapDictionary(Type fromType, Type toType, HashSet<Type> convertedTypes)
+        {
+            var fromLocal = this.DeclareLocal(fromType);
+            var toLocal = this.DeclareLocal(toType);
+            var keysArray = this.DeclareLocal(typeof(string[]));
+            var key = this.DeclareLocal(typeof(string));
+
+            // Store value on top of stack into fromLocal
+            this.EmitLocal(OpCodes.Stloc, fromLocal);
+
+            var ctor = toLocal.LocalType.GetConstructor(Type.EmptyTypes);
+            if (ctor != null)
+            {
+                this.EmitNewobj(ctor);
+                this.EmitLocal(OpCodes.Stloc, toLocal);
+            }
+
+            var keysFound = false;
+            var allKeys = fromType.GetProperty("AllKeys");
+            if (allKeys != null)
+            {
+                var getter = allKeys.GetGetMethod();
+                this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                this.EmitCall(OpCodes.Call, getter, null);
+                keysFound = true;
+            }
+
+            if (!keysFound)
+            {
+                var keys = fromType.GetProperty("Keys");
+                if (keys != null)
+                {
+                    var getter = keys.GetGetMethod();
+                    this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                    this.EmitCall(OpCodes.Call, getter, null);
+                    var toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { typeof(string) });
+                    this.EmitCall(OpCodes.Call, toArrayMethod, null);
+                    keysFound = true;
                 }
             }
 
-            this.currentStack.Push(methodInfo.ReturnType);
-        }*/
+            if (!keysFound)
+            {
+                this.Emit(OpCodes.Ldc_I4_0);
+                this.Emit(OpCodes.Newarr, typeof(string[]));
+            }
+
+            this.EmitLocal(OpCodes.Stloc, keysArray);
+
+            // Loop over all keys
+            Label startLoop = this.DefineLabel();
+            Label afterLoop = this.DefineLabel();
+            var keysIndex = this.DeclareLocal(typeof(int));
+
+            this.EmitLocal(OpCodes.Ldloc, keysArray);
+            this.Emit(OpCodes.Ldlen);
+            this.EmitLocal(OpCodes.Stloc, keysIndex);
+
+            this.MarkLabel(startLoop);
+            this.EmitLocal(OpCodes.Ldloc, keysIndex);
+            this.EmitBreak(OpCodes.Brfalse, afterLoop);
+
+            this.EmitLocal(OpCodes.Ldloc, keysIndex);
+            this.Emit(OpCodes.Ldc_I4_1);
+            this.Emit(OpCodes.Sub);
+            this.EmitLocal(OpCodes.Stloc, keysIndex);
+
+            // loop body
+            this.EmitLocal(OpCodes.Ldloc, keysArray);
+            this.EmitLocal(OpCodes.Ldloc, keysIndex);
+            this.Emit(OpCodes.Ldelem, typeof(string));
+            this.EmitLocal(OpCodes.Stloc, key);
+
+            var toMember = ReflectionUtils.GetMemberSetter(toType, "dummy");
+            var fromMember = ReflectionUtils.GetMemberGetter(fromType, "dummy", toMember.Type);
+
+            var skipMemberMap = this.DefineLabel();
+
+            // Load toLocal as parameter for the setter
+            this.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
+            if (toMember.NeedsStringIndex)
+            {
+                this.EmitLocal(OpCodes.Ldloc, key);
+            }
+
+            // Load fromLocal as parameter for the getter
+            this.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+
+            if (fromMember.MemberInfo is PropertyInfo)
+            {
+                var getter = (fromMember.MemberInfo as PropertyInfo).GetGetMethod();
+                if (fromMember.MemberType == MemberType.StringIndexer)
+                {
+                    this.EmitLocal(OpCodes.Ldloc, key);
+                }
+
+                this.EmitCall(OpCodes.Callvirt, getter, null);
+            }
+            else if (fromMember.MemberInfo is MethodInfo)
+            {
+                var method = fromMember.MemberInfo as MethodInfo;
+                this.EmitLocal(OpCodes.Ldloc, key);
+                this.EmitCall(OpCodes.Callvirt, method, null);
+            }
+
+            // Convert the value on top of the stack to the correct toType
+            this.EmitConvertValue(fromMember.Type, toMember.Type, new HashSet<Type>(convertedTypes));
+
+            if (toMember.MemberInfo is PropertyInfo)
+            {
+                var setter = (toMember.MemberInfo as PropertyInfo).GetSetMethod();
+                this.EmitCall(OpCodes.Callvirt, setter, null);
+            }
+            else if (toMember.MemberInfo is MethodInfo)
+            {
+                this.EmitCall(OpCodes.Call, toMember.MemberInfo as MethodInfo, null);
+            }
+
+            if (fromMember.NeedsContainsCheck)
+            {
+                this.MarkLabel(skipMemberMap);
+            }
+
+            // End loop
+            this.EmitBreak(OpCodes.Br, startLoop);
+            this.MarkLabel(afterLoop);
+
+            this.EmitLocal(OpCodes.Ldloc, toLocal);
+        }
+
+        public void AddValueToNewCollection(Type collectionType, Type elementType)
+        {
+            var elementLocal = this.DeclareLocal(elementType);
+            
+            // Store value on top of stack into elementLocal
+            this.EmitLocal(OpCodes.Stloc, elementLocal);
+
+            if (collectionType.IsArray)
+            {
+                var collectionLocal = this.DeclareLocal(collectionType);
+
+                // length 1
+                this.Emit(OpCodes.Ldc_I4_1);
+
+                // Create new array and store it in collectionLocal
+                this.Emit(OpCodes.Newarr, elementType);
+                this.EmitLocal(OpCodes.Stloc, collectionLocal);
+
+                this.EmitLocal(OpCodes.Ldloc, collectionLocal);
+                this.Emit(OpCodes.Ldc_I4_0);
+                this.EmitLocal(OpCodes.Ldloc, elementLocal);
+                this.Emit(OpCodes.Stelem, elementType);
+
+                this.EmitLocal(OpCodes.Ldloc, collectionLocal);
+            }
+            else if (collectionType.IsGenericType)
+            {
+                var concreteCollectionType = ReflectionUtils.GetConcreteType(collectionType);
+                var collectionLocal = this.DeclareLocal(concreteCollectionType);
+
+                var con = concreteCollectionType.GetConstructor(Type.EmptyTypes);
+                if (con != null)
+                {
+                    this.EmitNewobj(con);
+                    this.EmitLocal(OpCodes.Stloc, collectionLocal);
+
+                    var addMethod = concreteCollectionType.GetMethod("Add", new[] { elementType });
+                    if (addMethod != null)
+                    {
+                        this.EmitLocal(OpCodes.Ldloc, collectionLocal);
+                        this.EmitLocal(OpCodes.Ldloc, elementLocal);
+                        this.EmitCall(OpCodes.Call, addMethod, null);
+                    }
+                }
+
+                this.EmitLocal(OpCodes.Ldloc, collectionLocal);
+                this.Emit(OpCodes.Castclass, collectionType);
+            }
+        }
+
+        public void EmitFirstCollectionValue(Type collectionType, Type elementType)
+        {
+            var fromLocal = this.DeclareLocal(collectionType);
+
+            // Store value on top of stack into fromLocal
+            this.EmitLocal(OpCodes.Stloc, fromLocal);
+            
+            if (collectionType.IsArray)
+            {
+                var defaultLabel = this.DefineLabel();
+                var fromElementLocal = this.DeclareLocal(elementType);
+
+                // Load length from fromLocal
+                this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                this.Emit(OpCodes.Ldlen);
+                this.EmitBreak(OpCodes.Brfalse, defaultLabel);
+
+                this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                this.Emit(OpCodes.Ldc_I4_0);
+                this.Emit(OpCodes.Ldelem, elementType);
+
+                this.EmitLocal(OpCodes.Stloc, fromElementLocal);
+
+                this.MarkLabel(defaultLabel);
+                this.EmitLocal(OpCodes.Ldloc, fromElementLocal);
+            }
+            else if (collectionType.IsGenericType)
+            {
+                var firstMethod = typeof(Enumerable).GetMethods().Single(method => method.Name == "FirstOrDefault" && method.IsStatic && method.GetParameters().Length == 1).MakeGenericMethod(elementType);
+
+                this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                this.EmitCall(OpCodes.Call, firstMethod, null);
+            }
+        }
+
+        public void EmitConvertCollection(Type fromType, Type toType, HashSet<Type> convertedTypes)
+        {
+            var fromArrayType = fromType;
+            var toArrayType = toType;
+            var concreteFromType = ReflectionUtils.GetConcreteType(fromType);
+            var concreteToType = ReflectionUtils.GetConcreteType(toType);
+            var fromElementType = ReflectionUtils.GetElementType(concreteFromType);
+            var toElementType = ReflectionUtils.GetElementType(concreteToType);
+
+            if (!fromType.IsArray)
+            {
+                var toArrayMethod = concreteFromType.GetMethod("ToArray", Type.EmptyTypes);
+
+                if (toArrayMethod == null)
+                {
+                    toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(fromElementType);
+                }
+
+                this.EmitCall(OpCodes.Call, toArrayMethod, null);
+                fromArrayType = fromElementType.MakeArrayType();
+            }
+
+            if (!toType.IsArray)
+            {
+                toArrayType = toElementType.MakeArrayType();
+            }
+
+            this.EmitConvertArray(fromArrayType, toArrayType, convertedTypes);
+
+            if (!toType.IsArray)
+            {
+                var toEnumerableType = typeof(IEnumerable<>).MakeGenericType(toElementType);
+                var toConstructor = toType.GetConstructor(new[] { toEnumerableType });
+
+                if (toConstructor != null)
+                {
+                    this.EmitNewobj(toConstructor);
+                }
+            }
+        }
+
+        public void EmitConvertFromEnum(Type fromType, Type toType)
+        {
+            if (!fromType.IsEnum)
+            {
+                throw new ArgumentException("fromType needs to be an enum", "fromType");
+            }
+
+            if (toType == typeof(string))
+            {
+                var enumValues = Enum.GetValues(fromType);
+                var switchType = fromType.GetEnumUnderlyingType();
+                var switchReturnValues = new List<Tuple<object, object>>();
+
+                foreach (var enumValue in enumValues)
+                {
+                    var enumDisplay = AttributeHelper.GetEnumDisplayValue((Enum)enumValue);
+                    var enumDescription = AttributeHelper.GetEnumDescriptionValue((Enum)enumValue);
+
+                    if (!string.IsNullOrEmpty(enumDisplay))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumValue, enumDisplay));
+                    }
+                    else if (!string.IsNullOrEmpty(enumDescription))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumValue, enumDescription));
+                    }
+                    else
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumValue, enumValue.ToString()));
+                    }
+                }
+
+                this.EmitSwitchCases(switchType, toType, switchReturnValues);
+            }
+            else
+            {
+                var underlayingFromType = fromType.GetEnumUnderlyingType();
+
+                if (toType != underlayingFromType)
+                {
+                    var converter = ConvertMethodHelper.GetConvertMethod(underlayingFromType, toType);
+
+                    if (converter != null && converter.GetParameters().Length == 1)
+                    {
+                        this.EmitCall(OpCodes.Call, converter, null);
+                    }
+                }
+            }
+        }
+
+        public void EmitConvertToEnum(Type fromType, Type toType)
+        {
+            if (!toType.IsEnum)
+            {
+                throw new ArgumentException("toType needs to be an enum", "toType");
+            }
+
+            var enumValues = Enum.GetValues(toType);
+            var underlayingToType = toType.GetEnumUnderlyingType();
+            var underlayingFromType = fromType.IsEnum ? fromType.GetEnumUnderlyingType() : fromType;
+            var switchType = fromType == typeof(string) ? typeof(string) : underlayingToType;
+            var switchReturnValues = new List<Tuple<object, object>>();
+
+            foreach (var enumValue in enumValues)
+            {
+                if (fromType == typeof(string))
+                {
+                    var enumText = enumValue.ToString();
+                    var enumDisplay = AttributeHelper.GetEnumDisplayValue((Enum)enumValue);
+                    var enumDescription = AttributeHelper.GetEnumDescriptionValue((Enum)enumValue);
+
+                    if (!string.IsNullOrEmpty(enumDisplay))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumDisplay, enumValue));
+                    }
+
+                    if (!string.IsNullOrEmpty(enumDescription))
+                    {
+                        switchReturnValues.Add(new Tuple<object, object>(enumDescription, enumValue));
+                    }
+
+                    switchReturnValues.Add(new Tuple<object, object>(enumText, enumValue));
+                }
+                else
+                {
+                    switchReturnValues.Add(new Tuple<object, object>(enumValue, enumValue));
+                }
+            }
+
+            if (fromType != typeof(string) && underlayingToType != underlayingFromType)
+            {
+                var converter = ConvertMethodHelper.GetConvertMethod(underlayingFromType, underlayingToType);
+
+                if (converter != null && converter.GetParameters().Length == 1)
+                {
+                    this.EmitCall(OpCodes.Call, converter, null);
+                }
+                else
+                {
+                    // if it is not possible to convert load enum default value
+                    this.Emit(OpCodes.Pop);
+                    this.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
+                    return;
+                }
+            }
+
+            this.EmitSwitchCases(switchType, underlayingToType, switchReturnValues);
+        }
+
+        public void EmitSwitchCases(Type switchType, Type returnType, List<Tuple<object, object>> switchReturnValues)
+        {
+            Label defaultCase = this.DefineLabel();
+            Label endOfMethod = this.DefineLabel();
+            LocalBuilder switchValue = this.DeclareLocal(switchType);
+
+            this.EmitLocal(OpCodes.Stloc, switchValue);
+
+            var jumpTable = new Label[switchReturnValues.Count];
+            for (int i = 0; i < switchReturnValues.Count; i++)
+            {
+                jumpTable[i] = this.DefineLabel();
+                this.EmitLocal(OpCodes.Ldloc, switchValue);
+                this.EmitLoadEnumValue(switchType, switchReturnValues[i].Item1);
+                if (switchType == typeof(string))
+                {
+                    var stringEquals = typeof(string).GetMethod("op_Equality", new[] { typeof(string), typeof(string) });
+                    this.EmitCall(OpCodes.Call, stringEquals, null);
+                    this.Emit(OpCodes.Ldc_I4_1);
+                }
+
+                this.EmitBreak(OpCodes.Beq, jumpTable[i]);
+            }
+
+            // Branch on default case
+            this.EmitBreak(OpCodes.Br_S, defaultCase);
+
+            for (int i = 0; i < switchReturnValues.Count; i++)
+            {
+                this.MarkLabel(jumpTable[i]);
+                this.EmitLoadEnumValue(returnType, switchReturnValues[i].Item2);
+                this.EmitBreak(OpCodes.Br_S, endOfMethod);
+            }
+
+            // Default case
+            this.MarkLabel(defaultCase);
+            this.EmitLoadEnumValue(returnType, switchReturnValues[0].Item2);
+
+            this.MarkLabel(endOfMethod);
+        }
+
+        public void EmitConvertClass(Type fromType, Type toType, HashSet<Type> convertedTypes)
+        {
+            var fromLocal = this.DeclareLocal(fromType);
+            var toLocal = this.DeclareLocal(toType);
+
+            // Store value on top of stack into fromLocal
+            this.EmitLocal(OpCodes.Stloc, fromLocal);
+
+            var ctor = toLocal.LocalType.GetConstructor(Type.EmptyTypes);
+            if (ctor != null)
+            {
+                this.EmitNewobj(ctor);
+                this.EmitLocal(OpCodes.Stloc, toLocal);
+            }
+
+            var typeMapping = TypeMapping.GetTypeMapping(fromType, toType);
+            foreach (var memberMap in typeMapping.MemberMaps)
+            {
+                this.EmitMemberMap(fromLocal, toLocal, memberMap, convertedTypes);
+            }
+
+            this.EmitLocal(OpCodes.Ldloc, toLocal);
+        }
+
+        private void EmitLoadEnumValue(Type type, object enumValue)
+        {
+            if (type == typeof(string))
+            {
+                this.EmitString((string)enumValue);
+            }
+            else if (type == typeof(byte))
+            {
+                this.EmitByte((byte)enumValue);
+            }
+            else if (type == typeof(sbyte))
+            {
+                this.EmitSByte((sbyte)enumValue);
+            }
+            else if (type == typeof(short))
+            {
+                this.EmitShort((short)enumValue);
+            }
+            else if (type == typeof(ushort))
+            {
+                this.EmitUShort((ushort)enumValue);
+            }
+            else if (type == typeof(int))
+            {
+                this.EmitInt((int)enumValue);
+            }
+            else if (type == typeof(uint))
+            {
+                this.EmitUInt((uint)enumValue);
+            }
+            else if (type == typeof(long))
+            {
+                this.EmitLong((long)enumValue);
+            }
+            else if (type == typeof(ulong))
+            {
+                this.EmitULong((ulong)enumValue);
+            }
+        }
     }
 }

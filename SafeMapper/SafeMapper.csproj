@@ -58,9 +58,9 @@
     <Compile Include="Utils\AttributeHelper.cs" />
     <Compile Include="Utils\ConverterFactory.cs" />
     <Compile Include="Utils\ConvertMethodHelper.cs" />
-    <Compile Include="Utils\EmitExtensions.cs" />
-    <Compile Include="Utils\ExpressionHelper.cs" />
     <Compile Include="Utils\ILGeneratorAdapter.cs" />
+    <Compile Include="Utils\ExpressionHelper.cs" />
+    <Compile Include="Utils\ILGeneratorAdapterBase.cs" />
     <Compile Include="Utils\ILInstruction.cs" />
   </ItemGroup>
   <ItemGroup />

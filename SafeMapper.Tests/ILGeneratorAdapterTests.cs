@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SafeMapper.Tests
+﻿namespace SafeMapper.Tests
 {
+    using System;
+    using System.Linq;
     using System.Reflection.Emit;
 
     using NUnit.Framework;
 
-    using SafeMapper.Reflection;
+    using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.GenericClasses;
+    using SafeMapper.Tests.Model.Person;
     using SafeMapper.Utils;
 
     [TestFixture]
@@ -32,7 +29,7 @@ namespace SafeMapper.Tests
         }
 
         [Test]
-        public void EmitDouble_ShouldResult_Ldc_R8_opcode()
+        public void EmitDouble_ShouldResult_Ldc_R8_Opcode()
         {
             this.ilgenerator.EmitDouble(1.0d);
 
@@ -41,7 +38,7 @@ namespace SafeMapper.Tests
         }
 
         [Test]
-        public void EmitFloat_ShouldResult_Ldc_R4_opcode()
+        public void EmitFloat_ShouldResult_Ldc_R4_Opcode()
         {
             this.ilgenerator.EmitFloat(1.0f);
 
@@ -101,6 +98,60 @@ namespace SafeMapper.Tests
         public void EmitBreak_Ldfld_ShouldThrowException()
         {
             Assert.Throws<Exception>(() => this.ilgenerator.EmitBreak(OpCodes.Ldfld, this.ilgenerator.DefineLabel()));
+        }
+
+        [Test]
+        public void EmitConvertFromEnum_FromNonEnum_ShouldThrowException()
+        {
+            Assert.Throws(
+                typeof(ArgumentException),
+                () => this.ilgenerator.EmitConvertFromEnum(typeof(string), typeof(int)));
+        }
+
+        [Test]
+        public void EmitConvertFromEnum_FromEnum_ShouldNotThrowException()
+        {
+            Assert.DoesNotThrow(
+                () => this.ilgenerator.EmitConvertFromEnum(typeof(Int32Enum), typeof(int)));
+        }
+
+        [Test]
+        public void EmitConvertToEnum_ToNonEnum_ShouldThrowException()
+        {
+            Assert.Throws(
+                typeof(ArgumentException),
+                () => this.ilgenerator.EmitConvertToEnum(typeof(string), typeof(int)));
+        }
+
+        [Test]
+        public void EmitConvertToEnum_ToEnum_ShouldNotThrowException()
+        {
+            Assert.DoesNotThrow(
+                () => this.ilgenerator.EmitConvertToEnum(typeof(string), typeof(Int32Enum)));
+        }
+
+        [Test]
+        public void EmitValueTypeBox_FromInt_ShouldLoadLocalAdress()
+        {
+            this.ilgenerator.EmitValueTypeBox(typeof(int));
+
+            Assert.AreEqual(OpCodes.Ldloca, this.ilgenerator.Instructions.Last().OpCode);
+        }
+
+        [Test]
+        public void EmitValueTypeBox_FromPerson_ShouldNotResultAnyInstructions()
+        {
+            this.ilgenerator.EmitValueTypeBox(typeof(Person));
+
+            Assert.AreEqual(0, this.ilgenerator.Instructions.Length);
+        }
+
+        [Test]
+        public void EmitValueTypeBox_FromEnum_ShouldBoxValue()
+        {
+            this.ilgenerator.EmitValueTypeBox(typeof(Int32Enum));
+
+            Assert.AreEqual(OpCodes.Box, this.ilgenerator.Instructions.Last().OpCode);
         }
     }
 }
