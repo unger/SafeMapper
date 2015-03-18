@@ -23,7 +23,7 @@
                 "TestDenamicMethod",
                 typeof(object),
                 null,
-                typeof(EmitExtensionsTests).Module);
+                typeof(ILGeneratorAdapterTests).Module);
 
             this.ilgenerator = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
         }
