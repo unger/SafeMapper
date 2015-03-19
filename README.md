@@ -23,6 +23,7 @@ The project is influenced by AutoMapper, EmitMapper and FastMapper.
 - Conversion from Object to NameValueCollection
 - Mapping support to and from IDictionary&lt;string, T&gt;
 - Simple circular reference check on type-level
+- Configuration support to enable mapping fields/properties with different names
 
 ##Installation
 
@@ -58,7 +59,6 @@ Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests
 ##Planned features
 
 - Full Support for circular references between objects
-- Configuration support to enable mapping fields/properties with different names
 - Support for flattening
 - Plugin support to extend core functionality (Converters and Membermapping etc)
 - Map from Database queries to c# object
