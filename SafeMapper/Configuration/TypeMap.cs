@@ -23,7 +23,7 @@
 
             if (fromMember != null && toMember != null)
             {
-                this.memberMaps.Add(new MemberMap(new MemberGetter(fromMember), new MemberSetter(toMember)));
+                this.Map(new MemberGetter(fromMember), new MemberSetter(toMember));
             }
         }
 
@@ -34,7 +34,40 @@
 
             if (fromMember != null && toMember != null)
             {
-                this.memberMaps.Add(new MemberMap(new MemberGetter(fromMember), new MemberSetter(toMember)));
+                this.Map(new MemberGetter(fromMember), new MemberSetter(toMember));
+            }
+        }
+
+        protected void Map<TFromMember, TToMember>(Expression<Func<TFrom, TFromMember>> from, string toName)
+        {
+            var fromMember = ExpressionHelper.GetMember(from);
+            var toMember = ReflectionUtils.GetMemberSetter(typeof(TTo), toName);
+
+            if (fromMember != null && toMember != null)
+            {
+                this.Map(new MemberGetter(fromMember), toMember);
+            }
+        }
+
+        protected void Map<TFromMember, TToMember>(string fromName, Expression<Action<TTo, TToMember>> to)
+        {
+            var fromMember = ReflectionUtils.GetMemberGetter(typeof(TFrom), fromName);
+            var toMember = ExpressionHelper.GetMember(to);
+
+            if (fromMember != null && toMember != null)
+            {
+                this.Map(fromMember, new MemberSetter(toMember));
+            }
+        }
+
+        protected void Map<TFromMember, TToMember>(string fromName, Expression<Func<TTo, TToMember>> to)
+        {
+            var fromMember = ReflectionUtils.GetMemberGetter(typeof(TFrom), fromName);
+            var toMember = ExpressionHelper.GetMember(to);
+
+            if (fromMember != null && toMember != null)
+            {
+                this.Map(fromMember, new MemberSetter(toMember));
             }
         }
 
@@ -43,6 +76,11 @@
             var fromMember = ReflectionUtils.GetMemberGetter(typeof(TFrom), fromName);
             var toMember = ReflectionUtils.GetMemberSetter(typeof(TTo), toName);
 
+            this.Map(fromMember, toMember);
+        }
+
+        private void Map(MemberGetter fromMember, MemberSetter toMember)
+        {
             if (fromMember != null && toMember != null)
             {
                 this.memberMaps.Add(new MemberMap(fromMember, toMember));
