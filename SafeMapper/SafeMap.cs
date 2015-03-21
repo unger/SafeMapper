@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Concurrent;
     using System.Globalization;
+    using System.Linq.Expressions;
 
+    using SafeMapper.Configuration;
     using SafeMapper.Utils;
 
     public class SafeMap
@@ -52,6 +54,13 @@
             return (Converter<TFrom, TTo>)ConverterCache.GetOrAdd(
                 string.Concat(typeof(TTo).FullName, typeof(TFrom).FullName),
                 k => ConverterFactory.CreateDelegate<TFrom, TTo>(provider));
+        }
+
+        public static void CreateMap<TFrom, TTo>(Action<TypeMap<TFrom, TTo>> config)
+        {
+            var typeMap = new TypeMap<TFrom, TTo>();
+            config(typeMap);
+            TypeMapping.SetTypeMapping(typeMap.GetTypeMapping());
         }
     }
 }

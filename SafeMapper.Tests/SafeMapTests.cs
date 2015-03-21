@@ -1,8 +1,11 @@
 ﻿namespace SafeMapper.Tests
 {
+    using System;
     using System.Globalization;
 
     using NUnit.Framework;
+
+    using SafeMapper.Tests.Model.Person;
 
     [TestFixture]
     public class SafeMapTests
@@ -73,6 +76,36 @@
             var result = converter("10");
 
             Assert.AreEqual(10, result);
+        }
+
+        [Test]
+        public void CreateMap_PersonToPersonSwedish()
+        {
+            SafeMap.CreateMap<Person, PersonSwedish>(
+                cfg =>
+                    {
+                        cfg.Map(x => x.Id, x => x.PersonId);
+                        cfg.Map(x => x.Name, x => x.Namn);
+                        cfg.Map(x => x.Age, x => x.Ålder);
+                        cfg.Map(x => x.Length, x => x.Längd);
+                        cfg.Map(x => x.BirthDate, x => x.Födelsedag);
+                    });
+
+            var person = new Person
+                             {
+                                 Id = Guid.NewGuid(),
+                                 Name = "Magnus Unger",
+                                 Age = 38,
+                                 Length = 1.85m,
+                                 BirthDate = new DateTime(1977, 03, 04),
+                             };
+            var result = SafeMap.Convert<Person, PersonSwedish>(person);
+
+            Assert.AreEqual(person.Id, result.PersonId);
+            Assert.AreEqual(person.Name, result.Namn);
+            Assert.AreEqual(person.Age, result.Ålder);
+            Assert.AreEqual(person.Length, result.Längd);
+            Assert.AreEqual(person.BirthDate, result.Födelsedag);
         }
     }
 }

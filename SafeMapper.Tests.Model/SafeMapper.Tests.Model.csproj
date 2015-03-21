@@ -77,6 +77,7 @@
     <Compile Include="Person\Person.cs" />
     <Compile Include="Person\PersonDbDto.cs" />
     <Compile Include="Person\PersonDerived.cs" />
+    <Compile Include="Person\PersonSwedish.cs" />
     <Compile Include="Person\PersonDto.cs" />
     <Compile Include="Person\PersonStringDto.cs" />
     <Compile Include="Person\PersonStruct.cs" />

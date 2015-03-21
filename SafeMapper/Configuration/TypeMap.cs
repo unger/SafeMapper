@@ -16,7 +16,7 @@
             return new TypeMapping(typeof(TFrom), typeof(TTo), this.memberMaps);
         }
 
-        protected void Map<TFromMember, TToMember>(Expression<Func<TFrom, TFromMember>> from, Expression<Action<TTo, TToMember>> to)
+        public void Map<TFromMember, TToMember>(Expression<Func<TFrom, TFromMember>> from, Expression<Action<TTo, TToMember>> to)
         {
             var fromMember = ExpressionHelper.GetMember(from);
             var toMember = ExpressionHelper.GetMember(to);
@@ -27,7 +27,7 @@
             }
         }
 
-        protected void Map<TFromMember, TToMember>(Expression<Func<TFrom, TFromMember>> from, Expression<Func<TTo, TToMember>> to)
+        public void Map<TFromMember, TToMember>(Expression<Func<TFrom, TFromMember>> from, Expression<Func<TTo, TToMember>> to)
         {
             var fromMember = ExpressionHelper.GetMember(from);
             var toMember = ExpressionHelper.GetMember(to);
@@ -38,7 +38,7 @@
             }
         }
 
-        protected void Map<TFromMember, TToMember>(Expression<Func<TFrom, TFromMember>> from, string toName)
+        public void Map<TFromMember, TToMember>(Expression<Func<TFrom, TFromMember>> from, string toName)
         {
             var fromMember = ExpressionHelper.GetMember(from);
             var toMember = ReflectionUtils.GetMemberSetter(typeof(TTo), toName);
@@ -49,7 +49,7 @@
             }
         }
 
-        protected void Map<TFromMember, TToMember>(string fromName, Expression<Action<TTo, TToMember>> to)
+        public void Map<TFromMember, TToMember>(string fromName, Expression<Action<TTo, TToMember>> to)
         {
             var fromMember = ReflectionUtils.GetMemberGetter(typeof(TFrom), fromName);
             var toMember = ExpressionHelper.GetMember(to);
@@ -60,7 +60,7 @@
             }
         }
 
-        protected void Map<TFromMember, TToMember>(string fromName, Expression<Func<TTo, TToMember>> to)
+        public void Map<TFromMember, TToMember>(string fromName, Expression<Func<TTo, TToMember>> to)
         {
             var fromMember = ReflectionUtils.GetMemberGetter(typeof(TFrom), fromName);
             var toMember = ExpressionHelper.GetMember(to);
@@ -71,7 +71,7 @@
             }
         }
 
-        protected void Map(string fromName, string toName)
+        public void Map(string fromName, string toName)
         {
             var fromMember = ReflectionUtils.GetMemberGetter(typeof(TFrom), fromName);
             var toMember = ReflectionUtils.GetMemberSetter(typeof(TTo), toName);
