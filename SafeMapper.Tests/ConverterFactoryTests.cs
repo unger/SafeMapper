@@ -9,7 +9,6 @@
 
     using NUnit.Framework;
 
-    using SafeMapper.Tests.Model;
     using SafeMapper.Tests.Model.Circular;
     using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.GenericClasses;
@@ -21,6 +20,8 @@
     {
         private IFormatProvider numberFormatProvider;
 
+        private ConverterFactory converterFactory;
+
         [TestFixtureSetUp]
         public void SetUpFixture()
         {
@@ -31,6 +32,8 @@
             numberFormat.NumberGroupSeparator = " ";
             numberFormat.CurrencyGroupSeparator = " ";
             this.numberFormatProvider = numberFormat;
+
+            this.converterFactory = new ConverterFactory();
         }
 
         /************************************************************************/
@@ -43,7 +46,7 @@
         [TestCaseSource(typeof(TestData), "StringToStringData")]
         public string CreateDelegate_StringToString(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, string>();
+            var converter = this.converterFactory.CreateDelegate<string, string>();
 
             return converter(input);
         }
@@ -57,7 +60,7 @@
         [TestCaseSource(typeof(TestData), "StringToIntData")]
         public int CreateDelegate_StringToInt(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, int>();
+            var converter = this.converterFactory.CreateDelegate<string, int>();
 
             return converter(input);
         }
@@ -71,7 +74,7 @@
         [TestCaseSource(typeof(TestData), "StringToGuidData")]
         public Guid CreateDelegate_StringToGuid(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, Guid>();
+            var converter = this.converterFactory.CreateDelegate<string, Guid>();
 
             return converter(input);
         }
@@ -85,7 +88,7 @@
         [TestCaseSource(typeof(TestData), "StringToDecimalData")]
         public decimal CreateDelegate_StringToDecimal(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, decimal>(this.numberFormatProvider);
+            var converter = this.converterFactory.CreateDelegate<string, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -99,7 +102,7 @@
         [TestCaseSource(typeof(TestData), "StringToDateTimeData")]
         public DateTime CreateDelegate_StringToDateTime(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, DateTime>();
+            var converter = this.converterFactory.CreateDelegate<string, DateTime>();
 
             return converter(input);
         }
@@ -120,7 +123,7 @@
         [TestCaseSource(typeof(TestData), "IntToIntData")]
         public int CreateDelegate_IntToInt(int input)
         {
-            var converter = ConverterFactory.CreateDelegate<int, int>();
+            var converter = this.converterFactory.CreateDelegate<int, int>();
 
             return converter(input);
         }
@@ -135,7 +138,7 @@
         [TestCaseSource(typeof(TestData), "IntToStringData")]
         public string CreateDelegate_IntToString(int input)
         {
-            var converter = ConverterFactory.CreateDelegate<int, string>();
+            var converter = this.converterFactory.CreateDelegate<int, string>();
 
             return converter(input);
         }
@@ -150,7 +153,7 @@
         [TestCaseSource(typeof(TestData), "IntToLongData")]
         public long CreateDelegate_IntToLong(int input)
         {
-            var converter = ConverterFactory.CreateDelegate<int, long>();
+            var converter = this.converterFactory.CreateDelegate<int, long>();
 
             return converter(input);
         }
@@ -166,7 +169,7 @@
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
         public string CreateDelegate_GuidToString(Guid input)
         {
-            var converter = ConverterFactory.CreateDelegate<Guid, string>();
+            var converter = this.converterFactory.CreateDelegate<Guid, string>();
 
             return converter(input);
         }
@@ -187,7 +190,7 @@
         [TestCaseSource(typeof(TestData), "DecimalToDecimalData")]
         public decimal CreateDelegate_DecimalToDecimal(decimal input)
         {
-            var converter = ConverterFactory.CreateDelegate<decimal, decimal>(this.numberFormatProvider);
+            var converter = this.converterFactory.CreateDelegate<decimal, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -195,7 +198,7 @@
         [TestCaseSource(typeof(TestData), "DecimalToStringData")]
         public string CreateDelegate_DecimalToString(decimal input)
         {
-            var converter = ConverterFactory.CreateDelegate<decimal, string>(this.numberFormatProvider);
+            var converter = this.converterFactory.CreateDelegate<decimal, string>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -209,7 +212,7 @@
         [TestCaseSource(typeof(TestData), "DecimalToDoubleData")]
         public double CreateDelegate_DecimalToDouble(decimal input)
         {
-            var converter = ConverterFactory.CreateDelegate<decimal, double>(this.numberFormatProvider);
+            var converter = this.converterFactory.CreateDelegate<decimal, double>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -229,7 +232,7 @@
         [TestCaseSource(typeof(TestData), "DoubleToDecimalData")]
         public decimal CreateDelegate_DoubleToDecimal(double input)
         {
-            var converter = ConverterFactory.CreateDelegate<double, decimal>(this.numberFormatProvider);
+            var converter = this.converterFactory.CreateDelegate<double, decimal>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -252,7 +255,7 @@
         [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
         public string CreateDelegate_DateTimeToString(DateTime input)
         {
-            var converter = ConverterFactory.CreateDelegate<DateTime, string>(this.numberFormatProvider);
+            var converter = this.converterFactory.CreateDelegate<DateTime, string>(this.numberFormatProvider);
 
             return converter(input);
         }
@@ -273,7 +276,7 @@
         [TestCaseSource(typeof(TestData), "LongToIntData")]
         public int CreateDelegate_LongToInt(long input)
         {
-            var converter = ConverterFactory.CreateDelegate<long, int>();
+            var converter = this.converterFactory.CreateDelegate<long, int>();
 
             return converter(input);
         }
@@ -288,7 +291,7 @@
         [Test]
         public void CreateDelegate_IntArrayToIntArray()
         {
-            var converter = ConverterFactory.CreateDelegate<int[], int[]>();
+            var converter = this.converterFactory.CreateDelegate<int[], int[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
@@ -298,7 +301,7 @@
         [Test]
         public void CreateDelegate_IntArrayToStringArray()
         {
-            var converter = ConverterFactory.CreateDelegate<int[], string[]>();
+            var converter = this.converterFactory.CreateDelegate<int[], string[]>();
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -309,7 +312,7 @@
         [Test]
         public void CreateDelegate_StringArrayToIntArray()
         {
-            var converter = ConverterFactory.CreateDelegate<string[], int[]>();
+            var converter = this.converterFactory.CreateDelegate<string[], int[]>();
             var input = new string[] { "1", "2", "3", "4", "5" };
             var expected = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -320,7 +323,7 @@
         [Test]
         public void CreateDelegate_IntArrayToDecimalArray()
         {
-            var converter = ConverterFactory.CreateDelegate<int[], decimal[]>();
+            var converter = this.converterFactory.CreateDelegate<int[], decimal[]>();
             var input = new int[] { 1, 2, 3, 4, 5 };
             var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
@@ -345,7 +348,7 @@
         [Test]
         public void CreateDelegate_StringListToStringArray()
         {
-            var converter = ConverterFactory.CreateDelegate<List<string>, string[]>();
+            var converter = this.converterFactory.CreateDelegate<List<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -357,7 +360,7 @@
         [Test]
         public void CreateDelegate_StringListToIntArray()
         {
-            var converter = ConverterFactory.CreateDelegate<List<string>, int[]>();
+            var converter = this.converterFactory.CreateDelegate<List<string>, int[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var expected = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -369,7 +372,7 @@
         [Test]
         public void CreateDelegate_StringListToIntList()
         {
-            var converter = ConverterFactory.CreateDelegate<List<string>, List<int>>();
+            var converter = this.converterFactory.CreateDelegate<List<string>, List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new List<string> { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -381,7 +384,7 @@
         [Test]
         public void CreateDelegate_StringArrayToIntList()
         {
-            var converter = ConverterFactory.CreateDelegate<string[], List<int>>();
+            var converter = this.converterFactory.CreateDelegate<string[], List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -393,7 +396,7 @@
         [Test]
         public void CreateDelegate_IntListToDecimalArray()
         {
-            var converter = ConverterFactory.CreateDelegate<List<int>, decimal[]>();
+            var converter = this.converterFactory.CreateDelegate<List<int>, decimal[]>();
             var input = new List<int> { 1, 2, 3, 4, 5 };
             var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
@@ -405,7 +408,7 @@
         [Test]
         public void CreateDelegate_IntListToDecimalList()
         {
-            var converter = ConverterFactory.CreateDelegate<List<int>, List<decimal>>();
+            var converter = this.converterFactory.CreateDelegate<List<int>, List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new List<int> { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -417,7 +420,7 @@
         [Test]
         public void CreateDelegate_IntArrayToDecimalList()
         {
-            var converter = ConverterFactory.CreateDelegate<int[], List<decimal>>();
+            var converter = this.converterFactory.CreateDelegate<int[], List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new int[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
@@ -436,7 +439,7 @@
         [Test]
         public void CreateDelegate_StringICollectionToStringArray()
         {
-            var converter = ConverterFactory.CreateDelegate<ICollection<string>, string[]>();
+            var converter = this.converterFactory.CreateDelegate<ICollection<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var expected = new string[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
@@ -448,7 +451,7 @@
         [Test]
         public void CreateDelegate_StringArrayToStringICollection()
         {
-            var converter = ConverterFactory.CreateDelegate<string[], ICollection<string>>();
+            var converter = this.converterFactory.CreateDelegate<string[], ICollection<string>>();
             var input = new string[] { "1", "2", "3", "4", "5" };
             var expected = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var result = converter(input);
@@ -469,7 +472,7 @@
         [TestCase(ByteEnum.Value3, Result = (byte)3)]
         public byte ToByte_FromByteEnum(ByteEnum input)
         {
-            var converter = ConverterFactory.CreateDelegate<ByteEnum, byte>();
+            var converter = this.converterFactory.CreateDelegate<ByteEnum, byte>();
             return converter(input);
         }
 
@@ -479,7 +482,7 @@
         [TestCase(ByteEnum.Value3, Result = (long)3)]
         public long ToInt64_FromByteEnum(ByteEnum input)
         {
-            var converter = ConverterFactory.CreateDelegate<ByteEnum, long>();
+            var converter = this.converterFactory.CreateDelegate<ByteEnum, long>();
             return converter(input);
         }
 
@@ -490,7 +493,7 @@
         [TestCase(Int64Enum.Max, Result = (byte)0)]
         public byte ToByte_FromInt64Enum(Int64Enum input)
         {
-            var converter = ConverterFactory.CreateDelegate<Int64Enum, byte>();
+            var converter = this.converterFactory.CreateDelegate<Int64Enum, byte>();
             return converter(input);
         }
 
@@ -507,7 +510,7 @@
         [TestCase("Value4", Result = ByteEnum.Undefined)]
         public ByteEnum ToByteEnum_FromString(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, ByteEnum>();
+            var converter = this.converterFactory.CreateDelegate<string, ByteEnum>();
             return converter(input);
         }
 
@@ -518,7 +521,7 @@
         [TestCase((byte)4, Result = ByteEnum.Undefined)]
         public ByteEnum ToByteEnum_FromByte(byte input)
         {
-            var converter = ConverterFactory.CreateDelegate<byte, ByteEnum>();
+            var converter = this.converterFactory.CreateDelegate<byte, ByteEnum>();
             return converter(input);
         }
 
@@ -529,7 +532,7 @@
         [TestCase((byte)4, Result = SByteEnum.Undefined)]
         public SByteEnum ToSByteEnum_FromByte(byte input)
         {
-            var converter = ConverterFactory.CreateDelegate<byte, SByteEnum>();
+            var converter = this.converterFactory.CreateDelegate<byte, SByteEnum>();
             return converter(input);
         }
 
@@ -540,7 +543,7 @@
         [TestCase((byte)4, Result = Int16Enum.Undefined)]
         public Int16Enum ToInt16Enum_FromByte(byte input)
         {
-            var converter = ConverterFactory.CreateDelegate<byte, Int16Enum>();
+            var converter = this.converterFactory.CreateDelegate<byte, Int16Enum>();
             return converter(input);
         }
 
@@ -551,7 +554,7 @@
         [TestCase((byte)4, Result = UInt16Enum.Undefined)]
         public UInt16Enum ToUInt16Enum_FromByte(byte input)
         {
-            var converter = ConverterFactory.CreateDelegate<byte, UInt16Enum>();
+            var converter = this.converterFactory.CreateDelegate<byte, UInt16Enum>();
             return converter(input);
         }
 
@@ -563,7 +566,7 @@
         [TestCase(4, Result = Int32Enum.Undefined)]
         public Int32Enum ToInt32Enum_FromInt32(int input)
         {
-            var converter = ConverterFactory.CreateDelegate<int, Int32Enum>();
+            var converter = this.converterFactory.CreateDelegate<int, Int32Enum>();
             return converter(input);
         }
 
@@ -575,7 +578,7 @@
         [TestCase(4, Result = UInt32Enum.Undefined)]
         public UInt32Enum ToUInt32Enum_FromInt32(int input)
         {
-            var converter = ConverterFactory.CreateDelegate<int, UInt32Enum>();
+            var converter = this.converterFactory.CreateDelegate<int, UInt32Enum>();
             return converter(input);
         }
 
@@ -587,7 +590,7 @@
         [TestCase(4L, Result = Int32Enum.Undefined)]
         public Int32Enum ToInt32Enum_FromInt64(long input)
         {
-            var converter = ConverterFactory.CreateDelegate<long, Int32Enum>();
+            var converter = this.converterFactory.CreateDelegate<long, Int32Enum>();
             return converter(input);
         }
 
@@ -599,7 +602,7 @@
         [TestCase(4L, Result = Int64Enum.Undefined)]
         public Int64Enum ToInt64Enum_FromInt64(long input)
         {
-            var converter = ConverterFactory.CreateDelegate<long, Int64Enum>();
+            var converter = this.converterFactory.CreateDelegate<long, Int64Enum>();
             return converter(input);
         }
 
@@ -611,7 +614,7 @@
         [TestCase(4L, Result = UInt64Enum.Undefined)]
         public UInt64Enum ToUInt64Enum_FromInt64(long input)
         {
-            var converter = ConverterFactory.CreateDelegate<long, UInt64Enum>();
+            var converter = this.converterFactory.CreateDelegate<long, UInt64Enum>();
             return converter(input);
         }
 
@@ -622,7 +625,7 @@
         [TestCase(4UL, Result = UInt64Enum.Undefined)]
         public UInt64Enum ToUInt64Enum_FromUInt64(ulong input)
         {
-            var converter = ConverterFactory.CreateDelegate<ulong, UInt64Enum>();
+            var converter = this.converterFactory.CreateDelegate<ulong, UInt64Enum>();
             return converter(input);
         }
 
@@ -634,7 +637,7 @@
         public DisplayAttributeResourceEnum ToDisplayAttributeResourceEnum_FromString_CultureSv(string input)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("sv-SE");
-            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResourceEnum>();
+            var converter = this.converterFactory.CreateDelegate<string, DisplayAttributeResourceEnum>();
             return converter(input);
         }
 
@@ -646,7 +649,7 @@
         public DisplayAttributeResourceEnum ToDisplayAttributeResourceEnum_FromString_CultureEn(string input)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResourceEnum>();
+            var converter = this.converterFactory.CreateDelegate<string, DisplayAttributeResourceEnum>();
             return converter(input);
         }
 
@@ -658,7 +661,7 @@
         public DisplayAttributeResxEnum ToDisplayAttributeResxEnum_FromString_CultureSv(string input)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("sv-SE");
-            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResxEnum>();
+            var converter = this.converterFactory.CreateDelegate<string, DisplayAttributeResxEnum>();
             return converter(input);
         }
 
@@ -670,7 +673,7 @@
         public DisplayAttributeResxEnum ToDisplayAttributeResxEnum_FromString_CultureEn(string input)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
-            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeResxEnum>();
+            var converter = this.converterFactory.CreateDelegate<string, DisplayAttributeResxEnum>();
             return converter(input);
         }
 
@@ -681,7 +684,7 @@
         [TestCase("Value 4", Result = DescriptionAttributeEnum.Undefined)]
         public DescriptionAttributeEnum ToDescriptionEnum_FromString(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, DescriptionAttributeEnum>();
+            var converter = this.converterFactory.CreateDelegate<string, DescriptionAttributeEnum>();
             return converter(input);
         }
 
@@ -692,7 +695,7 @@
         [TestCase("Value 4", Result = DisplayAttributeEnum.Undefined)]
         public DisplayAttributeEnum ToDisplayAttributeEnum_FromString(string input)
         {
-            var converter = ConverterFactory.CreateDelegate<string, DisplayAttributeEnum>();
+            var converter = this.converterFactory.CreateDelegate<string, DisplayAttributeEnum>();
             return converter(input);
         }
 
@@ -702,7 +705,7 @@
         [TestCase(DisplayAttributeEnum.Value3, Result = "Value 3")]
         public string ToString_FromDisplayAttributeEnum(DisplayAttributeEnum input)
         {
-            var converter = ConverterFactory.CreateDelegate<DisplayAttributeEnum, string>();
+            var converter = this.converterFactory.CreateDelegate<DisplayAttributeEnum, string>();
             return converter(input);
         }
 
@@ -712,7 +715,7 @@
         [TestCase(DescriptionAttributeEnum.Value3, Result = "Value 3")]
         public string ToString_FromDisplayAttributeEnum(DescriptionAttributeEnum input)
         {
-            var converter = ConverterFactory.CreateDelegate<DescriptionAttributeEnum, string>();
+            var converter = this.converterFactory.CreateDelegate<DescriptionAttributeEnum, string>();
             return converter(input);
         }
 
@@ -725,7 +728,7 @@
         [Test]
         public void CreateDelegate_StringToStringArray()
         {
-            var converter = ConverterFactory.CreateDelegate<string, int[]>();
+            var converter = this.converterFactory.CreateDelegate<string, int[]>();
             var input = "1";
             var result = converter(input);
 
@@ -735,7 +738,7 @@
         [Test]
         public void CreateDelegate_StringToStringList()
         {
-            var converter = ConverterFactory.CreateDelegate<string, List<int>>();
+            var converter = this.converterFactory.CreateDelegate<string, List<int>>();
             var input = "1";
             var result = converter(input);
 
@@ -745,7 +748,7 @@
         [Test]
         public void CreateDelegate_StringArrayToString()
         {
-            var converter = ConverterFactory.CreateDelegate<string[], int>();
+            var converter = this.converterFactory.CreateDelegate<string[], int>();
             var input = new[] { "1", "2", "3" };
             var result = converter(input);
 
@@ -755,7 +758,7 @@
         [Test]
         public void CreateDelegate_StringListToString()
         {
-            var converter = ConverterFactory.CreateDelegate<List<string>, int>();
+            var converter = this.converterFactory.CreateDelegate<List<string>, int>();
             var input = new List<string> { "1", "2", "3" };
             var result = converter(input);
 
@@ -765,7 +768,7 @@
         [Test]
         public void CreateDelegate_NonGenericDateTimeToSqlDateTime()
         {
-            var converter = ConverterFactory.CreateDelegate(typeof(DateTime), typeof(SqlDateTime));
+            var converter = this.converterFactory.CreateDelegate(typeof(DateTime), typeof(SqlDateTime));
             var input = DateTime.MinValue;
             var result = converter(input);
 
@@ -775,7 +778,7 @@
         [Test]
         public void CreateDelegate_NonGenericIntToString()
         {
-            var converter = ConverterFactory.CreateDelegate(typeof(int), typeof(string));
+            var converter = this.converterFactory.CreateDelegate(typeof(int), typeof(string));
             var input = 1;
             var result = converter(input);
 
@@ -785,7 +788,7 @@
         [Test]
         public void CreateDelegate_NonGenericStringToInt()
         {
-            var converter = ConverterFactory.CreateDelegate(typeof(string), typeof(int));
+            var converter = this.converterFactory.CreateDelegate(typeof(string), typeof(int));
             var input = "1";
             var result = converter(input);
 
@@ -795,7 +798,7 @@
         [TestCaseSource(typeof(TestData), "NonGenericCollectionTestData")]
         public object CreateDelegate_NonGenericCollectionTestData(object input, Type fromType, Type toType)
         {
-            var converter = ConverterFactory.CreateDelegate(fromType, toType);
+            var converter = this.converterFactory.CreateDelegate(fromType, toType);
 
             return converter(input);
         }
@@ -803,7 +806,7 @@
         [TestCaseSource(typeof(TestData), "NonGenericTestData")]
         public object CreateDelegate_NonGenericTestData(object input, Type fromType, Type toType)
         {
-            var converter = ConverterFactory.CreateDelegate(fromType, toType);
+            var converter = this.converterFactory.CreateDelegate(fromType, toType);
 
             return converter(input);
         }
@@ -811,7 +814,7 @@
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToClassPropertyWithIntArray()
         {
-            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<int[]>>();
+            var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<int[]>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
 
             var result = converter(input);
@@ -823,7 +826,7 @@
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToClassPropertyString_ShouldConcatValues()
         {
-            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<string>>();
+            var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<string>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
 
             var result = converter(input);
@@ -835,7 +838,7 @@
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToClassPropertyInt_ShouldReturnFirstValue()
         {
-            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
+            var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
 
             var result = converter(input);
@@ -847,7 +850,7 @@
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionWithUnMatchedKey_ShouldReturnObjectWithDefaultValue()
         {
-            var converter = ConverterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
+            var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
             var input = new NameValueCollection { { "Value2", "37" } };
 
             var result = converter(input);
@@ -859,7 +862,7 @@
         [Test]
         public void CreateDelegate_ConvertDictionaryToClassProperty_ShouldReturnObjectWithDefaultValue()
         {
-            var converter = ConverterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
+            var converter = this.converterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
             var input = new Dictionary<string, string> { { "Value", "37" } };
 
             var result = converter(input);
@@ -871,7 +874,7 @@
         [Test]
         public void CreateDelegate_ConvertDictionaryToClassPropertyWithUnmatchedKey_ShouldReturnObjectWithDefaultValue()
         {
-            var converter = ConverterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
+            var converter = this.converterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
             var input = new Dictionary<string, string> { { "Value2", "37" } };
 
             var result = converter(input);
@@ -883,7 +886,7 @@
         [Test]
         public void CreateDelegate_ConvertClassPropertyWithStringToDictionary()
         {
-            var converter = ConverterFactory.CreateDelegate<ClassProperty<string>, Dictionary<string, int>>();
+            var converter = this.converterFactory.CreateDelegate<ClassProperty<string>, Dictionary<string, int>>();
             var input = new ClassProperty<string> { Value = "1337" };
 
             var result = converter(input);
@@ -895,7 +898,7 @@
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToDictionary()
         {
-            var converter = ConverterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int>>();
+            var converter = this.converterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int>>();
             var input = new NameValueCollection { { "Value1", "1" }, { "Value2", "2" }, { "Value3", "3" } };
 
             var result = converter(input);
@@ -909,7 +912,7 @@
         [Test]
         public void CreateDelegate_ConvertDictionaryToNameValueCollection()
         {
-            var converter = ConverterFactory.CreateDelegate<Dictionary<string, int>, NameValueCollection>();
+            var converter = this.converterFactory.CreateDelegate<Dictionary<string, int>, NameValueCollection>();
             var input = new Dictionary<string, int> { { "Value1", 1 }, { "Value2", 2 }, { "Value3", 3 } };
 
             var result = converter(input);
@@ -923,7 +926,7 @@
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionMultiKeysToDictionary()
         {
-            var converter = ConverterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int[]>>();
+            var converter = this.converterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int[]>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value2", "3" } };
 
             var result = converter(input);
@@ -936,7 +939,7 @@
         [Test]
         public void CreateDelegate_ConvertCircularReference_Parent_Child()
         {
-            var converter = ConverterFactory.CreateDelegate<Parent, ParentDto>();
+            var converter = this.converterFactory.CreateDelegate<Parent, ParentDto>();
             var input = new Parent();
             input.Children = new Child[1] { new Child { Parent = input } };
 
@@ -950,7 +953,7 @@
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToPerson_ShouldReturnPersonWithCorrectValues()
         {
-            var converter = ConverterFactory.CreateDelegate<NameValueCollection, Person>();
+            var converter = this.converterFactory.CreateDelegate<NameValueCollection, Person>();
             var person = new Person
             {
                 Id = Guid.NewGuid(),
@@ -979,7 +982,7 @@
         [Test]
         public void CreateDelegate_ConvertPersonToNameValueCollection()
         {
-            var converter = ConverterFactory.CreateDelegate<Person, NameValueCollection>();
+            var converter = this.converterFactory.CreateDelegate<Person, NameValueCollection>();
             var person = new Person
             {
                 Id = Guid.NewGuid(),
@@ -1002,7 +1005,7 @@
         [Test]
         public void CreateDelegate_ConvertPersonToPersonDto_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = ConverterFactory.CreateDelegate<Person, PersonDto>();
+            var converter = this.converterFactory.CreateDelegate<Person, PersonDto>();
             var person = new Person
                              {
                                  Id = Guid.NewGuid(),
@@ -1026,7 +1029,7 @@
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-            var converter = ConverterFactory.CreateDelegate<PersonStringDto, Person>();
+            var converter = this.converterFactory.CreateDelegate<PersonStringDto, Person>();
             var person = new PersonStringDto
             {
                 Id = guidStr,
@@ -1047,7 +1050,7 @@
         [Test]
         public void CreateDelegate_ConvertPersonStructToPerson_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = ConverterFactory.CreateDelegate<PersonStruct, Person>();
+            var converter = this.converterFactory.CreateDelegate<PersonStruct, Person>();
             var person = new PersonStruct
             {
                 Id = Guid.NewGuid(),
@@ -1069,7 +1072,7 @@
         [Test]
         public void CreateDelegate_ConvertPersonToPersonStruct_ShouldReturnInstanceOfToTypeWithCorrectValues()
         {
-            var converter = ConverterFactory.CreateDelegate<Person, PersonStruct>();
+            var converter = this.converterFactory.CreateDelegate<Person, PersonStruct>();
             var person = new Person
             {
                 Id = Guid.NewGuid(),
@@ -1093,7 +1096,7 @@
         {
             var expectedDecimal = 182.5m;
             var guidStr = "0cb6c00f-fc44-484f-8ddd-823709b74601";
-            var converter = ConverterFactory.CreateDelegate<Person, PersonStringDto>();
+            var converter = this.converterFactory.CreateDelegate<Person, PersonStringDto>();
             var person = new Person
             {
                 Id = new Guid(guidStr),
@@ -1118,24 +1121,24 @@
 
         private TTo AssertConverterOutput<TFrom, TTo>(TFrom input, IFormatProvider provider)
         {
-            var converter = ConverterFactory.CreateDelegate<TFrom, TTo>(provider);
+            var converter = this.converterFactory.CreateDelegate<TFrom, TTo>(provider);
             var expected = converter(input);
-            var converter1 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, ClassProperty<TTo>>(provider);
-            var converter2 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, ClassField<TTo>>(provider);
-            var converter3 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, StructProperty<TTo>>(provider);
-            var converter4 = ConverterFactory.CreateDelegate<ClassProperty<TFrom>, StructField<TTo>>(provider);
-            var converter5 = ConverterFactory.CreateDelegate<ClassField<TFrom>, ClassProperty<TTo>>(provider);
-            var converter6 = ConverterFactory.CreateDelegate<ClassField<TFrom>, ClassField<TTo>>(provider);
-            var converter7 = ConverterFactory.CreateDelegate<ClassField<TFrom>, StructProperty<TTo>>(provider);
-            var converter8 = ConverterFactory.CreateDelegate<ClassField<TFrom>, StructField<TTo>>(provider);
-            var converter9 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, ClassProperty<TTo>>(provider);
-            var converter10 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, ClassField<TTo>>(provider);
-            var converter11 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, StructProperty<TTo>>(provider);
-            var converter12 = ConverterFactory.CreateDelegate<StructProperty<TFrom>, StructField<TTo>>(provider);
-            var converter13 = ConverterFactory.CreateDelegate<StructField<TFrom>, ClassProperty<TTo>>(provider);
-            var converter14 = ConverterFactory.CreateDelegate<StructField<TFrom>, ClassField<TTo>>(provider);
-            var converter15 = ConverterFactory.CreateDelegate<StructField<TFrom>, StructProperty<TTo>>(provider);
-            var converter16 = ConverterFactory.CreateDelegate<StructField<TFrom>, StructField<TTo>>(provider);
+            var converter1 = this.converterFactory.CreateDelegate<ClassProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter2 = this.converterFactory.CreateDelegate<ClassProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter3 = this.converterFactory.CreateDelegate<ClassProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter4 = this.converterFactory.CreateDelegate<ClassProperty<TFrom>, StructField<TTo>>(provider);
+            var converter5 = this.converterFactory.CreateDelegate<ClassField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter6 = this.converterFactory.CreateDelegate<ClassField<TFrom>, ClassField<TTo>>(provider);
+            var converter7 = this.converterFactory.CreateDelegate<ClassField<TFrom>, StructProperty<TTo>>(provider);
+            var converter8 = this.converterFactory.CreateDelegate<ClassField<TFrom>, StructField<TTo>>(provider);
+            var converter9 = this.converterFactory.CreateDelegate<StructProperty<TFrom>, ClassProperty<TTo>>(provider);
+            var converter10 = this.converterFactory.CreateDelegate<StructProperty<TFrom>, ClassField<TTo>>(provider);
+            var converter11 = this.converterFactory.CreateDelegate<StructProperty<TFrom>, StructProperty<TTo>>(provider);
+            var converter12 = this.converterFactory.CreateDelegate<StructProperty<TFrom>, StructField<TTo>>(provider);
+            var converter13 = this.converterFactory.CreateDelegate<StructField<TFrom>, ClassProperty<TTo>>(provider);
+            var converter14 = this.converterFactory.CreateDelegate<StructField<TFrom>, ClassField<TTo>>(provider);
+            var converter15 = this.converterFactory.CreateDelegate<StructField<TFrom>, StructProperty<TTo>>(provider);
+            var converter16 = this.converterFactory.CreateDelegate<StructField<TFrom>, StructField<TTo>>(provider);
 
             Assert.AreEqual(expected, converter1(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassProperty<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
             Assert.AreEqual(expected, converter2(new ClassProperty<TFrom> { Value = input }).Value, string.Format("ClassProperty<{0}> to ClassField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));

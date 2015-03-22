@@ -5,14 +5,14 @@
     using System.Globalization;
     using System.Reflection.Emit;
 
-    public static class ConverterFactory
+    public class ConverterFactory
     {
-        public static Func<object, object> CreateDelegate(Type fromType, Type toType)
+        public Func<object, object> CreateDelegate(Type fromType, Type toType)
         {
-            return CreateDelegate(fromType, toType, CultureInfo.CurrentCulture);
+            return this.CreateDelegate(fromType, toType, CultureInfo.CurrentCulture);
         }
 
-        public static Func<object, object> CreateDelegate(Type fromType, Type toType, IFormatProvider provider)
+        public Func<object, object> CreateDelegate(Type fromType, Type toType, IFormatProvider provider)
         {
             var convertDynamicMethod = new DynamicMethod(
                 "ConvertFrom" + fromType.Name + "To" + toType.Name + "NonGeneric",
@@ -31,12 +31,12 @@
             return (Func<object, object>)convertDynamicMethod.CreateDelegate(typeof(Func<object, object>), provider);
         }
 
-        public static Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>()
+        public Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>()
         {
-            return CreateDelegate<TFrom, TTo>(CultureInfo.CurrentCulture);
+            return this.CreateDelegate<TFrom, TTo>(CultureInfo.CurrentCulture);
         }
 
-        public static Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>(IFormatProvider provider)
+        public Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>(IFormatProvider provider)
         {
             var toType = typeof(TTo);
             var fromType = typeof(TFrom);

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace SafeMapper.Tests
 {
+    using System.Collections.Specialized;
     using System.Reflection;
 
     using NUnit.Framework;
@@ -38,6 +39,31 @@ namespace SafeMapper.Tests
             Assert.NotNull(member);
             Assert.IsInstanceOf<MethodInfo>(member);
             Assert.AreEqual("Test text", (member as MethodInfo).Invoke(val, new object[0]));
+        }
+
+        [Test]
+        public void GetMember_NameValueCollectionGetter()
+        {
+            var val = new NameValueCollection { { "Key", "Value" } };
+            var member = ExpressionHelper.GetMember<NameValueCollection, string>((x, key) => x.GetValues(key));
+
+            Assert.NotNull(member);
+            Assert.IsInstanceOf<MethodInfo>(member);
+            Assert.AreEqual(new[] { "Value" }, (member as MethodInfo).Invoke(val, new object[] { "Key" }));
+        }
+
+        [Test]
+        public void GetMember_NameValueCollectionSetter()
+        {
+            var val = new NameValueCollection();
+            var member = ExpressionHelper.GetMember<NameValueCollection, string>((x, key, v) => x.Add(key, v));
+
+            Assert.NotNull(member);
+            Assert.IsInstanceOf<MethodInfo>(member);
+
+            (member as MethodInfo).Invoke(val, new object[] { "Key", "Value" });
+
+            Assert.AreEqual("Value", val["Key"]);
         }
     }
 }

@@ -21,9 +21,11 @@
             var fromType = typeof(TSource);
             var toType = typeof(TDestination);
 
+            var converterFactory = new ConverterFactory();
+
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}", typeof(TSource).Name, typeof(TDestination).Name));
 
-            this.AddResult("SafeMapper", i => ConverterFactory.CreateDelegate<TSource, TDestination>(formatProvider));
+            this.AddResult("SafeMapper", i => converterFactory.CreateDelegate<TSource, TDestination>(formatProvider));
 
             //this.AddResult("EmitMapper", i => ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>());
 

@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ITypeMap.cs" />
     <Compile Include="Reflection\MemberMap.cs" />
     <Compile Include="Configuration\TypeMap.cs" />
     <Compile Include="Configuration\TypeMapping.cs" />

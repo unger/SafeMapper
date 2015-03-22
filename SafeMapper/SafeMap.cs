@@ -3,14 +3,20 @@
     using System;
     using System.Collections.Concurrent;
     using System.Globalization;
-    using System.Linq.Expressions;
 
     using SafeMapper.Configuration;
     using SafeMapper.Utils;
 
     public class SafeMap
     {
+        private static readonly ConverterFactory ConverterFactory;
+
         private static readonly ConcurrentDictionary<string, object> ConverterCache = new ConcurrentDictionary<string, object>();
+
+        static SafeMap()
+        {
+            ConverterFactory = new ConverterFactory();
+        }
 
         public static object Convert(object fromObject, Type fromType, Type toType)
         {
@@ -56,7 +62,7 @@
                 k => ConverterFactory.CreateDelegate<TFrom, TTo>(provider));
         }
 
-        public static void CreateMap<TFrom, TTo>(Action<TypeMap<TFrom, TTo>> config)
+        public static void CreateMap<TFrom, TTo>(Action<ITypeMap<TFrom, TTo>> config)
         {
             var typeMap = new TypeMap<TFrom, TTo>();
             config(typeMap);

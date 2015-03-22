@@ -8,28 +8,36 @@
     {
         public static MemberInfo GetMember<T, TParam>(Expression<Action<T, TParam>> expr)
         {
-            if (expr.Body is MethodCallExpression)
-            {
-                var methodExpr = expr.Body as MethodCallExpression;
-
-                return methodExpr.Method;
-            }
-
-            return null;
+            return GetMember(expr.Body);
         }
 
         public static MemberInfo GetMember<T, TReturn>(Expression<Func<T, TReturn>> expr)
         {
-            if (expr.Body is MemberExpression)
+            return GetMember(expr.Body);
+        }
+
+        public static MemberInfo GetMember<T, TParam>(Expression<Action<T, string, TParam>> expr)
+        {
+            return GetMember(expr.Body);
+        }
+
+        public static MemberInfo GetMember<T, TReturn>(Expression<Func<T, string, TReturn>> expr)
+        {
+            return GetMember(expr.Body);
+        }
+
+        private static MemberInfo GetMember(Expression expr)
+        {
+            if (expr is MemberExpression)
             {
-                var memExpr = expr.Body as MemberExpression;
+                var memExpr = expr as MemberExpression;
 
                 return memExpr.Member;
             }
 
-            if (expr.Body is MethodCallExpression)
+            if (expr is MethodCallExpression)
             {
-                var methodExpr = expr.Body as MethodCallExpression;
+                var methodExpr = expr as MethodCallExpression;
 
                 return methodExpr.Method;
             }

@@ -19,13 +19,7 @@ namespace SafeMapper.Utils
         {
             return ConverterCache.GetOrAdd(
                 string.Concat(toType.FullName, fromType.FullName),
-                k => ReflectionUtils.GetConvertMethod(
-                    fromType,
-                    toType,
-                    new[]
-                        {
-                            typeof(SafeConvert)
-                        }));
+                k => ReflectionUtils.GetConvertMethod(fromType, toType, new[] { typeof(SafeConvert) }));
         }
     }
 }
