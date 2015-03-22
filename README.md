@@ -44,6 +44,17 @@ But it is also possible to call Convert directly
     var person = new Person();
     var personDto = SafeMap.Convert<Person, PersonDto>(person);
 
+By default members with the same names are mapped to each other, but this can be configured before calling the convert method. It is also possible to configure mapping between properties/fields and methods.
+
+    SafeMap.CreateMap<Person, PersonDto>(
+        cfg =>
+        {
+            cfg.Map(x => x.Id, x => x.PersonId);
+            cfg.Map(x => x.GetName(), x => x.PersonName);
+            cfg.Map(x => x.Length, (x, v) => x.SetPersonLength(v));
+            cfg.Map(x => x.Age, "PersonAge");
+        });
+
 ##Speed test
 
 Converting 100000 objects between CustomerDto and Customer, see SafeMapper.Tests.Model for definition
