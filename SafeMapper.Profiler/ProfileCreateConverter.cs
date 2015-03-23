@@ -6,6 +6,7 @@
 
     using EmitMapper;
 
+    using SafeMapper.Configuration;
     using SafeMapper.Tests.Model.Person;
     using SafeMapper.Utils;
 
@@ -21,7 +22,7 @@
             var fromType = typeof(TSource);
             var toType = typeof(TDestination);
 
-            var converterFactory = new ConverterFactory();
+            var converterFactory = new ConverterFactory(new MapConfiguration());
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}", typeof(TSource).Name, typeof(TDestination).Name));
 

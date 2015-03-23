@@ -5,8 +5,17 @@
     using System.Globalization;
     using System.Reflection.Emit;
 
+    using SafeMapper.Configuration;
+
     public class ConverterFactory
     {
+        private readonly MapConfiguration mapCfg;
+
+        public ConverterFactory(MapConfiguration configuration)
+        {
+            this.mapCfg = configuration;
+        }
+
         public Func<object, object> CreateDelegate(Type fromType, Type toType)
         {
             return this.CreateDelegate(fromType, toType, CultureInfo.CurrentCulture);
@@ -20,7 +29,7 @@
                 new[] { typeof(IFormatProvider), typeof(object) },
                 typeof(ConverterFactory).Module);
 
-            var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
+            var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator(), this.mapCfg);
 
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(fromType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, fromType); // cast input to correct type
@@ -47,7 +56,7 @@
                 new[] { typeof(IFormatProvider), fromType },
                 typeof(ConverterFactory).Module);
 
-            var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
+            var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator(), this.mapCfg);
 
             il.Emit(OpCodes.Ldarg_1);
             il.EmitConvertValue(fromType, toType, new HashSet<Type>());

@@ -9,6 +9,7 @@
 
     using NUnit.Framework;
 
+    using SafeMapper.Configuration;
     using SafeMapper.Tests.Model.Circular;
     using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.GenericClasses;
@@ -33,7 +34,7 @@
             numberFormat.CurrencyGroupSeparator = " ";
             this.numberFormatProvider = numberFormat;
 
-            this.converterFactory = new ConverterFactory();
+            this.converterFactory = new ConverterFactory(new MapConfiguration());
         }
 
         /************************************************************************/

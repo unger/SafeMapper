@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
@@ -201,31 +202,31 @@
         private void AddInstruction(OpCode opcode, int value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
+            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
         }
 
         private void AddInstruction(OpCode opcode, long value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
+            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
         }
 
         private void AddInstruction(OpCode opcode, double value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
+            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
         }
 
         private void AddInstruction(OpCode opcode, float value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString()));
+            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
         }
 
         private void AddInstruction(OpCode opcode, LocalBuilder local)
         {
             this.il.Emit(opcode, local);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, local.LocalIndex.ToString()));
+            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, local.LocalIndex.ToString(CultureInfo.InvariantCulture)));
         }
 
         private void AddInstruction(OpCode opcode, string argument)

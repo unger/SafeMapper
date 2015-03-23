@@ -12,9 +12,9 @@
     {
         private readonly List<MemberMap> memberMaps = new List<MemberMap>();
 
-        private MemberInfo getIndexer = null;
+        private MemberInfo getIndexer;
 
-        private MemberInfo setIndexer = null;
+        private MemberInfo setIndexer;
 
         public TypeMapping GetTypeMapping()
         {

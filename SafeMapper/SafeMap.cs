@@ -9,13 +9,33 @@
 
     public class SafeMap
     {
-        private static readonly ConverterFactory ConverterFactory;
-
         private static readonly ConcurrentDictionary<string, object> ConverterCache = new ConcurrentDictionary<string, object>();
+
+        private static ConverterFactory converterFactory;
+
+        private static MapConfiguration mapConfiguration;
 
         static SafeMap()
         {
-            ConverterFactory = new ConverterFactory();
+            if (Configuration == null)
+            {
+                mapConfiguration = new MapConfiguration();
+                converterFactory = new ConverterFactory(mapConfiguration);
+            }
+        }
+
+        public static MapConfiguration Configuration 
+        {
+            get
+            {
+                return mapConfiguration;
+            }
+
+            set
+            {
+                mapConfiguration = value;
+                converterFactory = new ConverterFactory(mapConfiguration);
+            }
         }
 
         public static object Convert(object fromObject, Type fromType, Type toType)
@@ -47,7 +67,7 @@
         {
             return (Func<object, object>)ConverterCache.GetOrAdd(
                 string.Concat(toType.FullName, fromType.FullName, "NonGeneric"),
-                k => ConverterFactory.CreateDelegate(fromType, toType, provider));
+                k => converterFactory.CreateDelegate(fromType, toType, provider));
         }
 
         public static Converter<TFrom, TTo> GetConverter<TFrom, TTo>()
@@ -59,14 +79,14 @@
         {
             return (Converter<TFrom, TTo>)ConverterCache.GetOrAdd(
                 string.Concat(typeof(TTo).FullName, typeof(TFrom).FullName),
-                k => ConverterFactory.CreateDelegate<TFrom, TTo>(provider));
+                k => converterFactory.CreateDelegate<TFrom, TTo>(provider));
         }
 
         public static void CreateMap<TFrom, TTo>(Action<ITypeMap<TFrom, TTo>> config)
         {
             var typeMap = new TypeMap<TFrom, TTo>();
             config(typeMap);
-            TypeMapping.SetTypeMapping(typeMap.GetTypeMapping());
+            mapConfiguration.SetTypeMapping(typeMap.GetTypeMapping());
         }
     }
 }

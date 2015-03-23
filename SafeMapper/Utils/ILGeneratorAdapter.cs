@@ -11,9 +11,12 @@
 
     public class ILGeneratorAdapter : ILGeneratorAdapterBase
     {
-        public ILGeneratorAdapter(ILGenerator il) 
+        private readonly MapConfiguration mapCfg;
+
+        public ILGeneratorAdapter(ILGenerator il, MapConfiguration configuration) 
             : base(il)
         {
+            this.mapCfg = configuration;
         }
 
         public void EmitConvertArray(Type fromType, Type toType, HashSet<Type> convertedTypes)
@@ -239,7 +242,7 @@
                 this.EmitLocal(OpCodes.Ldloc, fromLocal);
             }
 
-            var converter = ConvertMethodHelper.GetConvertMethod(fromType, toType);
+            var converter = this.mapCfg.GetConvertMethod(fromType, toType);
 
             if (converter != null)
             {
@@ -595,7 +598,7 @@
 
                 if (toType != underlayingFromType)
                 {
-                    var converter = ConvertMethodHelper.GetConvertMethod(underlayingFromType, toType);
+                    var converter = this.mapCfg.GetConvertMethod(underlayingFromType, toType);
 
                     if (converter != null && converter.GetParameters().Length == 1)
                     {
@@ -646,7 +649,7 @@
 
             if (fromType != typeof(string) && underlayingToType != underlayingFromType)
             {
-                var converter = ConvertMethodHelper.GetConvertMethod(underlayingFromType, underlayingToType);
+                var converter = this.mapCfg.GetConvertMethod(underlayingFromType, underlayingToType);
 
                 if (converter != null && converter.GetParameters().Length == 1)
                 {
@@ -720,7 +723,7 @@
                 this.EmitLocal(OpCodes.Stloc, toLocal);
             }
 
-            var typeMapping = TypeMapping.GetTypeMapping(fromType, toType);
+            var typeMapping = this.mapCfg.GetTypeMapping(fromType, toType);
             foreach (var memberMap in typeMapping.MemberMaps)
             {
                 this.EmitMemberMap(fromLocal, toLocal, memberMap, convertedTypes);

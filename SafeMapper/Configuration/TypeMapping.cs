@@ -1,7 +1,6 @@
 ﻿namespace SafeMapper.Configuration
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -9,8 +8,6 @@
 
     public class TypeMapping
     {
-        private static readonly ConcurrentDictionary<string, TypeMapping> TypeMappingCache = new ConcurrentDictionary<string, TypeMapping>();
-
         public TypeMapping(Type fromType, Type toType) 
             : this(fromType, toType, null)
         {
@@ -32,20 +29,5 @@
         public Type ToType { get; private set; }
 
         public List<MemberMap> MemberMaps { get; private set; }
-
-        public static TypeMapping GetTypeMapping(Type fromType, Type toType)
-        {
-            return TypeMappingCache.GetOrAdd(
-                string.Concat(fromType.FullName, toType.FullName),
-                k => new TypeMapping(fromType, toType));
-        }
-
-        public static void SetTypeMapping(TypeMapping typeMapping)
-        {
-            TypeMappingCache.AddOrUpdate(
-                string.Concat(typeMapping.FromType.FullName, typeMapping.ToType.FullName), 
-                typeMapping,
-                (key, oldValue) => typeMapping);
-        }
     }
 }

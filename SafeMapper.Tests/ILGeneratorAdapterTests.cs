@@ -6,6 +6,7 @@
 
     using NUnit.Framework;
 
+    using SafeMapper.Configuration;
     using SafeMapper.Tests.Model.Enums;
     using SafeMapper.Tests.Model.GenericClasses;
     using SafeMapper.Tests.Model.Person;
@@ -25,7 +26,7 @@
                 null,
                 typeof(ILGeneratorAdapterTests).Module);
 
-            this.ilgenerator = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator());
+            this.ilgenerator = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator(), new MapConfiguration());
         }
 
         [Test]
