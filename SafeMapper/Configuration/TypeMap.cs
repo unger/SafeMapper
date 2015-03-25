@@ -16,7 +16,7 @@
 
         private MemberInfo setIndexer;
 
-        public TypeMapping GetTypeMapping()
+        public ITypeMapping GetTypeMapping()
         {
             return new TypeMapping(typeof(TFrom), typeof(TTo), this.memberMaps);
         }

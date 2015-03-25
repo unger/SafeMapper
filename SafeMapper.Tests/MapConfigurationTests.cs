@@ -1,7 +1,9 @@
 ﻿namespace SafeMapper.Tests
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.Specialized;
+    using System.Globalization;
 
     using NUnit.Framework;
 
@@ -100,8 +102,7 @@
         [Test]
         public void SetConvertMethod_IntToStringWithCustomConverter()
         {
-            var method = this.GetType().GetMethod("ConvertIntToStringWithSuffix");
-            SafeMap.Configuration.SetConvertMethod(typeof(int), typeof(string), method);
+            SafeMap.Configuration.SetConvertMethod<int, string>(x => string.Format("{0}pcs", x));
 
             var input = 1337;
 
@@ -110,9 +111,15 @@
             Assert.AreEqual("1337pcs", result);
         }
 
-        public static string ConvertIntToStringWithSuffix(int value)
+        [Test]
+        public void SetConvertMethod_DecimalToStringWithLamdaUsingLocalVariabel_ShouldThrowException()
         {
-            return string.Format("{0}pcs", value);
+            var decimals = 2;
+
+            Assert.Throws<ArgumentException>(
+                () =>
+                SafeMap.Configuration.SetConvertMethod<decimal, string>(
+                    x => Math.Round(x, decimals).ToString(CultureInfo.InvariantCulture)));
         }
 
         public class ClassPropertyDictionaryMap : TypeMap<ClassProperty<string>, Dictionary<string, int>>

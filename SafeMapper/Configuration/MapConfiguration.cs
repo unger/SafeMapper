@@ -8,18 +8,18 @@
 
     public class MapConfiguration
     {
-        private readonly ConcurrentDictionary<string, TypeMapping> typeMappings = new ConcurrentDictionary<string, TypeMapping>();
+        private readonly ConcurrentDictionary<string, ITypeMapping> typeMappings = new ConcurrentDictionary<string, ITypeMapping>();
 
-        private readonly ConcurrentDictionary<string, MethodInfo> convertMethodInfos = new ConcurrentDictionary<string, MethodInfo>();
+        private readonly ConcurrentDictionary<string, MethodWrapper> convertMethods = new ConcurrentDictionary<string, MethodWrapper>();
 
-        public TypeMapping GetTypeMapping(Type fromType, Type toType)
+        public ITypeMapping GetTypeMapping(Type fromType, Type toType)
         {
             return this.typeMappings.GetOrAdd(
                 string.Concat(fromType.FullName, toType.FullName),
                 k => new TypeMapping(fromType, toType));
         }
 
-        public void SetTypeMapping(TypeMapping typeMapping)
+        public void SetTypeMapping(ITypeMapping typeMapping)
         {
             this.typeMappings.AddOrUpdate(
                 string.Concat(typeMapping.FromType.FullName, typeMapping.ToType.FullName),
@@ -27,19 +27,33 @@
                 (key, oldValue) => typeMapping);
         }
 
-        public MethodInfo GetConvertMethod(Type fromType, Type toType)
+        public MethodWrapper GetConvertMethod(Type fromType, Type toType)
         {
-            return this.convertMethodInfos.GetOrAdd(
+            return this.convertMethods.GetOrAdd(
                 string.Concat(fromType.FullName, toType.FullName),
-                k => ReflectionUtils.GetConvertMethod(fromType, toType, new[] { typeof(SafeConvert) }));
+                k =>
+                    {
+                        var method = ReflectionUtils.GetConvertMethod(fromType, toType, new[] { typeof(SafeConvert) });
+                        return method != null ? new MethodWrapper(method) : null;
+                    });
         }
 
-        public void SetConvertMethod(Type fromType, Type toType, MethodInfo convertMethod)
+        public void SetConvertMethod(Type fromType, Type toType, MethodWrapper convertMethod)
         {
-            this.convertMethodInfos.AddOrUpdate(
+            this.convertMethods.AddOrUpdate(
                 string.Concat(fromType.FullName, toType.FullName),
                 convertMethod,
                 (key, oldValue) => convertMethod);
+        }
+
+        public void SetConvertMethod<TFrom, TTo>(Func<TFrom, TTo> converter)
+        {
+            if (!converter.Method.IsStatic)
+            {
+                throw new ArgumentException("Only static Func-lamdas are supported");    
+            }
+
+            this.SetConvertMethod(typeof(TFrom), typeof(TTo), new MethodWrapper(converter.Method, converter.Target));
         }
     }
 }

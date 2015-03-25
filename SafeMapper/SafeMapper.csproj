@@ -45,7 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\ITypeMap.cs" />
+    <Compile Include="Configuration\ITypeMapping.cs" />
     <Compile Include="Configuration\MapConfiguration.cs" />
+    <Compile Include="Configuration\MethodWrapper.cs" />
     <Compile Include="Reflection\MemberMap.cs" />
     <Compile Include="Configuration\TypeMap.cs" />
     <Compile Include="Configuration\TypeMapping.cs" />

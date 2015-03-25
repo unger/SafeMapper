@@ -247,12 +247,12 @@
             if (converter != null)
             {
                 // Load IFormatProvider as second argument
-                if (converter.GetParameters().Length == 2)
+                if (converter.Method.GetParameters().Length == 2)
                 {
                     this.Emit(OpCodes.Ldarg_0);
                 }
 
-                this.EmitCall(OpCodes.Call, converter, null);
+                this.EmitCall(OpCodes.Call, converter.Method, null);
             }
             else if (toType.IsEnum)
             {
@@ -600,9 +600,9 @@
                 {
                     var converter = this.mapCfg.GetConvertMethod(underlayingFromType, toType);
 
-                    if (converter != null && converter.GetParameters().Length == 1)
+                    if (converter != null && converter.Method.GetParameters().Length == 1)
                     {
-                        this.EmitCall(OpCodes.Call, converter, null);
+                        this.EmitCall(OpCodes.Call, converter.Method, null);
                     }
                 }
             }
@@ -651,9 +651,9 @@
             {
                 var converter = this.mapCfg.GetConvertMethod(underlayingFromType, underlayingToType);
 
-                if (converter != null && converter.GetParameters().Length == 1)
+                if (converter != null && converter.Method.GetParameters().Length == 1)
                 {
-                    this.EmitCall(OpCodes.Call, converter, null);
+                    this.EmitCall(OpCodes.Call, converter.Method, null);
                 }
                 else
                 {

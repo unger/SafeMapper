@@ -6,7 +6,7 @@
 
     using SafeMapper.Reflection;
 
-    public class TypeMapping
+    public class TypeMapping : ITypeMapping
     {
         public TypeMapping(Type fromType, Type toType) 
             : this(fromType, toType, null)

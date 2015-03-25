@@ -27,7 +27,8 @@
                 "ConvertFrom" + fromType.Name + "To" + toType.Name + "NonGeneric",
                 typeof(object),
                 new[] { typeof(IFormatProvider), typeof(object) },
-                typeof(ConverterFactory).Module);
+                typeof(ConverterFactory).Module,
+                true);
 
             var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator(), this.mapCfg);
 
@@ -54,7 +55,8 @@
                 "ConvertFrom" + fromType.Name + "To" + toType.Name,
                 toType,
                 new[] { typeof(IFormatProvider), fromType },
-                typeof(ConverterFactory).Module);
+                typeof(ConverterFactory).Module, 
+                true);
 
             var il = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator(), this.mapCfg);
 
