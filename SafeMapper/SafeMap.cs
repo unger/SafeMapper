@@ -17,11 +17,8 @@
 
         static SafeMap()
         {
-            if (Configuration == null)
-            {
-                mapConfiguration = new MapConfiguration();
-                converterFactory = new ConverterFactory(mapConfiguration);
-            }
+            mapConfiguration = new MapConfiguration();
+            converterFactory = new ConverterFactory(mapConfiguration);
         }
 
         public static MapConfiguration Configuration 

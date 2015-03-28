@@ -65,5 +65,13 @@ namespace SafeMapper.Tests
 
             Assert.AreEqual("Value", val["Key"]);
         }
+
+        [Test]
+        public void GetMember_MethodBinaryExpression_ShouldReturnNull()
+        {
+            var member = ExpressionHelper.GetMember<ClassProperty<string>, string>(x => x.Value + "test");
+
+            Assert.Null(member);
+        }
     }
 }
