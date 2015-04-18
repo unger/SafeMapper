@@ -58,6 +58,7 @@
     <Compile Include="Enums\AnotherEnum.cs" />
     <Compile Include="Benchmark\BenchSource.cs" />
     <Compile Include="Benchmark\BenchDestination.cs" />
+    <Compile Include="Enums\LargeEnum.cs" />
     <Compile Include="Enums\UInt32Enum.cs" />
     <Compile Include="Enums\UInt64Enum.cs" />
     <Compile Include="Enums\UInt16Enum.cs" />

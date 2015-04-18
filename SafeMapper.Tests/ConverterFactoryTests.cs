@@ -720,6 +720,15 @@
             return converter(input);
         }
 
+        [TestCase(-1, Result = LargeEnum.Undefined)]
+        [TestCase(0, Result = LargeEnum.Undefined)]
+        [TestCase(16, Result = LargeEnum.Value16)]
+        public LargeEnum ToLargeEnum_FromInt32(int input)
+        {
+            var converter = this.converterFactory.CreateDelegate<int, LargeEnum>();
+            return converter(input);
+        }
+
         /************************************************************************/
         /*                                                                      
         /*   Misc                                                              

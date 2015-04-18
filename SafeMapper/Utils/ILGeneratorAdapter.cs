@@ -692,13 +692,13 @@
             }
 
             // Branch on default case
-            this.EmitBreak(OpCodes.Br_S, defaultCase);
+            this.EmitBreak(OpCodes.Br, defaultCase);
 
             for (int i = 0; i < switchReturnValues.Count; i++)
             {
                 this.MarkLabel(jumpTable[i]);
                 this.EmitLoadEnumValue(returnType, switchReturnValues[i].Item2);
-                this.EmitBreak(OpCodes.Br_S, endOfMethod);
+                this.EmitBreak(OpCodes.Br, endOfMethod);
             }
 
             // Default case

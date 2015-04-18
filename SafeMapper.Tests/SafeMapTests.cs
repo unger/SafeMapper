@@ -145,6 +145,7 @@
         [Test]
         public void CreateMap_ClassPropertyIntToNameValueCollection_Add()
         {
+            SafeMap.Configuration.SetConvertMethod<int, string>(i => i.ToString());
             SafeMap.CreateMap<ClassProperty<int>, NameValueCollection>(
                 cfg =>
                 {
