@@ -43,7 +43,6 @@
         /*                                                                      
         /************************************************************************/
 
-
         [TestCaseSource(typeof(TestData), "StringToStringData")]
         public string CreateDelegate_StringToString(string input)
         {
@@ -120,7 +119,6 @@
         /*                                                                      
         /************************************************************************/
 
-
         [TestCaseSource(typeof(TestData), "IntToIntData")]
         public int CreateDelegate_IntToInt(int input)
         {
@@ -134,7 +132,6 @@
         {
             return this.AssertConverterOutput<int, int>(input);
         }
-
 
         [TestCaseSource(typeof(TestData), "IntToStringData")]
         public string CreateDelegate_IntToString(int input)
@@ -150,7 +147,6 @@
             return this.AssertConverterOutput<int, string>(input);
         }
 
-
         [TestCaseSource(typeof(TestData), "IntToLongData")]
         public long CreateDelegate_IntToLong(int input)
         {
@@ -159,13 +155,11 @@
             return converter(input);
         }
 
-
         /************************************************************************/
         /*                                                                      
         /*   Guid                                                              
         /*                                                                      
         /************************************************************************/
-
 
         [TestCaseSource(typeof(TestData), "GuidToStringData")]
         public string CreateDelegate_GuidToString(Guid input)
@@ -186,7 +180,6 @@
         /*   Decimal                                                              
         /*                                                                      
         /************************************************************************/
-
 
         [TestCaseSource(typeof(TestData), "DecimalToDecimalData")]
         public decimal CreateDelegate_DecimalToDecimal(decimal input)
@@ -244,14 +237,11 @@
             return this.AssertConverterOutput<double, decimal>(input, this.numberFormatProvider);
         }
 
-
-
         /************************************************************************/
         /*                                                                      
         /*   DateTime                                                              
         /*                                                                      
         /************************************************************************/
-
 
         [TestCaseSource(typeof(TestData), "DateTimeToStringData")]
         public string CreateDelegate_DateTimeToString(DateTime input)
@@ -273,7 +263,6 @@
         /*                                                                      
         /************************************************************************/
 
-
         [TestCaseSource(typeof(TestData), "LongToIntData")]
         public int CreateDelegate_LongToInt(long input)
         {
@@ -281,7 +270,6 @@
 
             return converter(input);
         }
-
 
         /************************************************************************/
         /*                                                                      
@@ -293,7 +281,7 @@
         public void CreateDelegate_IntArrayToIntArray()
         {
             var converter = this.converterFactory.CreateDelegate<int[], int[]>();
-            var input = new int[] { 1, 2, 3, 4, 5 };
+            var input = new[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
             Assert.AreEqual(input, result);
@@ -303,8 +291,8 @@
         public void CreateDelegate_IntArrayToStringArray()
         {
             var converter = this.converterFactory.CreateDelegate<int[], string[]>();
-            var expected = new string[] { "1", "2", "3", "4", "5" };
-            var input = new int[] { 1, 2, 3, 4, 5 };
+            var expected = new[] { "1", "2", "3", "4", "5" };
+            var input = new[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
             Assert.AreEqual(expected, result);
@@ -314,8 +302,8 @@
         public void CreateDelegate_StringArrayToIntArray()
         {
             var converter = this.converterFactory.CreateDelegate<string[], int[]>();
-            var input = new string[] { "1", "2", "3", "4", "5" };
-            var expected = new int[] { 1, 2, 3, 4, 5 };
+            var input = new[] { "1", "2", "3", "4", "5" };
+            var expected = new[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
             Assert.AreEqual(expected, result);
@@ -325,8 +313,8 @@
         public void CreateDelegate_IntArrayToDecimalArray()
         {
             var converter = this.converterFactory.CreateDelegate<int[], decimal[]>();
-            var input = new int[] { 1, 2, 3, 4, 5 };
-            var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
+            var input = new[] { 1, 2, 3, 4, 5 };
+            var expected = new[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
 
             Assert.AreEqual(expected, result);
@@ -335,7 +323,7 @@
         [Test]
         public void CreateDelegate_IntArrayMemberToStringArrayMember()
         {
-            var input = new int[] { 1, 2, 3, 4, 5 };
+            var input = new[] { 1, 2, 3, 4, 5 };
 
             this.AssertConverterOutput<int[], string[]>(input);
         }
@@ -351,7 +339,7 @@
         {
             var converter = this.converterFactory.CreateDelegate<List<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
-            var expected = new string[] { "1", "2", "3", "4", "5" };
+            var expected = new[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
 
             Assert.IsInstanceOf<string[]>(result);
@@ -363,7 +351,7 @@
         {
             var converter = this.converterFactory.CreateDelegate<List<string>, int[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" };
-            var expected = new int[] { 1, 2, 3, 4, 5 };
+            var expected = new[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
             Assert.IsInstanceOf<int[]>(result);
@@ -387,7 +375,7 @@
         {
             var converter = this.converterFactory.CreateDelegate<string[], List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
-            var input = new string[] { "1", "2", "3", "4", "5" };
+            var input = new[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
 
             Assert.IsInstanceOf<List<int>>(result);
@@ -399,7 +387,7 @@
         {
             var converter = this.converterFactory.CreateDelegate<List<int>, decimal[]>();
             var input = new List<int> { 1, 2, 3, 4, 5 };
-            var expected = new decimal[] { 1m, 2m, 3m, 4m, 5m };
+            var expected = new[] { 1m, 2m, 3m, 4m, 5m };
             var result = converter(input);
 
             Assert.IsInstanceOf<decimal[]>(result);
@@ -423,13 +411,12 @@
         {
             var converter = this.converterFactory.CreateDelegate<int[], List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
-            var input = new int[] { 1, 2, 3, 4, 5 };
+            var input = new[] { 1, 2, 3, 4, 5 };
             var result = converter(input);
 
             Assert.IsInstanceOf<List<decimal>>(result);
             Assert.AreEqual(expected, result);
         }
-
 
         /************************************************************************/
         /*                                                                      
@@ -442,7 +429,7 @@
         {
             var converter = this.converterFactory.CreateDelegate<ICollection<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
-            var expected = new string[] { "1", "2", "3", "4", "5" };
+            var expected = new[] { "1", "2", "3", "4", "5" };
             var result = converter(input);
 
             Assert.IsInstanceOf<string[]>(result);
@@ -453,7 +440,7 @@
         public void CreateDelegate_StringArrayToStringICollection()
         {
             var converter = this.converterFactory.CreateDelegate<string[], ICollection<string>>();
-            var input = new string[] { "1", "2", "3", "4", "5" };
+            var input = new[] { "1", "2", "3", "4", "5" };
             var expected = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var result = converter(input);
 
@@ -486,7 +473,6 @@
             var converter = this.converterFactory.CreateDelegate<ByteEnum, long>();
             return converter(input);
         }
-
 
         [TestCase(Int64Enum.Undefined, Result = (byte)0)]
         [TestCase(Int64Enum.Value1, Result = (byte)1)]
@@ -951,7 +937,7 @@
         {
             var converter = this.converterFactory.CreateDelegate<Parent, ParentDto>();
             var input = new Parent();
-            input.Children = new Child[1] { new Child { Parent = input } };
+            input.Children = new[] { new Child { Parent = input } };
 
             var result = converter(input);
 
@@ -975,9 +961,9 @@
             var input = new NameValueCollection();
             input.Add("Id", person.Id.ToString());
             input.Add("Name", person.Name);
-            input.Add("Age", person.Age.ToString());
-            input.Add("Length", person.Length.ToString());
-            input.Add("BirthDate", person.BirthDate.ToString());
+            input.Add("Age", person.Age.ToString(CultureInfo.CurrentCulture));
+            input.Add("Length", person.Length.ToString(CultureInfo.CurrentCulture));
+            input.Add("BirthDate", person.BirthDate.ToString(CultureInfo.CurrentCulture));
 
             var result = converter(input);
 
@@ -1007,9 +993,9 @@
             Assert.IsInstanceOf<NameValueCollection>(result);
             Assert.AreEqual(person.Id.ToString(), result["Id"]);
             Assert.AreEqual(person.Name, result["Name"]);
-            Assert.AreEqual(person.Age.ToString(), result["Age"]);
-            Assert.AreEqual(person.Length.ToString(), result["Length"]);
-            Assert.AreEqual(person.BirthDate.ToString(), result["BirthDate"]);
+            Assert.AreEqual(person.Age.ToString(CultureInfo.CurrentCulture), result["Age"]);
+            Assert.AreEqual(person.Length.ToString(CultureInfo.CurrentCulture), result["Length"]);
+            Assert.AreEqual(person.BirthDate.ToString(CultureInfo.CurrentCulture), result["BirthDate"]);
         }
 
         [Test]
@@ -1045,7 +1031,7 @@
                 Id = guidStr,
                 Name = "Magnus",
                 Age = "37",
-                Length = expectedDecimal.ToString(),
+                Length = expectedDecimal.ToString(CultureInfo.CurrentCulture),
                 BirthDate = "1977-03-04"
             };
             var result = converter(person);
@@ -1120,8 +1106,8 @@
             Assert.AreEqual(guidStr, result.Id);
             Assert.AreEqual("Magnus", result.Name);
             Assert.AreEqual("37", result.Age);
-            Assert.AreEqual(expectedDecimal.ToString(), result.Length);
-            Assert.AreEqual(new DateTime(1977, 03, 04).ToString(), result.BirthDate);
+            Assert.AreEqual(expectedDecimal.ToString(CultureInfo.CurrentCulture), result.Length);
+            Assert.AreEqual(new DateTime(1977, 03, 04).ToString(CultureInfo.CurrentCulture), result.BirthDate);
         }
 
         private TTo AssertConverterOutput<TFrom, TTo>(TFrom input)

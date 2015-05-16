@@ -11,14 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Profiler", "Safe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests.Model", "SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj", "{955AA075-D841-4BB9-9487-DAC42EEBCECC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{75B94861-9055-4F04-ACBF-5D4BA1C0322E}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests.Performance", "SafeMapper.Tests.Performance\SafeMapper.Tests.Performance.csproj", "{521BB35C-2196-435D-B181-9172E5AE5F78}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E55C46B7-922B-4E50-8115-15B1A28EA66D}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
