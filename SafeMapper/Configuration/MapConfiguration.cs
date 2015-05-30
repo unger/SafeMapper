@@ -33,7 +33,7 @@
                 string.Concat(fromType.FullName, toType.FullName),
                 k =>
                     {
-                        var method = ReflectionUtils.GetConvertMethod(fromType, toType, new[] { typeof(SafeConvert) });
+                        var method = ReflectionUtils.GetConvertMethod(fromType, toType, new[] { typeof(SafeConvert), typeof(SafeNullableConvert) });
                         return method != null ? new MethodWrapper(method) : null;
                     });
         }

@@ -51,6 +51,7 @@
     <Compile Include="MemberTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReflectionUtilsTests.cs" />
+    <Compile Include="SafeNullableConvertTests.cs" />
     <Compile Include="SafeConvertTests.cs" />
     <Compile Include="SafeMapTests.cs" />
     <Compile Include="TestData.cs">

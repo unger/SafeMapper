@@ -359,6 +359,29 @@
                 new TestCaseData("123a").Returns(0),
             };
 
+        public TestCaseData[] StringToNullableIntData =
+            {
+                new TestCaseData(string.Empty).Returns(null),
+                new TestCaseData(null).Returns(null),
+                new TestCaseData("0").Returns(0),
+                new TestCaseData("10").Returns(10),
+                new TestCaseData("10.0").Returns(null),
+                new TestCaseData("10,0").Returns(null),
+                new TestCaseData("10.5").Returns(null),
+                new TestCaseData("10,5").Returns(null),
+                new TestCaseData("-10").Returns(-10),
+                new TestCaseData("1 000").Returns(null),
+                new TestCaseData("1,000").Returns(null),
+                new TestCaseData("1.000").Returns(null),
+                new TestCaseData("1 000.00").Returns(null),
+                new TestCaseData("2147483647").Returns(2147483647),
+                new TestCaseData("2147483648").Returns(null),
+                new TestCaseData("-2147483648").Returns(-2147483648),
+                new TestCaseData("-2147483649").Returns(null),
+                new TestCaseData("abc").Returns(null),
+                new TestCaseData("123a").Returns(null),
+            };
+
         public TestCaseData[] StringToGuidData =
             {
                 new TestCaseData(string.Empty).Returns(Guid.Empty),
@@ -406,10 +429,30 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
+        public TestCaseData[] DecimalToNullableByteData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
+                new TestCaseData((decimal)byte.MaxValue).Returns(byte.MaxValue),
+                new TestCaseData((decimal)byte.MinValue).Returns(byte.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
         public TestCaseData[] DecimalToSByteData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
+                new TestCaseData((decimal)sbyte.MaxValue).Returns(sbyte.MaxValue),
+                new TestCaseData((decimal)sbyte.MinValue).Returns(sbyte.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
+        public TestCaseData[] DecimalToNullableSByteData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
                 new TestCaseData((decimal)sbyte.MaxValue).Returns(sbyte.MaxValue),
                 new TestCaseData((decimal)sbyte.MinValue).Returns(sbyte.MinValue),
                 new TestCaseData(123.5m).Returns(123),
@@ -426,10 +469,30 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
+        public TestCaseData[] DecimalToNullableInt16Data =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
+                new TestCaseData((decimal)short.MaxValue).Returns(short.MaxValue),
+                new TestCaseData((decimal)short.MinValue).Returns(short.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
         public TestCaseData[] DecimalToUInt16Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
+                new TestCaseData((decimal)ushort.MaxValue).Returns(ushort.MaxValue),
+                new TestCaseData((decimal)ushort.MinValue).Returns(ushort.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
+        public TestCaseData[] DecimalToNullableUInt16Data =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
                 new TestCaseData((decimal)ushort.MaxValue).Returns(ushort.MaxValue),
                 new TestCaseData((decimal)ushort.MinValue).Returns(ushort.MinValue),
                 new TestCaseData(123.5m).Returns(123),
@@ -447,10 +510,31 @@
                 new TestCaseData(-123.5m).Returns(-123),
             };
 
+        public TestCaseData[] DecimalToNullableInt32Data =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
+                new TestCaseData((decimal)int.MaxValue).Returns(int.MaxValue),
+                new TestCaseData((decimal)int.MinValue).Returns(int.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+                new TestCaseData(-123.5m).Returns(-123),
+            };
+
         public TestCaseData[] DecimalToUInt32Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
+                new TestCaseData((decimal)uint.MaxValue).Returns(uint.MaxValue),
+                new TestCaseData((decimal)uint.MinValue).Returns(uint.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
+        public TestCaseData[] DecimalToNullableUInt32Data =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
                 new TestCaseData((decimal)uint.MaxValue).Returns(uint.MaxValue),
                 new TestCaseData((decimal)uint.MinValue).Returns(uint.MinValue),
                 new TestCaseData(123.5m).Returns(123),
@@ -467,6 +551,16 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
+        public TestCaseData[] DecimalToNullableInt64Data =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
+                new TestCaseData((decimal)long.MaxValue).Returns(long.MaxValue),
+                new TestCaseData((decimal)long.MinValue).Returns(long.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
         public TestCaseData[] DecimalToUInt64Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
@@ -477,7 +571,26 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
+        public TestCaseData[] DecimalToNullableUInt64Data =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
+                new TestCaseData((decimal)ulong.MaxValue).Returns(ulong.MaxValue),
+                new TestCaseData((decimal)ulong.MinValue).Returns(ulong.MinValue),
+                new TestCaseData(123.5m).Returns(123),
+                new TestCaseData(123.49m).Returns(123),
+            };
+
         public TestCaseData[] DecimalToSingleData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28f),
+                new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28f),
+                new TestCaseData(123.5m).Returns(123.5f),
+                new TestCaseData(123.49m).Returns(123.49f),
+                new TestCaseData(-123.5m).Returns(-123.5f),
+            };
+
+        public TestCaseData[] DecimalToNullableSingleData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28f),
                 new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28f),
@@ -495,7 +608,25 @@
                 new TestCaseData(-123.5m).Returns(-123.5d),
             };
 
+        public TestCaseData[] DecimalToNullableDoubleData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28d),
+                new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28d),
+                new TestCaseData(123.5m).Returns(123.5d),
+                new TestCaseData(123.49m).Returns(123.49d),
+                new TestCaseData(-123.5m).Returns(-123.5d),
+            };
+
         public TestCaseData[] DecimalToDecimalData =
+            {
+                new TestCaseData(0m).Returns(0m),
+                new TestCaseData(1.000m).Returns(1.000m),
+                new TestCaseData(1000m).Returns(1000m),
+                new TestCaseData(decimal.MaxValue).Returns(decimal.MaxValue),
+                new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
+            };
+
+        public TestCaseData[] DecimalToNullableDecimalData =
             {
                 new TestCaseData(0m).Returns(0m),
                 new TestCaseData(1.000m).Returns(1.000m),
@@ -511,10 +642,24 @@
                 new TestCaseData(0m).Returns(false),
             };
 
+        public TestCaseData[] DecimalToNullableBooleanData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(true),
+                new TestCaseData(decimal.MinValue).Returns(true),
+                new TestCaseData(0m).Returns(false),
+            };
+
         public TestCaseData[] DecimalToCharData =
             {
                 new TestCaseData(decimal.MaxValue).Returns((char)0),
                 new TestCaseData(decimal.MinValue).Returns((char)0),
+                new TestCaseData(65m).Returns('A'),
+            };
+
+        public TestCaseData[] DecimalToNullableCharData =
+            {
+                new TestCaseData(decimal.MaxValue).Returns(null),
+                new TestCaseData(decimal.MinValue).Returns(null),
                 new TestCaseData(65m).Returns('A'),
             };
 
@@ -536,6 +681,20 @@
                 new TestCaseData("abc").Returns(0m),
                 new TestCaseData("123a").Returns(0m),
                 new TestCaseData("123m").Returns(0m),
+            };
+
+        public TestCaseData[] StringToNullableDecimalData =
+            {
+                new TestCaseData(string.Empty).Returns(null),
+                new TestCaseData(null).Returns(null),
+                new TestCaseData("0").Returns(0m),
+                new TestCaseData("79228162514264337593543950335").Returns(decimal.MaxValue),
+                new TestCaseData("79228162514264337593543950336").Returns(null),
+                new TestCaseData("-79228162514264337593543950335").Returns(decimal.MinValue),
+                new TestCaseData("-79228162514264337593543950336").Returns(null),
+                new TestCaseData("abc").Returns(null),
+                new TestCaseData("123a").Returns(null),
+                new TestCaseData("123m").Returns(null),
             };
 
         // Use with decimalseperator = . and thousandseperator = [space]
@@ -563,6 +722,33 @@
                 new TestCaseData("abc").Returns(0m),
                 new TestCaseData("123a").Returns(0m),
                 new TestCaseData("123m").Returns(0m),
+            };
+
+        // Use with decimalseperator = . and thousandseperator = [space]
+        public TestCaseData[] StringToNullableDecimalWithFormatData =
+            {
+                new TestCaseData(string.Empty).Returns(null),
+                new TestCaseData(null).Returns(null),
+                new TestCaseData("0").Returns(0m),
+                new TestCaseData("10").Returns(10m),
+                new TestCaseData("10.0").Returns(10.0m),
+                new TestCaseData("10,0").Returns(null),
+                new TestCaseData("10.5").Returns(10.5m),
+                new TestCaseData("10,5").Returns(null),
+                new TestCaseData("-10").Returns(-10m),
+                new TestCaseData("1000").Returns(1000m),
+                new TestCaseData("1 000").Returns(1000m),
+                new TestCaseData("1 000 000").Returns(1000000m),
+                new TestCaseData("1,000").Returns(null),
+                new TestCaseData("1.000").Returns(1.000m),
+                new TestCaseData("1 000.00").Returns(1000.00m),
+                new TestCaseData("79228162514264337593543950335").Returns(decimal.MaxValue),
+                new TestCaseData("79228162514264337593543950336").Returns(null),
+                new TestCaseData("-79228162514264337593543950335").Returns(decimal.MinValue),
+                new TestCaseData("-79228162514264337593543950336").Returns(null),
+                new TestCaseData("abc").Returns(null),
+                new TestCaseData("123a").Returns(null),
+                new TestCaseData("123m").Returns(null),
             };
 
         public TestCaseData[] ByteToDecimalData =
@@ -624,10 +810,32 @@
                 new TestCaseData(123.49d).Returns(123.49m),
             };
 
+        public TestCaseData[] DoubleToNullableDecimalData =
+            {
+                new TestCaseData(double.MaxValue).Returns(null),
+                new TestCaseData(double.MinValue).Returns(null),
+                new TestCaseData((double)decimal.MaxValue).Returns(decimal.MaxValue),
+                new TestCaseData((double)decimal.MinValue).Returns(decimal.MinValue),
+                new TestCaseData(0.0d).Returns(0.0m),
+                new TestCaseData(123.5d).Returns(123.5m),
+                new TestCaseData(123.49d).Returns(123.49m),
+            };
+
         public TestCaseData[] SingleToDecimalData =
             {
                 new TestCaseData(float.MaxValue).Returns(0m),
                 new TestCaseData(float.MinValue).Returns(0m),
+                new TestCaseData((float)decimal.MaxValue).Returns(decimal.MaxValue),
+                new TestCaseData((float)decimal.MinValue).Returns(decimal.MinValue),
+                new TestCaseData(0.0f).Returns(0.0m),
+                new TestCaseData(123.5f).Returns(123.5m),
+                new TestCaseData(123.49f).Returns(123.49m),
+            };
+
+        public TestCaseData[] SingleToNullableDecimalData =
+            {
+                new TestCaseData(float.MaxValue).Returns(null),
+                new TestCaseData(float.MinValue).Returns(null),
                 new TestCaseData((float)decimal.MaxValue).Returns(decimal.MaxValue),
                 new TestCaseData((float)decimal.MinValue).Returns(decimal.MinValue),
                 new TestCaseData(0.0f).Returns(0.0m),

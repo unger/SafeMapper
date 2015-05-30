@@ -55,6 +55,7 @@
     <Compile Include="Reflection\MemberGetter.cs" />
     <Compile Include="Reflection\MemberSetter.cs" />
     <Compile Include="Reflection\MemberType.cs" />
+    <Compile Include="SafeNullableConvert.cs" />
     <Compile Include="SafeMap.cs" />
     <Compile Include="Reflection\ReflectionUtils.cs" />
     <Compile Include="SafeConvert.cs" />
