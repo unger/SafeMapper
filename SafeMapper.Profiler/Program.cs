@@ -26,9 +26,9 @@
 
             //new ProfileTypeOf().Execute();
 
-            //new ProfileIntParse().Execute();
+            new ProfileIntParse().Execute();
 
-            new ProfileCreateConverter().Execute();
+            //new ProfileCreateConverter().Execute();
         }
     }
 }

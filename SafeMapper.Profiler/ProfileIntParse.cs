@@ -18,7 +18,8 @@
             this.AddResult("int.TryParse static", i => TryParseStatic("12345"));
             this.AddResult("IntParseFast", i => IntParseFast("12345"));
             this.AddResult("SafeIntParseFast", i => SafeIntParseFast("12345"));
-            
+            this.AddResult("SafeConvert", i => SafeConvert.ToInt32("12345"));
+            this.AddResult("SafeNullableConvert", i => SafeNullableConvert.ToInt32("12345"));
         }
 
         private static int TryParseStatic(string str)
