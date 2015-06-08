@@ -819,7 +819,7 @@
         }
 
         [TestCase(null, Result = 0)]
-        [TestCase(0, Result = 0)]
+        [TestCase((long)0, Result = 0)]
         [TestCase(long.MaxValue, Result = 0)]
         [TestCase(long.MinValue, Result = 0)]
         [TestCase((long)int.MaxValue, Result = int.MaxValue)]
