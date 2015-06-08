@@ -211,7 +211,8 @@
             }
 
             // Check if fromValue is null
-            if (!fromType.IsValueType || Nullable.GetUnderlyingType(fromType) != null)
+            var underlyingFromType = Nullable.GetUnderlyingType(fromType);
+            if (!fromType.IsValueType || underlyingFromType != null)
             {
                 var fromLocal = this.DeclareLocal(fromType);
                 var toLocal = this.DeclareLocal(toType);
@@ -220,7 +221,7 @@
                 // Store value on top of stack into fromLocal
                 this.EmitLocal(OpCodes.Stloc, fromLocal);
 
-                if (Nullable.GetUnderlyingType(fromType) != null)
+                if (underlyingFromType != null)
                 {
                     this.EmitLocal(OpCodes.Ldloca, fromLocal);
                     MethodInfo mi = fromType.GetMethod("get_HasValue", BindingFlags.Instance | BindingFlags.Public);
@@ -239,7 +240,23 @@
 
                 // Not null, put the fromValue back on stack
                 this.MarkLabel(nonNull);
-                this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                if (underlyingFromType != null)
+                {
+                    this.EmitLocal(OpCodes.Ldloca, fromLocal);
+                    MethodInfo mi = fromType.GetMethod("get_Value", BindingFlags.Instance | BindingFlags.Public);
+                    this.EmitCall(OpCodes.Call, mi, null);
+
+                    if (toType.IsAssignableFrom(underlyingFromType))
+                    {
+                        this.EmitBreak(OpCodes.Br, skipConversion);
+                    }
+                    
+                    fromType = underlyingFromType;
+                }
+                else
+                {
+                    this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                }
             }
 
             var converter = this.mapCfg.GetConvertMethod(fromType, toType);

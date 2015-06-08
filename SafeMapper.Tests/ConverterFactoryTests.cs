@@ -807,6 +807,40 @@
             return converter(input);
         }
 
+        [TestCase(null, Result = 0)]
+        [TestCase(0, Result = 0)]
+        [TestCase(int.MaxValue, Result = int.MaxValue)]
+        [TestCase(int.MinValue, Result = int.MinValue)]
+        public int CreateDelegate_NullableIntToInt(int? input)
+        {
+            var converter = this.converterFactory.CreateDelegate<int?, int>();
+
+            return converter(input);
+        }
+
+        [TestCase(null, Result = 0)]
+        [TestCase(0, Result = 0)]
+        [TestCase(long.MaxValue, Result = 0)]
+        [TestCase(long.MinValue, Result = 0)]
+        [TestCase((long)int.MaxValue, Result = int.MaxValue)]
+        [TestCase((long)int.MinValue, Result = int.MinValue)]
+        public int CreateDelegate_NullableLongToInt(long? input)
+        {
+            var converter = this.converterFactory.CreateDelegate<long?, int>();
+
+            return converter(input);
+        }
+
+        [TestCase(null, Result = 0)]
+        [TestCase(byte.MaxValue, Result = (int)byte.MaxValue)]
+        [TestCase(byte.MinValue, Result = (int)byte.MinValue)]
+        public int CreateDelegate_NullableByteToInt(byte? input)
+        {
+            var converter = this.converterFactory.CreateDelegate<long?, int>();
+
+            return converter(input);
+        }
+
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToClassPropertyWithIntArray()
         {
