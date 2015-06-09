@@ -841,6 +841,28 @@
             return converter(input);
         }
 
+        [TestCase(null, Result = null)]
+        [TestCase(0, Result = "0")]
+        [TestCase(int.MaxValue, Result = "2147483647")]
+        [TestCase(int.MinValue, Result = "-2147483648")]
+        public string CreateDelegate_NullableIntToString(int? input)
+        {
+            var converter = this.converterFactory.CreateDelegate<int?, string>();
+
+            return converter(input);
+        }
+
+        [TestCase(null, Result = null)]
+        [TestCase("0", Result = 0)]
+        [TestCase("2147483647", Result = int.MaxValue)]
+        [TestCase("-2147483648", Result = int.MinValue)]
+        public int? CreateDelegate_StringToNullableInt(string input)
+        {
+            var converter = this.converterFactory.CreateDelegate<string, int?>();
+
+            return converter(input);
+        }
+
         [Test]
         public void CreateDelegate_ConvertNameValueCollectionToClassPropertyWithIntArray()
         {
