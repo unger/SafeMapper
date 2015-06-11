@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SafeMapper.Tests
+﻿namespace SafeMapper.Tests
 {
+    using System;
     using System.Collections.Specialized;
 
     using NUnit.Framework;

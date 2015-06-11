@@ -3,7 +3,6 @@
     using System;
     using System.Data.SqlTypes;
     using System.Globalization;
-    using System.Linq;
 
     public class SafeNullableConvert
     {

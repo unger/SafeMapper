@@ -7,13 +7,21 @@
 
     using SafeMapper.Configuration;
 
-    public class ConverterFactory
+    public class ConverterFactory : IConverterFactory
     {
-        private readonly MapConfiguration mapCfg;
+        private readonly IMapConfiguration mapCfg;
 
-        public ConverterFactory(MapConfiguration configuration)
+        public ConverterFactory(IMapConfiguration configuration)
         {
             this.mapCfg = configuration;
+        }
+
+        public IMapConfiguration Configuration
+        {
+            get
+            {
+                return this.mapCfg;
+            }
         }
 
         public Func<object, object> CreateDelegate(Type fromType, Type toType)

@@ -11,9 +11,9 @@
 
     public class ILGeneratorAdapter : ILGeneratorAdapterBase
     {
-        private readonly MapConfiguration mapCfg;
+        private readonly IMapConfiguration mapCfg;
 
-        public ILGeneratorAdapter(ILGenerator il, MapConfiguration configuration) 
+        public ILGeneratorAdapter(ILGenerator il, IMapConfiguration configuration) 
             : base(il)
         {
             this.mapCfg = configuration;

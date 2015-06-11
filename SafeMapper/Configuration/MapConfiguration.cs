@@ -2,11 +2,10 @@
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Reflection;
 
     using SafeMapper.Reflection;
 
-    public class MapConfiguration
+    public class MapConfiguration : IMapConfiguration
     {
         private readonly ConcurrentDictionary<string, ITypeMapping> typeMappings = new ConcurrentDictionary<string, ITypeMapping>();
 

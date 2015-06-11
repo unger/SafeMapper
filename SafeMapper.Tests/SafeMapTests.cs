@@ -6,6 +6,7 @@
 
     using NUnit.Framework;
 
+    using SafeMapper.Configuration;
     using SafeMapper.Tests.Model.GenericClasses;
     using SafeMapper.Tests.Model.Person;
 
@@ -145,7 +146,7 @@
         [Test]
         public void CreateMap_ClassPropertyIntToNameValueCollection_Add()
         {
-            SafeMap.Configuration.SetConvertMethod<int, string>(i => i.ToString());
+            SafeMap.Configuration.SetConvertMethod<int, string>(i => i.ToString(CultureInfo.InvariantCulture));
             SafeMap.CreateMap<ClassProperty<int>, NameValueCollection>(
                 cfg =>
                 {
@@ -157,6 +158,19 @@
             var result = SafeMap.Convert<ClassProperty<int>, NameValueCollection>(input);
 
             Assert.AreEqual("1337", result["Value2"]);
+        }
+
+        [Test]
+        public void SetConfiguration_ShouldResetPreviousConfiguredConverters()
+        {
+            SafeMap.Configuration.SetConvertMethod<int, string>(i => i.ToString(CultureInfo.InvariantCulture) + " pcs");
+
+            var result1 = SafeMap.Convert<int, string>(10);
+            SafeMap.Configuration = new MapConfiguration();
+            var result2 = SafeMap.Convert<int, string>(10);
+
+            Assert.AreEqual("10 pcs", result1);
+            Assert.AreEqual("10", result2);
         }
     }
 }
