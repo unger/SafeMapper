@@ -5,6 +5,7 @@
     using System.Collections.Specialized;
     using System.Data.SqlTypes;
     using System.Globalization;
+    using System.Linq;
     using System.Threading;
 
     using NUnit.Framework;
@@ -789,6 +790,31 @@
             var result = converter(input);
 
             Assert.AreEqual(1, result);
+        }
+
+        [Test]
+        public void CreateDelegate_IEnumerableDictionaryToListOfClassProperty()
+        {
+            var input =
+                new List<Dictionary<string, string>>
+                    {
+                        new Dictionary<string, string> { { "Value", "1" } },
+                        new Dictionary<string, string> { { "Value", "12" } },
+                        new Dictionary<string, string> { { "Value", "123" } },
+                        new Dictionary<string, string> { { "Value", "1234" } },
+                    }
+
+                    as IEnumerable<Dictionary<string, string>>;
+
+            var converter = this.converterFactory.CreateDelegate<IEnumerable<Dictionary<string, string>>, IList<ClassProperty<int>>>();
+            var result = converter(input);
+
+            Assert.AreEqual(4, result.Count);
+            Assert.AreEqual(1, result[0].Value);
+            Assert.AreEqual(12, result[1].Value);
+            Assert.AreEqual(123, result[2].Value);
+            Assert.AreEqual(1234, result[3].Value);
+
         }
 
         [TestCaseSource(typeof(TestData), "NonGenericCollectionTestData")]
