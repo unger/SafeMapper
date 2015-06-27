@@ -24,7 +24,7 @@
 
             var converterFactory = new ConverterFactory(new MapConfiguration());
 
-            this.WriteHeader(string.Format("Profiling convert from {0} to {1}", typeof(TSource).Name, typeof(TDestination).Name));
+            this.WriteHeader(string.Format("Profiling convert from {0} to {1}", fromType.Name, toType.Name));
 
             this.AddResult("SafeMapper", i => converterFactory.CreateDelegate<TSource, TDestination>(formatProvider));
 

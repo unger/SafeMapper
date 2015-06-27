@@ -80,7 +80,7 @@
         [Test]
         public void EmitBreak_Br_ShouldNotThrowException()
         {
-            Assert.DoesNotThrow(() => this.ilgenerator.EmitBreak(OpCodes.Br, new Label()));
+			Assert.DoesNotThrow(() => this.ilgenerator.EmitBreak(OpCodes.Br, this.ilgenerator.DefineLabel()));
         }
 
         [Test]

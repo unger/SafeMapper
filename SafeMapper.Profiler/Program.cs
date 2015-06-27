@@ -18,7 +18,7 @@
 
             //new ProfileListToList().Execute();
 
-            //new ProfileConversion().Execute();
+            new ProfileConversion().Execute();
 
             //new ProfileInvalidConversion().Execute();
 
@@ -26,7 +26,7 @@
 
             //new ProfileTypeOf().Execute();
 
-            new ProfileIntParse().Execute();
+            //new ProfileIntParse().Execute();
 
             //new ProfileCreateConverter().Execute();
         }

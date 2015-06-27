@@ -16,7 +16,7 @@
             Process.GetCurrentProcess().ProcessorAffinity = new IntPtr(2);
 
             // Prevents "Normal" processes from interrupting Threads
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+            //Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
         
             // Prevents "Normal" Threads from interrupting this thread            
             Thread.CurrentThread.Priority = ThreadPriority.Highest;
