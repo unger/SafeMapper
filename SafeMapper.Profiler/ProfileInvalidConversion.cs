@@ -64,7 +64,7 @@
                     {
                         action(i);
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                     }
                 };
