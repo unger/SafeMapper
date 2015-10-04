@@ -1,0 +1,27 @@
+﻿{
+  "version": "1.3.0-*",
+  "description": "SafeMapper is an exception free and extremly fast object mapper",
+  "authors": [ "unger" ],
+  "tags": [ "Fast", "Object Mapper", "Converter" ],
+  "projectUrl": "https://github.com/unger/SafeMapper",
+  "licenseUrl": "https://github.com/unger/SafeMapper",
+
+  "frameworks": {
+    "net45": {
+      "frameworkAssemblies": {
+        "System.ComponentModel.DataAnnotations": "4.0.0.0",
+        "System.Data": "4.0.0.0"
+      },
+      "dependencies": {
+      }
+    },
+    "dnx451": {
+      "frameworkAssemblies": {
+        "System.ComponentModel.DataAnnotations": "4.0.0.0",
+        "System.Data": "4.0.0.0"
+      },
+      "dependencies": {
+      }
+    }
+  }
+}

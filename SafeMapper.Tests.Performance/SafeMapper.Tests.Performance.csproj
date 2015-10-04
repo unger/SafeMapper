@@ -37,6 +37,10 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="SafeMapper, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\artifacts\bin\SafeMapper\Debug\net45\SafeMapper.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -60,10 +64,6 @@
     <ProjectReference Include="..\SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj">
       <Project>{955aa075-d841-4bb9-9487-dac42eebcecc}</Project>
       <Name>SafeMapper.Tests.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SafeMapper\SafeMapper.csproj">
-      <Project>{6240f741-b1ab-46fc-acca-06414ec53e45}</Project>
-      <Name>SafeMapper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

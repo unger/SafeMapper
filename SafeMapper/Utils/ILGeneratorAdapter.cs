@@ -263,6 +263,11 @@
 
             if (converter != null)
             {
+                if (!converter.Method.IsStatic)
+                {
+                    throw new ArgumentException("Cannot emit call to non static method");
+                }
+
                 // Load IFormatProvider as second argument
                 if (converter.Method.GetParameters().Length == 2)
                 {
