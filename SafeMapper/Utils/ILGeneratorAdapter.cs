@@ -585,7 +585,8 @@
             if (toType == typeof(string))
             {
                 var enumValues = Enum.GetValues(fromType);
-                var switchType = fromType.GetEnumUnderlyingType();
+                var temptype = fromType.GetEnumUnderlyingType();
+                var switchType = Enum.GetUnderlyingType(fromType);
                 var switchReturnValues = new List<Tuple<object, object>>();
 
                 foreach (var enumValue in enumValues)
@@ -611,7 +612,7 @@
             }
             else
             {
-                var underlayingFromType = fromType.GetEnumUnderlyingType();
+                var underlayingFromType = Enum.GetUnderlyingType(fromType);
 
                 if (toType != underlayingFromType)
                 {
@@ -633,8 +634,8 @@
             }
 
             var enumValues = Enum.GetValues(toType);
-            var underlayingToType = toType.GetEnumUnderlyingType();
-            var underlayingFromType = fromType.IsEnum ? fromType.GetEnumUnderlyingType() : fromType;
+            var underlayingToType = Enum.GetUnderlyingType(toType);
+            var underlayingFromType = fromType.IsEnum ? Enum.GetUnderlyingType(fromType) : fromType;
             var switchType = fromType == typeof(string) ? typeof(string) : underlayingToType;
             var switchReturnValues = new List<Tuple<object, object>>();
 
