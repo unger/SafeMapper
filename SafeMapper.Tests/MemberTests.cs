@@ -3,21 +3,21 @@
     using System;
     using System.Collections.Specialized;
 
-    using NUnit.Framework;
+    using Xunit;
 
     using SafeMapper.Reflection;
 
-    [TestFixture]
+    
     public class MemberTests
     {
-        [Test]
+        [Fact]
         public void Ctor_ConstructorInfo_ShouldBeMethodTypeUndefined()
         {
             var constructor = typeof(NameValueCollection).GetConstructor(Type.EmptyTypes);
 
             var member = new MemberGetter(constructor);
 
-            Assert.AreEqual(MemberType.Undefined, member.MemberType);
+            Assert.Equal(MemberType.Undefined, member.MemberType);
         }
     }
 }

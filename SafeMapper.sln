@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests", "SafeMapper.Tests\SafeMapper.Tests.csproj", "{25A7A26F-1382-49F6-B11D-C32C0787A3AD}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A947C697-4EE8-4AF0-8E4D-14ACDC8EA363} = {A947C697-4EE8-4AF0-8E4D-14ACDC8EA363}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Profiler", "SafeMapper.Profiler\SafeMapper.Profiler.csproj", "{AB4705B8-874D-47D0-BF6D-2414C6F436BE}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A947C697-4EE8-4AF0-8E4D-14ACDC8EA363} = {A947C697-4EE8-4AF0-8E4D-14ACDC8EA363}
@@ -29,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E55C46
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper", "SafeMapper\SafeMapper.xproj", "{A947C697-4EE8-4AF0-8E4D-14ACDC8EA363}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper.Tests", "SafeMapper.Tests\SafeMapper.Tests.xproj", "{25A7A26F-1382-49F6-B11D-C32C0787A3AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

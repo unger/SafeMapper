@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+  "frameworks": {
+    "dnx451": {
+      "bin": {
+        "assembly": "../../lib/dnx451/System.Threading.Tasks.dll"
+      }
+    },
+    "net45": {
+      "bin": {
+        "assembly": "../../lib/net45/System.Threading.Tasks.dll"
+      }
+    }
+  }
+}

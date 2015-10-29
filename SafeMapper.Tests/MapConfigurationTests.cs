@@ -5,24 +5,23 @@
     using System.Collections.Specialized;
     using System.Globalization;
 
-    using NUnit.Framework;
+    using Xunit;
 
     using SafeMapper.Configuration;
     using SafeMapper.Tests.Model.GenericClasses;
     using SafeMapper.Utils;
 
-    [TestFixture]
+    
     public class MapConfigurationTests
     {
         private SafeMapService safeMapService;
 
-        [SetUp]
-        public void SetUp()
+        public MapConfigurationTests()
         {
             this.safeMapService = new SafeMapService(new ConverterFactory(new MapConfiguration()));
         }
 
-        [Test]
+        [Fact]
         public void TestMappingToDifferentMemberNames()
         {
             var typeMap = new ClassPropertyDictionaryMap();
@@ -33,10 +32,10 @@
                     new ClassProperty<string> { Value = "1337" });
 
             Assert.True(value.ContainsKey("Value2"));
-            Assert.AreEqual(1337, value["Value2"]);
+            Assert.Equal(1337, value["Value2"]);
         }
 
-        [Test]
+        [Fact]
         public void Map_MethodToProperty()
         {
             var typeMap = new ClassMethodClassPropertyMap();
@@ -47,10 +46,10 @@
 
             var result = this.safeMapService.Convert<ClassMethod<int>, ClassProperty<string>>(input);
 
-            Assert.AreEqual("1337", result.Value);
+            Assert.Equal("1337", result.Value);
         }
 
-        [Test]
+        [Fact]
         public void Map_PropertyToMethod()
         {
             var typeMap = new ClassPropertyClassMethodMap();
@@ -60,10 +59,10 @@
 
             var result = this.safeMapService.Convert<ClassProperty<string>, ClassMethod<int>>(input);
 
-            Assert.AreEqual(1337, result.GetValue());
+            Assert.Equal(1337, result.GetValue());
         }
 
-        [Test]
+        [Fact]
         public void Map_PropertyToNameValueCollection()
         {
             var typeMap = new ClassPropertyNameValueCollectionMap();
@@ -73,10 +72,10 @@
 
             var result = this.safeMapService.Convert<ClassProperty<string>, NameValueCollection>(input);
 
-            Assert.AreEqual("1337", result["Value2"]);
+            Assert.Equal("1337", result["Value2"]);
         }
 
-        [Test]
+        [Fact]
         public void Map_NameValueCollectionToClassProperty()
         {
             var typeMap = new NameValueCollectionClassPropertyMap();
@@ -86,10 +85,10 @@
 
             var result = this.safeMapService.Convert<NameValueCollection, ClassProperty<string>>(input);
 
-            Assert.AreEqual("1337", result.Value);
+            Assert.Equal("1337", result.Value);
         }
 
-        [Test]
+        [Fact]
         public void Map_NameValueCollectionToClassMethod()
         {
             var typeMap = new NameValueCollectionClassMethodMap();
@@ -99,10 +98,10 @@
 
             var result = this.safeMapService.Convert<NameValueCollection, ClassMethod<string>>(input);
 
-            Assert.AreEqual("1337", result.GetValue());
+            Assert.Equal("1337", result.GetValue());
         }
 
-        [Test]
+        [Fact]
         public void SetConvertMethod_IntToStringWithCustomConverter()
         {
             this.safeMapService.Configuration.SetConvertMethod<int, string>(x => string.Format("{0}pcs", x));
@@ -111,10 +110,10 @@
 
             var result = this.safeMapService.Convert<int, string>(input);
 
-            Assert.AreEqual("1337pcs", result);
+            Assert.Equal("1337pcs", result);
         }
 
-        [Test]
+        [Fact]
         public void SetConvertMethod_DecimalToStringWithLamdaUsingLocalVariabel_ShouldThrowException()
         {
             var decimals = 2;
