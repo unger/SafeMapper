@@ -73,15 +73,15 @@
             {
                 if (typeof(TDestination) == typeof(DateTime) && typeof(TSource) == typeof(string))
                 {
-                    Mapper.CreateMap(typeof(TSource), typeof(TDestination)).ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
+                    AutoMapper.Mapper.CreateMap(typeof(TSource), typeof(TDestination)).ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
                 }
                 else
                 {
-                    Mapper.CreateMap<TSource, TDestination>();
+                    AutoMapper.Mapper.CreateMap<TSource, TDestination>();
                 }
             }
 
-            Mapper.CreateMap<Address, AddressDto>();
+            AutoMapper.Mapper.CreateMap<Address, AddressDto>();
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
 
@@ -119,7 +119,7 @@
                     i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider));
             */
 
-            this.AddResult("AutoMapper", k => trycatchDelegate(i => Mapper.Map<TSource, TDestination>(input[i]), k));
+            this.AddResult("AutoMapper", k => trycatchDelegate(i => AutoMapper.Mapper.Map<TSource, TDestination>(input[i]), k));
 
         }
     }

@@ -156,18 +156,18 @@
             {
                 if (typeof(TDestination) == typeof(DateTime) && typeof(TSource) == typeof(string))
                 {
-                    Mapper.CreateMap(typeof(TSource), typeof(TDestination)).ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
+                    AutoMapper.Mapper.CreateMap(typeof(TSource), typeof(TDestination)).ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
                 }
                 else
                 {
-                    Mapper.CreateMap<TSource, TDestination>();
+                    AutoMapper.Mapper.CreateMap<TSource, TDestination>();
                 }
             }
 
-            Mapper.CreateMap<Address, AddressDto>();
-            Mapper.CreateMap<AddressDto, Address>();
-            Mapper.CreateMap<BenchSource.Int1, BenchDestination.Int1>();
-            Mapper.CreateMap<BenchSource.Int2, BenchDestination.Int2>();
+            AutoMapper.Mapper.CreateMap<Address, AddressDto>();
+            AutoMapper.Mapper.CreateMap<AddressDto, Address>();
+            AutoMapper.Mapper.CreateMap<BenchSource.Int1, BenchDestination.Int1>();
+            AutoMapper.Mapper.CreateMap<BenchSource.Int2, BenchDestination.Int2>();
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
             
@@ -178,7 +178,12 @@
 
             this.AddResult("SafeMapper", i => safeMapper(input[i]));
 
-            this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
+            this.AddResult("EmitMapper", i =>
+            {
+                var x = emitMapper.Map(input[i]);
+                if (x != null) { }
+            }
+            );
 
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
 
@@ -207,7 +212,7 @@
                     i => UniversalTypeConverter.Convert(input[i], typeof(TDestination), formatProvider));*/
 
 
-            this.AddResult("AutoMapper", i => Mapper.Map<TSource, TDestination>(input[i]));
+            this.AddResult("AutoMapper", i => AutoMapper.Mapper.Map<TSource, TDestination>(input[i]));
 
         }
     }
