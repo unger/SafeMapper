@@ -340,12 +340,20 @@
                         classInstanceLoaded = true;
                         this.EmitField(OpCodes.Ldsfld, staticField);
                     }
+
+                    var staticProperty = converter.StaticInstanceMember as PropertyInfo;
+                    if (staticProperty != null)
+                    {
+                        classInstanceLoaded = true;
+                        var getter = staticProperty.GetGetMethod();
+                        this.EmitCall(OpCodes.Call, getter, null);
+                    }
                 }
-                else if (converter.Target != null)
+                else
                 {
                     // For example anonymous methods will be defined in a seperate automatically generated class
                     // all local variables will be defined as fields on this class
-                    var classInstanceLocal = this.DeclareLocal(converter.Target.GetType());
+                    var classInstanceLocal = this.DeclareLocal(converter.Method.DeclaringType);
                     var ctor = classInstanceLocal.LocalType.GetConstructor(Type.EmptyTypes);
                     if (ctor != null)
                     {
@@ -353,16 +361,20 @@
                         this.EmitNewobj(ctor);
                         this.EmitLocal(OpCodes.Stloc, classInstanceLocal);
 
-                        var fields = classInstanceLocal.LocalType.GetFields();
-                        foreach (var field in fields)
+                        if (converter.Target != null)
                         {
-                            if (field.FieldType == typeof(int))
+                            var fields = classInstanceLocal.LocalType.GetFields();
+                            foreach (var field in fields)
                             {
-                                this.EmitLocal(OpCodes.Ldloc, classInstanceLocal);
-                                this.EmitInt((int)field.GetValue(converter.Target));
-                                this.EmitField(OpCodes.Stfld, field);
+                                if (field.FieldType == typeof(int))
+                                {
+                                    this.EmitLocal(OpCodes.Ldloc, classInstanceLocal);
+                                    this.EmitInt((int)field.GetValue(converter.Target));
+                                    this.EmitField(OpCodes.Stfld, field);
+                                }
                             }
                         }
+
                         this.EmitLocal(OpCodes.Ldloc, classInstanceLocal);
                     }
                 }

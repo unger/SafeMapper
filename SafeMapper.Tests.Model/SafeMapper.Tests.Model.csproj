@@ -51,6 +51,9 @@
     <Compile Include="Circular\ParentDto.cs" />
     <Compile Include="Circular\Parent.cs" />
     <Compile Include="Circular\Root.cs" />
+    <Compile Include="ConvertClasses\FakeConvertSingletonProperty.cs" />
+    <Compile Include="ConvertClasses\FakeConvertSingletonField.cs" />
+    <Compile Include="ConvertClasses\FakeConvertWithoutSingleton.cs" />
     <Compile Include="Enums\DescriptionAttributeEnum.cs" />
     <Compile Include="Enums\DisplayAttributeEnum.cs" />
     <Compile Include="Enums\DisplayAttributeResourceEnum.cs" />

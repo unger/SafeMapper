@@ -1,4 +1,6 @@
-﻿namespace SafeMapper.Tests
+﻿using SafeMapper.Tests.Model.ConvertClasses;
+
+namespace SafeMapper.Tests
 {
     using System;
     using System.Collections.Generic;
@@ -1236,6 +1238,84 @@
             Assert.AreEqual(expected, converter16(new StructField<TFrom> { Value = input }).Value, string.Format("StructField<{0}> to StructField<{1}>", typeof(TFrom).Name, typeof(TTo).Name));
 
             return expected;
+        }
+
+        [Test]
+        public void CreateDelegate_WithFakeConvertSingletonFieldIntToString_ShouldReturn1337()
+        {
+            var mapConfig = new MapConfiguration();
+            mapConfig.AddConvertMethods<FakeConvertWithoutSingleton>();
+            var factory = new ConverterFactory(mapConfig);
+
+            var converter = factory.CreateDelegate<int, string>();
+
+            var result = converter(0);
+            Assert.AreEqual("1337", result);
+        }
+
+        [Test]
+        public void CreateDelegate_WithFakeConvertSingletonFieldStringToInt_ShouldReturn1337()
+        {
+            var mapConfig = new MapConfiguration();
+            mapConfig.AddConvertMethods<FakeConvertWithoutSingleton>();
+            var factory = new ConverterFactory(mapConfig);
+
+            var converter = factory.CreateDelegate<string, int>();
+
+            var result = converter(string.Empty);
+            Assert.AreEqual(1337, result);
+        }
+
+        [Test]
+        public void CreateDelegate_WithFakeConvertSingletonPropertyIntToString_ShouldReturn1337()
+        {
+            var mapConfig = new MapConfiguration();
+            mapConfig.AddConvertMethods<FakeConvertSingletonProperty>();
+            var factory = new ConverterFactory(mapConfig);
+
+            var converter = factory.CreateDelegate<int, string>();
+
+            var result = converter(0);
+            Assert.AreEqual("1337", result);
+        }
+
+        [Test]
+        public void CreateDelegate_WithFakeConvertSingletonPropertyStringToInt_ShouldReturn1337()
+        {
+            var mapConfig = new MapConfiguration();
+            mapConfig.AddConvertMethods<FakeConvertSingletonProperty>();
+            var factory = new ConverterFactory(mapConfig);
+
+            var converter = factory.CreateDelegate<string, int>();
+
+            var result = converter(string.Empty);
+            Assert.AreEqual(1337, result);
+        }
+
+        [Test]
+        public void CreateDelegate_WithFakeConvertWithoutSingletonIntToString_ShouldReturn1337()
+        {
+            var mapConfig = new MapConfiguration();
+            mapConfig.AddConvertMethods<FakeConvertWithoutSingleton>();
+            var factory = new ConverterFactory(mapConfig);
+
+            var converter = factory.CreateDelegate<int, string>();
+
+            var result = converter(0);
+            Assert.AreEqual("1337", result);
+        }
+
+        [Test]
+        public void CreateDelegate_WithFakeConvertWithoutSingletonStringToInt_ShouldReturn1337()
+        {
+            var mapConfig = new MapConfiguration();
+            mapConfig.AddConvertMethods<FakeConvertWithoutSingleton>();
+            var factory = new ConverterFactory(mapConfig);
+
+            var converter = factory.CreateDelegate<string, int>();
+
+            var result = converter(string.Empty);
+            Assert.AreEqual(1337, result);
         }
     }
 }
