@@ -22,7 +22,7 @@
             var fromType = typeof(TSource);
             var toType = typeof(TDestination);
 
-            var converterFactory = new ConverterFactory(new MapConfiguration());
+            var converterFactory = new ConverterFactory();
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}", fromType.Name, toType.Name));
 

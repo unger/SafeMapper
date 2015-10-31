@@ -11,6 +11,10 @@
     {
         private readonly IMapConfiguration mapCfg;
 
+        public ConverterFactory() : this(new MapConfiguration())
+        {
+        }
+
         public ConverterFactory(IMapConfiguration configuration)
         {
             this.mapCfg = configuration;

@@ -11,8 +11,7 @@
 
         static SafeMap()
         {
-            var mapConfiguration = new MapConfiguration();
-            var converterFactory = new ConverterFactory(mapConfiguration);
+            var converterFactory = new ConverterFactory();
             safeMapService = new SafeMapService(converterFactory);
         }
 

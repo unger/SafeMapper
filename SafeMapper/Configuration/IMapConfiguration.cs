@@ -1,4 +1,6 @@
-﻿namespace SafeMapper.Configuration
+﻿using System.Reflection;
+
+namespace SafeMapper.Configuration
 {
     using System;
 
@@ -10,8 +12,10 @@
 
         MethodWrapper GetConvertMethod(Type fromType, Type toType);
 
-        void SetConvertMethod(Type fromType, Type toType, MethodWrapper convertMethod);
-
         void SetConvertMethod<TFrom, TTo>(Func<TFrom, TTo> converter);
+
+        void AddConvertMethods<TConvertClass>();
+
+        void AddConvertMethods(Type convertClass);
     }
 }

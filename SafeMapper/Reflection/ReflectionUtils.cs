@@ -364,5 +364,28 @@
 
             return returnValue;
         }
+
+        public static MemberInfo GetStaticMemberInfo(Type memberType)
+        {
+            var staticFields = memberType.GetFields(BindingFlags.Public | BindingFlags.Static);
+            foreach (var field in staticFields)
+            {
+                if (field.FieldType == memberType)
+                {
+                    return field;
+                }
+            }
+
+            var staticProperties = memberType.GetProperties(BindingFlags.Public | BindingFlags.Static);
+            foreach (var prop in staticProperties)
+            {
+                if (prop.PropertyType == memberType)
+                {
+                    return prop;
+                }
+            }
+
+            return null;
+        }
     }
 }

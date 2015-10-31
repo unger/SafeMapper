@@ -19,7 +19,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.safeMapService = new SafeMapService(new ConverterFactory(new MapConfiguration()));
+            this.safeMapService = new SafeMapService(new ConverterFactory());
         }
 
         [Test]

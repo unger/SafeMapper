@@ -60,24 +60,26 @@
 
         public void EmitField(OpCode opcode, FieldInfo field)
         {
-            var supportedOpcodes = new[] { OpCodes.Ldfld, OpCodes.Stfld };
-            if (!supportedOpcodes.Contains(opcode))
+            if (opcode == OpCodes.Ldfld || opcode == OpCodes.Stfld || opcode == OpCodes.Ldsfld)
+            {
+                this.AddInstruction(opcode, field);
+            }
+            else
             {
                 throw new Exception("Unsupported Opcode, only Ldfld and Stfld supported");
             }
-
-            this.AddInstruction(opcode, field);
         }
 
         public void EmitLocal(OpCode opcode, LocalBuilder local)
         {
-            var supportedOpcodes = new[] { OpCodes.Ldloc, OpCodes.Stloc, OpCodes.Ldloca };
-            if (!supportedOpcodes.Contains(opcode))
+            if (opcode == OpCodes.Ldloc || opcode == OpCodes.Stloc || opcode == OpCodes.Ldloca)
+            {
+                this.AddInstruction(opcode, local);
+            }
+            else
             {
                 throw new Exception("Unsupported Opcode, only Ldloc, Ldloca and Stloc supported");
             }
-
-            this.AddInstruction(opcode, local);
         }
 
         public void EmitNewobj(ConstructorInfo con)

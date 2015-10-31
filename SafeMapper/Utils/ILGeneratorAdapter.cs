@@ -263,13 +263,7 @@
 
             if (converter != null)
             {
-                // Load IFormatProvider as second argument
-                if (converter.Method.GetParameters().Length == 2)
-                {
-                    this.Emit(OpCodes.Ldarg_0);
-                }
-
-                this.EmitCall(OpCodes.Call, converter.Method, null);
+                this.EmitCallConverter(fromType, toType, converter);
             }
             else if (toType.IsEnum)
             {
@@ -317,6 +311,45 @@
             }
 
             this.MarkLabel(skipConversion);
+        }
+
+        private void EmitCallConverter(Type fromType, Type toType, MethodWrapper converter)
+        {
+            if (converter.Method.IsStatic)
+            {
+                // Load IFormatProvider as second argument
+                if (converter.Method.GetParameters().Length == 2)
+                {
+                    this.Emit(OpCodes.Ldarg_0);
+                }
+
+                this.EmitCall(OpCodes.Call, converter.Method, null);
+            }
+            else
+            {
+                if (converter.StaticInstanceMember is FieldInfo)
+                {
+                    var fromLocal = this.DeclareLocal(fromType);
+                    // Store value on top of stack into fromLocal
+                    this.EmitLocal(OpCodes.Stloc, fromLocal);
+                    this.EmitField(OpCodes.Ldsfld, (FieldInfo)converter.StaticInstanceMember);
+                    this.EmitLocal(OpCodes.Ldloc, fromLocal);
+
+                    if (converter.Method.GetParameters().Length == 2)
+                    {
+                        this.Emit(OpCodes.Ldarg_0);
+                    }
+
+                    this.EmitCall(OpCodes.Callvirt, converter.Method, null);
+                }
+                else
+                {
+                    // Load default of toType when it fails to convert
+                    var toLocal = this.DeclareLocal(toType);
+                    this.Emit(OpCodes.Pop);
+                    this.EmitLocal(OpCodes.Ldloc, toLocal);
+                }
+            }
         }
 
         public void EmitMapDictionary(Type fromType, Type toType, HashSet<Type> convertedTypes)
@@ -618,9 +651,9 @@
                 {
                     var converter = this.mapCfg.GetConvertMethod(underlayingFromType, toType);
 
-                    if (converter != null && converter.Method.GetParameters().Length == 1)
+                    if (converter != null)
                     {
-                        this.EmitCall(OpCodes.Call, converter.Method, null);
+                        this.EmitCallConverter(underlayingFromType, toType, converter);
                     }
                 }
             }
@@ -669,16 +702,9 @@
             {
                 var converter = this.mapCfg.GetConvertMethod(underlayingFromType, underlayingToType);
 
-                if (converter != null && converter.Method.GetParameters().Length == 1)
+                if (converter != null)
                 {
-                    this.EmitCall(OpCodes.Call, converter.Method, null);
-                }
-                else
-                {
-                    // if it is not possible to convert load enum default value
-                    this.Emit(OpCodes.Pop);
-                    this.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
-                    return;
+                    this.EmitCallConverter(underlayingFromType, underlayingToType, converter);
                 }
             }
 

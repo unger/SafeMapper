@@ -35,7 +35,7 @@
             numberFormat.CurrencyGroupSeparator = " ";
             this.numberFormatProvider = numberFormat;
 
-            this.converterFactory = new ConverterFactory(new MapConfiguration());
+            this.converterFactory = new ConverterFactory();
         }
 
         /************************************************************************/

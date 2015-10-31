@@ -62,6 +62,7 @@
     <Compile Include="Reflection\MemberGetter.cs" />
     <Compile Include="Reflection\MemberSetter.cs" />
     <Compile Include="Reflection\MemberType.cs" />
+    <Compile Include="SafeConvertNonStatic.cs" />
     <Compile Include="SafeMapService.cs" />
     <Compile Include="SafeNullableConvert.cs" />
     <Compile Include="SafeMap.cs" />
