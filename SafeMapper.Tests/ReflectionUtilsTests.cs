@@ -1,4 +1,6 @@
-﻿namespace SafeMapper.Tests
+﻿using System.Reflection;
+
+namespace SafeMapper.Tests
 {
     using System;
     using System.Collections;
@@ -167,14 +169,6 @@
         }
 
         [Test]
-        public void GetConvertMethod_IEnumerable_ShouldReturnNull()
-        {
-            var method = ReflectionUtils.GetConvertMethod(typeof(string), typeof(string), new[] { typeof(SafeConvert) });
-
-            Assert.Null(method);
-        }
-
-        [Test]
         public void GetMemberType_ConstructorInfo_ShouldReturnVoid()
         {
             var constructor = typeof(int).GetConstructor(Type.EmptyTypes);
@@ -263,6 +257,45 @@
 
             Assert.IsEmpty(result);
         }
-        
+
+        [Test]
+        public void GetStaticMemberInfo_OnClassWithSingletonField_ShouldReturnFieldInfo()
+        {
+            var result = ReflectionUtils.GetStaticMemberInfo(typeof(SingletonFieldClass));
+
+            Assert.IsInstanceOf<FieldInfo>(result);
+            Assert.AreEqual(typeof(SingletonFieldClass), (result as FieldInfo).FieldType);
+        }
+
+        [Test]
+        public void GetStaticMemberInfo_OnClassWithSingletonProperty_ShouldReturnPropertyInfo()
+        {
+            var result = ReflectionUtils.GetStaticMemberInfo(typeof(SingletonPropertyClass));
+
+            Assert.IsInstanceOf<PropertyInfo>(result);
+            Assert.AreEqual(typeof(SingletonPropertyClass), (result as PropertyInfo).PropertyType);
+        }
+
+        public class SingletonFieldClass
+        {
+            public static string StaticString = "Test";
+
+            public static SingletonFieldClass Instance = new SingletonFieldClass();
+        }
+
+        public class SingletonPropertyClass
+        {
+            private static readonly SingletonPropertyClass _instance = new SingletonPropertyClass();
+
+            public static string StaticString
+            {
+                get { return "Test"; }
+            }
+
+            public static SingletonPropertyClass Instance
+            {
+                get { return _instance; }
+            }
+        }
     }
 }
