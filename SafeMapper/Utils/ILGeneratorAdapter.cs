@@ -366,6 +366,7 @@
                             var fields = classInstanceLocal.LocalType.GetFields();
                             foreach (var field in fields)
                             {
+                                // TODO Add support för more fieldtypes than int
                                 if (field.FieldType == typeof(int))
                                 {
                                     this.EmitLocal(OpCodes.Ldloc, classInstanceLocal);
@@ -393,7 +394,6 @@
                 {
                     // Load default of toType when it fails to load class instance on stack
                     var toLocal = this.DeclareLocal(toType);
-                    this.Emit(OpCodes.Pop);
                     this.EmitLocal(OpCodes.Ldloc, toLocal);                    
                 }
             }

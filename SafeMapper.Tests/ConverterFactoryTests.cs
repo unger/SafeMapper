@@ -1244,7 +1244,7 @@ namespace SafeMapper.Tests
         public void CreateDelegate_WithFakeConvertSingletonFieldIntToString_ShouldReturn1337()
         {
             var mapConfig = new MapConfiguration();
-            mapConfig.AddConvertMethods<FakeConvertWithoutSingleton>();
+            mapConfig.AddConvertMethods<FakeConvertSingletonField>();
             var factory = new ConverterFactory(mapConfig);
 
             var converter = factory.CreateDelegate<int, string>();
@@ -1257,7 +1257,7 @@ namespace SafeMapper.Tests
         public void CreateDelegate_WithFakeConvertSingletonFieldStringToInt_ShouldReturn1337()
         {
             var mapConfig = new MapConfiguration();
-            mapConfig.AddConvertMethods<FakeConvertWithoutSingleton>();
+            mapConfig.AddConvertMethods<FakeConvertSingletonField>();
             var factory = new ConverterFactory(mapConfig);
 
             var converter = factory.CreateDelegate<string, int>();
@@ -1317,5 +1317,19 @@ namespace SafeMapper.Tests
             var result = converter(string.Empty);
             Assert.AreEqual(1337, result);
         }
+
+        [Test]
+        public void CreateDelegate_WithFakeConvertWithoutSingletonAndEmptyConstructor_ShouldReturnZero()
+        {
+            var mapConfig = new MapConfiguration();
+            mapConfig.AddConvertMethods<FakeConvertWithoutSingletonAndEmptyConstructor>();
+            var factory = new ConverterFactory(mapConfig);
+
+            var converter = factory.CreateDelegate<string, int>();
+
+            var result = converter("1337");
+            Assert.AreEqual(0, result);
+        }
+        
     }
 }

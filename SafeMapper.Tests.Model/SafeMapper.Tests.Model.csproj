@@ -53,6 +53,7 @@
     <Compile Include="Circular\Root.cs" />
     <Compile Include="ConvertClasses\FakeConvertSingletonProperty.cs" />
     <Compile Include="ConvertClasses\FakeConvertSingletonField.cs" />
+    <Compile Include="ConvertClasses\FakeConvertWithoutSingletonAndEmptyConstructor.cs" />
     <Compile Include="ConvertClasses\FakeConvertWithoutSingleton.cs" />
     <Compile Include="Enums\DescriptionAttributeEnum.cs" />
     <Compile Include="Enums\DisplayAttributeEnum.cs" />
