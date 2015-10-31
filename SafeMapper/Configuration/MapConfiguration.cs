@@ -49,7 +49,7 @@ namespace SafeMapper.Configuration
 
         public void SetConvertMethod<TFrom, TTo>(Func<TFrom, TTo> converter)
         {
-            this.SetConvertMethod(typeof(TFrom), typeof(TTo), converter.Method);
+            this.SetConvertMethod(typeof(TFrom), typeof(TTo), converter.Method, converter.Target);
         }
 
         public void AddConvertMethods<TConvertClass>()
@@ -65,37 +65,21 @@ namespace SafeMapper.Configuration
                 var pars = method.GetParameters();
                 if ((pars.Length == 2 && pars[1].ParameterType == typeof (IFormatProvider)) || pars.Length == 1)
                 {
-                    if (method.IsStatic)
-                    {
-                        SetConvertMethod(pars[0].ParameterType, method.ReturnType, new MethodWrapper(method));
-                    }
-                    else
-                    {
-                        var staticInstanceMember = ReflectionUtils.GetStaticMemberInfo(convertClass);
-                        if (staticInstanceMember != null)
-                        {
-                            SetConvertMethod(pars[0].ParameterType, method.ReturnType, new MethodWrapper(method, staticInstanceMember));
-                        }
-                    }
+                    SetConvertMethod(pars[0].ParameterType, method.ReturnType, method, null);
                 }
             }
         }
 
-        private void SetConvertMethod(Type fromType, Type toType, MethodInfo method)
+        private void SetConvertMethod(Type fromType, Type toType, MethodInfo method, object target)
         {
             if (method.IsStatic)
             {
-                this.SetConvertMethod(fromType, toType, new MethodWrapper(method));
+                this.SetConvertMethod(fromType, toType, new MethodWrapper(method, target, null));
             }
             else
             {
                 var staticInstanceMember = ReflectionUtils.GetStaticMemberInfo(method.DeclaringType);
-                if (staticInstanceMember == null)
-                {
-                    throw new ArgumentException("Only static Func-lamdas are supported, or non static methods defined in a class with a static instance member");
-                }
-
-                this.SetConvertMethod(fromType, toType, new MethodWrapper(method, staticInstanceMember));
+                this.SetConvertMethod(fromType, toType, new MethodWrapper(method, target, staticInstanceMember));
             }
         }
 

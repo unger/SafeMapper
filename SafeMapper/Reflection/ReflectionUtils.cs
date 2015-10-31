@@ -257,49 +257,6 @@
             return result;
         }
 
-        public static MethodInfo GetConvertMethod(Type fromType, Type toType, Type[] searchInTypes)
-        {
-            if (toType.IsAssignableFrom(fromType))
-            {
-                return null;
-            }
-
-            foreach (var convertType in searchInTypes)
-            {
-                MethodInfo methodInfoWithoutFormatProvider = null;
-                var methods = convertType.GetMethods();
-                foreach (var method in methods)
-                {
-                    if (method.ReturnType == toType)
-                    {
-                        var parameters = method.GetParameters();
-                        if (parameters.Length >= 1)
-                        {
-                            if (parameters[0].ParameterType == fromType)
-                            {
-                                if (parameters.Length == 2 && parameters[1].ParameterType == typeof(IFormatProvider))
-                                {
-                                    return method;
-                                }
-
-                                if (parameters.Length == 1)
-                                {
-                                    methodInfoWithoutFormatProvider = method;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (methodInfoWithoutFormatProvider != null)
-                {
-                    return methodInfoWithoutFormatProvider;
-                }
-            }
-
-            return null;
-        }
-
         public static Type GetMemberType(MemberInfo member)
         {
             if (member is PropertyInfo)

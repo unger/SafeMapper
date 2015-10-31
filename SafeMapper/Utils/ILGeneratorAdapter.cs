@@ -327,14 +327,49 @@
             }
             else
             {
-                if (converter.StaticInstanceMember is FieldInfo)
-                {
-                    var fromLocal = this.DeclareLocal(fromType);
-                    // Store value on top of stack into fromLocal
-                    this.EmitLocal(OpCodes.Stloc, fromLocal);
-                    this.EmitField(OpCodes.Ldsfld, (FieldInfo)converter.StaticInstanceMember);
-                    this.EmitLocal(OpCodes.Ldloc, fromLocal);
+                var fromLocal = this.DeclareLocal(fromType);
+                // Store value on top of stack into fromLocal
+                this.EmitLocal(OpCodes.Stloc, fromLocal);
 
+                var classInstanceLoaded = false;
+                if (converter.StaticInstanceMember != null)
+                {
+                    var staticField = converter.StaticInstanceMember as FieldInfo;
+                    if (staticField != null)
+                    {
+                        classInstanceLoaded = true;
+                        this.EmitField(OpCodes.Ldsfld, staticField);
+                    }
+                }
+                else if (converter.Target != null)
+                {
+                    // For example anonymous methods will be defined in a seperate automatically generated class
+                    // all local variables will be defined as fields on this class
+                    var classInstanceLocal = this.DeclareLocal(converter.Target.GetType());
+                    var ctor = classInstanceLocal.LocalType.GetConstructor(Type.EmptyTypes);
+                    if (ctor != null)
+                    {
+                        classInstanceLoaded = true;
+                        this.EmitNewobj(ctor);
+                        this.EmitLocal(OpCodes.Stloc, classInstanceLocal);
+
+                        var fields = classInstanceLocal.LocalType.GetFields();
+                        foreach (var field in fields)
+                        {
+                            if (field.FieldType == typeof(int))
+                            {
+                                this.EmitLocal(OpCodes.Ldloc, classInstanceLocal);
+                                this.EmitInt((int)field.GetValue(converter.Target));
+                                this.EmitField(OpCodes.Stfld, field);
+                            }
+                        }
+                        this.EmitLocal(OpCodes.Ldloc, classInstanceLocal);
+                    }
+                }
+
+                if (classInstanceLoaded)
+                {
+                    this.EmitLocal(OpCodes.Ldloc, fromLocal);
                     if (converter.Method.GetParameters().Length == 2)
                     {
                         this.Emit(OpCodes.Ldarg_0);
@@ -344,10 +379,10 @@
                 }
                 else
                 {
-                    // Load default of toType when it fails to convert
+                    // Load default of toType when it fails to load class instance on stack
                     var toLocal = this.DeclareLocal(toType);
                     this.Emit(OpCodes.Pop);
-                    this.EmitLocal(OpCodes.Ldloc, toLocal);
+                    this.EmitLocal(OpCodes.Ldloc, toLocal);                    
                 }
             }
         }

@@ -115,14 +115,16 @@
         }
 
         [Test]
-        public void SetConvertMethod_DecimalToStringWithLamdaUsingLocalVariabel_ShouldThrowException()
+        public void SetConvertMethod_DecimalToStringWithLamdaUsingLocalVariabel()
         {
             var decimals = 2;
 
-            Assert.Throws<ArgumentException>(
-                () =>
-                this.safeMapService.Configuration.SetConvertMethod<decimal, string>(
-                    x => Math.Round(x, decimals).ToString(CultureInfo.InvariantCulture)));
+            this.safeMapService.Configuration.SetConvertMethod<decimal, string>(
+                x => Math.Round(x, decimals).ToString(CultureInfo.InvariantCulture));
+
+            var result = this.safeMapService.Convert<decimal, string>(1337.1337m);
+
+            Assert.AreEqual("1337.13", result);
         }
 
         public class ClassPropertyDictionaryMap : TypeMap<ClassProperty<string>, Dictionary<string, int>>
