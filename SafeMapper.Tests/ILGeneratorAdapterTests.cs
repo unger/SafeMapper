@@ -20,13 +20,7 @@
         [SetUp]
         public void Setup()
         {
-            var convertDynamicMethod = new DynamicMethod(
-                "TestDenamicMethod",
-                typeof(object),
-                null,
-                typeof(ILGeneratorAdapterTests).Module);
-
-            this.ilgenerator = new ILGeneratorAdapter(convertDynamicMethod.GetILGenerator(), new MapConfiguration());
+            this.ilgenerator = new ILGeneratorAdapter(new MapConfiguration());
         }
 
         [Test]
@@ -35,7 +29,6 @@
             this.ilgenerator.EmitDouble(1.0d);
 
             Assert.AreEqual(OpCodes.Ldc_R8, this.ilgenerator.Instructions[0].OpCode);
-            Assert.AreEqual(9, this.ilgenerator.Offset);
         }
 
         [Test]
@@ -44,7 +37,6 @@
             this.ilgenerator.EmitFloat(1.0f);
 
             Assert.AreEqual(OpCodes.Ldc_R4, this.ilgenerator.Instructions[0].OpCode);
-            Assert.AreEqual(5, this.ilgenerator.Offset);
         }
 
         [Test]

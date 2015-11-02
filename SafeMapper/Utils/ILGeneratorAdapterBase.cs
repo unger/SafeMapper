@@ -2,31 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
-    using System.Linq;
     using System.Reflection;
     using System.Reflection.Emit;
 
     public class ILGeneratorAdapterBase
     {
-        private readonly ILGenerator il;
-
         private List<ILInstruction> instructions = new List<ILInstruction>();
-
-        private List<LabelWrapper> labels = new List<LabelWrapper>();
-
-        public ILGeneratorAdapterBase(ILGenerator il)
-        {
-            this.il = il;
-        }
-
-        public int Offset
-        {
-            get
-            {
-                return this.il.ILOffset;
-            }
-        }
 
         public ILInstruction[] Instructions
         {
@@ -38,24 +19,15 @@
 
         public LocalBuilderWrapper DeclareLocal(Type type)
         {
-            var local = new LocalBuilderWrapper(type)
-            {
-                LocalBuilder = this.il.DeclareLocal(type)
-            };
-
-            this.AddInstruction(OpCodes.Nop, local);
+            var local = new LocalBuilderWrapper(type);
+            AddInstruction(new ILInstruction(OpCodes.Nop, local, typeof(LocalBuilderWrapper), ILInstructionType.DeclareLocal));
             return local;
         }
 
         public LabelWrapper DefineLabel()
         {
-            var label = new LabelWrapper
-            {
-                Label = this.il.DefineLabel()
-            };
-
-            this.AddInstruction(OpCodes.Nop, label);
-            this.labels.Add(label);
+            var label = new LabelWrapper();
+            AddInstruction(new ILInstruction(OpCodes.Nop, label, typeof(LabelWrapper), ILInstructionType.DefineLabel));
             return label;
         }
 
@@ -174,93 +146,74 @@
             this.AddInstruction(opcode, methodInfo, null);
         }
 
-        //public void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
-        //{
-        //    this.AddInstruction(opcode, methodInfo, optionalParameterTypes);
-        //}
-
         public void MarkLabel(LabelWrapper label)
         {
-            this.AddInstruction(OpCodes.Nop, label);
-            this.il.MarkLabel(label.Label);
+            AddInstruction(new ILInstruction(OpCodes.Nop, label, typeof(LabelWrapper), ILInstructionType.MarkLabel));
         }
 
         private void AddInstruction(OpCode opcode)
         {
-            this.il.Emit(opcode);
-            this.instructions.Add(new ILInstruction(opcode));
+            AddInstruction(new ILInstruction(opcode));
         }
 
         private void AddInstruction(OpCode opcode, ConstructorInfo con)
         {
-            this.il.Emit(opcode, con);
-            this.instructions.Add(new ILInstruction(opcode, con, typeof(ConstructorInfo)));
+            AddInstruction(new ILInstruction(opcode, con, typeof(ConstructorInfo)));
         }
 
         private void AddInstruction(OpCode opcode, FieldInfo field)
         {
-            this.il.Emit(opcode, field);
-            this.instructions.Add(new ILInstruction(opcode, field, typeof(FieldInfo)));
+            AddInstruction(new ILInstruction(opcode, field, typeof(FieldInfo)));
         }
 
         private void AddInstruction(OpCode opcode, LabelWrapper label)
         {
-            if (opcode != OpCodes.Nop)
-            {
-                this.il.Emit(opcode, label.Label);
-            }
-            this.instructions.Add(new ILInstruction(opcode, label, typeof(Label)));
+            AddInstruction(new ILInstruction(opcode, label, typeof(LabelWrapper)));
         }
 
         private void AddInstruction(OpCode opcode, Type type)
         {
-            this.il.Emit(opcode, type);
-            this.instructions.Add(new ILInstruction(opcode, type, typeof(Type)));
+            AddInstruction(new ILInstruction(opcode, type, typeof(Type)));
         }
 
         private void AddInstruction(OpCode opcode, int value)
         {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(opcode, value, typeof(int)));
+            AddInstruction(new ILInstruction(opcode, value, typeof(int)));
         }
 
         private void AddInstruction(OpCode opcode, long value)
         {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(opcode, value, typeof(long)));
+            AddInstruction(new ILInstruction(opcode, value, typeof(long)));
         }
 
         private void AddInstruction(OpCode opcode, double value)
         {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(opcode, value, typeof(double)));
+            AddInstruction(new ILInstruction(opcode, value, typeof(double)));
         }
 
         private void AddInstruction(OpCode opcode, float value)
         {
-            this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(opcode, value, typeof(float)));
+            AddInstruction(new ILInstruction(opcode, value, typeof(float)));
         }
 
         private void AddInstruction(OpCode opcode, LocalBuilderWrapper local)
         {
-            if (opcode != OpCodes.Nop)
-            {
-                this.il.Emit(opcode, local.LocalBuilder);
-            }
-            this.instructions.Add(new ILInstruction(opcode, local, typeof(LocalBuilderWrapper)));
+            AddInstruction(new ILInstruction(opcode, local, typeof(LocalBuilderWrapper)));
         }
 
         private void AddInstruction(OpCode opcode, string argument)
         {
-            this.il.Emit(opcode, argument);
-            this.instructions.Add(new ILInstruction(opcode, argument, typeof(string)));
+            AddInstruction(new ILInstruction(opcode, argument, typeof(string)));
         }
 
         private void AddInstruction(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
         {
-            this.il.EmitCall(opcode, methodInfo, optionalParameterTypes);
-            this.instructions.Add(new ILInstruction(opcode, methodInfo, typeof(MethodInfo)));
+            AddInstruction(new ILInstruction(opcode, methodInfo, typeof(MethodInfo)));
         }
-     }
+
+        private void AddInstruction(ILInstruction instruction)
+        {
+            this.instructions.Add(instruction);
+        }
+    }
 }

@@ -6,45 +6,25 @@ namespace SafeMapper.Utils
 
     public class ILInstruction
     {
-        private readonly OpCode _opcode;
-
-        private readonly object _argument;
-
-        private readonly Type _argumentType;
-
-        public ILInstruction(OpCode opcode) : this(opcode, null, null)
+        public ILInstruction(OpCode opcode)
+            : this(opcode, null, null)
         {
         }
 
-        public ILInstruction(OpCode opcode, object argument, Type argumentType)
+        public ILInstruction(OpCode opcode, object argument, Type argumentType, ILInstructionType instructionType = ILInstructionType.OpCode)
         {
-            _opcode = opcode;
-            _argument = argument;
-            _argumentType = argumentType;
+            OpCode = opcode;
+            Argument = argument;
+            ArgumentType = argumentType;
+            InstructionType = instructionType;
         }
 
-        public OpCode OpCode
-        {
-            get
-            {
-                return this._opcode;
-            }
-        }
+        public OpCode OpCode { get; private set; }
 
-        public object Argument
-        {
-            get
-            {
-                return this._argument;
-            }
-        }
+        public object Argument { get; private set; }
 
-        public Type ArgumentType
-        {
-            get
-            {
-                return this._argumentType;
-            }
-        }
+        public Type ArgumentType { get; private set; }
+
+        public ILInstructionType InstructionType { get; private set; }
     }
 }

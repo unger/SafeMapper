@@ -13,8 +13,7 @@
     {
         private readonly IMapConfiguration mapCfg;
 
-        public ILGeneratorAdapter(ILGenerator il, IMapConfiguration configuration) 
-            : base(il)
+        public ILGeneratorAdapter(IMapConfiguration configuration) 
         {
             this.mapCfg = configuration;
         }
@@ -752,6 +751,13 @@
                 if (converter != null)
                 {
                     this.EmitCallConverter(underlayingFromType, underlayingToType, converter);
+                }
+                else
+                {
+                    // if it is not possible to convert load enum default value
+                    this.Emit(OpCodes.Pop);
+                    this.EmitLoadEnumValue(underlayingToType, enumValues.GetValue(0));
+                    return;
                 }
             }
 
