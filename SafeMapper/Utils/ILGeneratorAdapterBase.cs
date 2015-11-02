@@ -13,7 +13,7 @@
 
         private List<ILInstruction> instructions = new List<ILInstruction>();
 
-        private List<Label> labels = new List<Label>();
+        private List<LabelWrapper> labels = new List<LabelWrapper>();
 
         public ILGeneratorAdapterBase(ILGenerator il)
         {
@@ -36,14 +36,25 @@
             }
         }
 
-        public LocalBuilder DeclareLocal(Type type)
+        public LocalBuilderWrapper DeclareLocal(Type type)
         {
-            return this.il.DeclareLocal(type);
+            var local = new LocalBuilderWrapper(type)
+            {
+                LocalBuilder = this.il.DeclareLocal(type)
+            };
+
+            this.AddInstruction(OpCodes.Nop, local);
+            return local;
         }
 
-        public Label DefineLabel()
+        public LabelWrapper DefineLabel()
         {
-            var label = this.il.DefineLabel();
+            var label = new LabelWrapper
+            {
+                Label = this.il.DefineLabel()
+            };
+
+            this.AddInstruction(OpCodes.Nop, label);
             this.labels.Add(label);
             return label;
         }
@@ -70,7 +81,7 @@
             }
         }
 
-        public void EmitLocal(OpCode opcode, LocalBuilder local)
+        public void EmitLocal(OpCode opcode, LocalBuilderWrapper local)
         {
             if (opcode == OpCodes.Ldloc || opcode == OpCodes.Stloc || opcode == OpCodes.Ldloca)
             {
@@ -87,7 +98,7 @@
             this.AddInstruction(OpCodes.Newobj, con);
         }
 
-        public void EmitBreak(OpCode opcode, Label label)
+        public void EmitBreak(OpCode opcode, LabelWrapper label)
         {
             if (!opcode.Name.StartsWith("b") || opcode == OpCodes.Break || opcode == OpCodes.Box)
             {
@@ -158,89 +169,98 @@
             this.AddInstruction(OpCodes.Ldstr, value);
         }
 
-        public void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
+        public void EmitCall(OpCode opcode, MethodInfo methodInfo)
         {
-            this.AddInstruction(opcode, methodInfo, optionalParameterTypes);
+            this.AddInstruction(opcode, methodInfo, null);
         }
 
-        public void MarkLabel(Label label)
+        //public void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
+        //{
+        //    this.AddInstruction(opcode, methodInfo, optionalParameterTypes);
+        //}
+
+        public void MarkLabel(LabelWrapper label)
         {
-            var index = this.labels.IndexOf(label);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, OpCodes.Nop, "Label_" + index));
-            this.il.MarkLabel(label);
+            this.AddInstruction(OpCodes.Nop, label);
+            this.il.MarkLabel(label.Label);
         }
 
         private void AddInstruction(OpCode opcode)
         {
             this.il.Emit(opcode);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode));
+            this.instructions.Add(new ILInstruction(opcode));
         }
 
         private void AddInstruction(OpCode opcode, ConstructorInfo con)
         {
             this.il.Emit(opcode, con);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, con.DeclaringType + "." + con.Name));
+            this.instructions.Add(new ILInstruction(opcode, con, typeof(ConstructorInfo)));
         }
 
         private void AddInstruction(OpCode opcode, FieldInfo field)
         {
             this.il.Emit(opcode, field);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, field.DeclaringType + "." + field.Name));
+            this.instructions.Add(new ILInstruction(opcode, field, typeof(FieldInfo)));
         }
 
-        private void AddInstruction(OpCode opcode, Label label)
+        private void AddInstruction(OpCode opcode, LabelWrapper label)
         {
-            var index = this.labels.IndexOf(label);
-            this.il.Emit(opcode, label);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, "Label_" + index));
+            if (opcode != OpCodes.Nop)
+            {
+                this.il.Emit(opcode, label.Label);
+            }
+            this.instructions.Add(new ILInstruction(opcode, label, typeof(Label)));
         }
 
         private void AddInstruction(OpCode opcode, Type type)
         {
             this.il.Emit(opcode, type);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, type.FullName));
+            this.instructions.Add(new ILInstruction(opcode, type, typeof(Type)));
         }
 
         private void AddInstruction(OpCode opcode, int value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
+            this.instructions.Add(new ILInstruction(opcode, value, typeof(int)));
         }
 
         private void AddInstruction(OpCode opcode, long value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
+            this.instructions.Add(new ILInstruction(opcode, value, typeof(long)));
         }
 
         private void AddInstruction(OpCode opcode, double value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
+            this.instructions.Add(new ILInstruction(opcode, value, typeof(double)));
         }
 
         private void AddInstruction(OpCode opcode, float value)
         {
             this.il.Emit(opcode, value);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, value.ToString(CultureInfo.InvariantCulture)));
+            this.instructions.Add(new ILInstruction(opcode, value, typeof(float)));
         }
 
-        private void AddInstruction(OpCode opcode, LocalBuilder local)
+        private void AddInstruction(OpCode opcode, LocalBuilderWrapper local)
         {
-            this.il.Emit(opcode, local);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, local.LocalIndex.ToString(CultureInfo.InvariantCulture)));
+            if (opcode != OpCodes.Nop)
+            {
+                this.il.Emit(opcode, local.LocalBuilder);
+            }
+            this.instructions.Add(new ILInstruction(opcode, local, typeof(LocalBuilderWrapper)));
         }
 
         private void AddInstruction(OpCode opcode, string argument)
         {
             this.il.Emit(opcode, argument);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, argument));
+            this.instructions.Add(new ILInstruction(opcode, argument, typeof(string)));
         }
 
         private void AddInstruction(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
         {
             this.il.EmitCall(opcode, methodInfo, optionalParameterTypes);
-            this.instructions.Add(new ILInstruction(this.il.ILOffset, opcode, methodInfo.DeclaringType + "." + methodInfo.Name));
+            this.instructions.Add(new ILInstruction(opcode, methodInfo, typeof(MethodInfo)));
         }
      }
 }

@@ -38,9 +38,9 @@
             var fromElementType = fromType.GetElementType();
             var toElementType = toType.GetElementType();
 
-            Label startLoop = this.DefineLabel();
-            Label afterLoop = this.DefineLabel();
-            LocalBuilder arrayIndex = this.DeclareLocal(typeof(int));
+            var startLoop = this.DefineLabel();
+            var afterLoop = this.DefineLabel();
+            var arrayIndex = this.DeclareLocal(typeof(int));
 
             this.EmitLocal(OpCodes.Ldloc, fromLocal);
             this.Emit(OpCodes.Ldlen);
@@ -78,8 +78,8 @@
         }
 
         public void EmitMemberMap(
-            LocalBuilder fromLocal,
-            LocalBuilder toLocal,
+            LocalBuilderWrapper fromLocal,
+            LocalBuilderWrapper toLocal,
             MemberMap memberMap,
             HashSet<Type> convertedTypes)
         {
@@ -89,7 +89,7 @@
                 var containsKey = fromLocal.LocalType.GetMethod("ContainsKey", new[] { typeof(string) });
                 this.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
                 this.EmitString(memberMap.FromMember.Name);
-                this.EmitCall(OpCodes.Call, containsKey, null);
+                this.EmitCall(OpCodes.Call, containsKey);
                 this.EmitBreak(OpCodes.Brfalse, skipMemberMap);
             }
 
@@ -111,7 +111,7 @@
                     this.EmitString(memberMap.FromMember.Name);
                 }
 
-                this.EmitCall(OpCodes.Callvirt, getter, null);
+                this.EmitCall(OpCodes.Callvirt, getter);
             }
             else if (memberMap.FromMember.MemberInfo is FieldInfo)
             {
@@ -125,7 +125,7 @@
                     this.EmitString(memberMap.FromMember.Name);
                 }
 
-                this.EmitCall(OpCodes.Callvirt, method, null);
+                this.EmitCall(OpCodes.Callvirt, method);
             }
 
             // Convert the value on top of the stack to the correct toType
@@ -134,7 +134,7 @@
             if (memberMap.ToMember.MemberInfo is PropertyInfo)
             {
                 var setter = (memberMap.ToMember.MemberInfo as PropertyInfo).GetSetMethod();
-                this.EmitCall(OpCodes.Callvirt, setter, null);
+                this.EmitCall(OpCodes.Callvirt, setter);
             }
             else if (memberMap.ToMember.MemberInfo is FieldInfo)
             {
@@ -142,7 +142,7 @@
             }
             else if (memberMap.ToMember.MemberInfo is MethodInfo)
             {
-                this.EmitCall(OpCodes.Call, memberMap.ToMember.MemberInfo as MethodInfo, null);
+                this.EmitCall(OpCodes.Call, memberMap.ToMember.MemberInfo as MethodInfo);
             }
 
             if (memberMap.FromMember.NeedsContainsCheck)
@@ -156,7 +156,7 @@
             if (fromType.IsValueType)
             {
                 // Put property/field value in a local variable to be able to call instance method on it
-                LocalBuilder localReturnType = this.DeclareLocal(fromType);
+                var localReturnType = this.DeclareLocal(fromType);
                 this.EmitLocal(OpCodes.Stloc, localReturnType);
                 if (fromType.IsEnum)
                 {
@@ -178,12 +178,12 @@
             if (toStringMethod != null)
             {
                 this.Emit(OpCodes.Ldarg_0); // IFormatProvider
-                this.EmitCall(OpCodes.Callvirt, toStringMethod, null);
+                this.EmitCall(OpCodes.Callvirt, toStringMethod);
             }
             else
             {
                 toStringMethod = fromType.GetMethod("ToString", Type.EmptyTypes);
-                this.EmitCall(OpCodes.Callvirt, toStringMethod, null);
+                this.EmitCall(OpCodes.Callvirt, toStringMethod);
             }
         }
 
@@ -203,7 +203,7 @@
                 convertedTypes.Add(fromType);
             }
 
-            Label skipConversion = this.DefineLabel();
+            var skipConversion = this.DefineLabel();
 
             if (toType.IsAssignableFrom(fromType))
             {
@@ -216,7 +216,7 @@
             {
                 var fromLocal = this.DeclareLocal(fromType);
                 var toLocal = this.DeclareLocal(toType);
-                Label nonNull = this.DefineLabel();
+                var nonNull = this.DefineLabel();
 
                 // Store value on top of stack into fromLocal
                 this.EmitLocal(OpCodes.Stloc, fromLocal);
@@ -225,7 +225,7 @@
                 {
                     this.EmitLocal(OpCodes.Ldloca, fromLocal);
                     MethodInfo mi = fromType.GetMethod("get_HasValue", BindingFlags.Instance | BindingFlags.Public);
-                    this.EmitCall(OpCodes.Call, mi, null);
+                    this.EmitCall(OpCodes.Call, mi);
                 }
                 else
                 {
@@ -244,7 +244,7 @@
                 {
                     this.EmitLocal(OpCodes.Ldloca, fromLocal);
                     MethodInfo mi = fromType.GetMethod("get_Value", BindingFlags.Instance | BindingFlags.Public);
-                    this.EmitCall(OpCodes.Call, mi, null);
+                    this.EmitCall(OpCodes.Call, mi);
 
                     if (toType.IsAssignableFrom(underlyingFromType))
                     {
@@ -323,7 +323,7 @@
                     this.Emit(OpCodes.Ldarg_0);
                 }
 
-                this.EmitCall(OpCodes.Call, converter.Method, null);
+                this.EmitCall(OpCodes.Call, converter.Method);
             }
             else
             {
@@ -346,7 +346,7 @@
                     {
                         classInstanceLoaded = true;
                         var getter = staticProperty.GetGetMethod();
-                        this.EmitCall(OpCodes.Call, getter, null);
+                        this.EmitCall(OpCodes.Call, getter);
                     }
                 }
                 else
@@ -388,7 +388,7 @@
                         this.Emit(OpCodes.Ldarg_0);
                     }
 
-                    this.EmitCall(OpCodes.Callvirt, converter.Method, null);
+                    this.EmitCall(OpCodes.Callvirt, converter.Method);
                 }
                 else
                 {
@@ -422,7 +422,7 @@
             {
                 var getter = allKeys.GetGetMethod();
                 this.EmitLocal(OpCodes.Ldloc, fromLocal);
-                this.EmitCall(OpCodes.Call, getter, null);
+                this.EmitCall(OpCodes.Call, getter);
                 keysFound = true;
             }
 
@@ -433,9 +433,9 @@
                 {
                     var getter = keys.GetGetMethod();
                     this.EmitLocal(OpCodes.Ldloc, fromLocal);
-                    this.EmitCall(OpCodes.Call, getter, null);
+                    this.EmitCall(OpCodes.Call, getter);
                     var toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(new[] { typeof(string) });
-                    this.EmitCall(OpCodes.Call, toArrayMethod, null);
+                    this.EmitCall(OpCodes.Call, toArrayMethod);
                     keysFound = true;
                 }
             }
@@ -449,8 +449,8 @@
             this.EmitLocal(OpCodes.Stloc, keysArray);
 
             // Loop over all keys
-            Label startLoop = this.DefineLabel();
-            Label afterLoop = this.DefineLabel();
+            var startLoop = this.DefineLabel();
+            var afterLoop = this.DefineLabel();
             var keysIndex = this.DeclareLocal(typeof(int));
 
             this.EmitLocal(OpCodes.Ldloc, keysArray);
@@ -495,13 +495,13 @@
                     this.EmitLocal(OpCodes.Ldloc, key);
                 }
 
-                this.EmitCall(OpCodes.Callvirt, getter, null);
+                this.EmitCall(OpCodes.Callvirt, getter);
             }
             else if (fromMember.MemberInfo is MethodInfo)
             {
                 var method = fromMember.MemberInfo as MethodInfo;
                 this.EmitLocal(OpCodes.Ldloc, key);
-                this.EmitCall(OpCodes.Callvirt, method, null);
+                this.EmitCall(OpCodes.Callvirt, method);
             }
 
             // Convert the value on top of the stack to the correct toType
@@ -510,11 +510,11 @@
             if (toMember.MemberInfo is PropertyInfo)
             {
                 var setter = (toMember.MemberInfo as PropertyInfo).GetSetMethod();
-                this.EmitCall(OpCodes.Callvirt, setter, null);
+                this.EmitCall(OpCodes.Callvirt, setter);
             }
             else if (toMember.MemberInfo is MethodInfo)
             {
-                this.EmitCall(OpCodes.Call, toMember.MemberInfo as MethodInfo, null);
+                this.EmitCall(OpCodes.Call, toMember.MemberInfo as MethodInfo);
             }
 
             if (fromMember.NeedsContainsCheck)
@@ -570,7 +570,7 @@
                     {
                         this.EmitLocal(OpCodes.Ldloc, collectionLocal);
                         this.EmitLocal(OpCodes.Ldloc, elementLocal);
-                        this.EmitCall(OpCodes.Call, addMethod, null);
+                        this.EmitCall(OpCodes.Call, addMethod);
                     }
                 }
 
@@ -610,7 +610,7 @@
                 var firstMethod = typeof(Enumerable).GetMethods().Single(method => method.Name == "FirstOrDefault" && method.IsStatic && method.GetParameters().Length == 1).MakeGenericMethod(elementType);
 
                 this.EmitLocal(OpCodes.Ldloc, fromLocal);
-                this.EmitCall(OpCodes.Call, firstMethod, null);
+                this.EmitCall(OpCodes.Call, firstMethod);
             }
         }
 
@@ -632,7 +632,7 @@
                     toArrayMethod = typeof(Enumerable).GetMethod("ToArray").MakeGenericMethod(fromElementType);
                 }
 
-                this.EmitCall(OpCodes.Call, toArrayMethod, null);
+                this.EmitCall(OpCodes.Call, toArrayMethod);
                 fromArrayType = fromElementType.MakeArrayType();
             }
 
@@ -760,13 +760,13 @@
 
         public void EmitSwitchCases(Type switchType, Type returnType, List<Tuple<object, object>> switchReturnValues)
         {
-            Label defaultCase = this.DefineLabel();
-            Label endOfMethod = this.DefineLabel();
-            LocalBuilder switchValue = this.DeclareLocal(switchType);
+            var defaultCase = this.DefineLabel();
+            var endOfMethod = this.DefineLabel();
+            var switchValue = this.DeclareLocal(switchType);
 
             this.EmitLocal(OpCodes.Stloc, switchValue);
 
-            var jumpTable = new Label[switchReturnValues.Count];
+            var jumpTable = new LabelWrapper[switchReturnValues.Count];
             for (int i = 0; i < switchReturnValues.Count; i++)
             {
                 jumpTable[i] = this.DefineLabel();
@@ -775,7 +775,7 @@
                 if (switchType == typeof(string))
                 {
                     var stringEquals = typeof(string).GetMethod("op_Equality", new[] { typeof(string), typeof(string) });
-                    this.EmitCall(OpCodes.Call, stringEquals, null);
+                    this.EmitCall(OpCodes.Call, stringEquals);
                     this.Emit(OpCodes.Ldc_I4_1);
                 }
 

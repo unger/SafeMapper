@@ -1,44 +1,50 @@
-﻿namespace SafeMapper.Utils
+﻿using System;
+
+namespace SafeMapper.Utils
 {
     using System.Reflection.Emit;
 
     public class ILInstruction
     {
-        private readonly int offset;
+        private readonly OpCode _opcode;
 
-        private readonly OpCode opcode;
+        private readonly object _argument;
 
-        private readonly string argument;
+        private readonly Type _argumentType;
 
-        public ILInstruction(int offset, OpCode opcode, string argument = "")
+        public ILInstruction(OpCode opcode) : this(opcode, null, null)
         {
-            this.offset = offset;
-            this.opcode = opcode;
-            this.argument = argument;
         }
 
-        /*public string Offset
+        public ILInstruction(OpCode opcode, object argument, Type argumentType)
         {
-            get
-            {
-                return string.Format("IL_{0:D4}", this.offset);
-            }
-        }*/
+            _opcode = opcode;
+            _argument = argument;
+            _argumentType = argumentType;
+        }
 
         public OpCode OpCode
         {
             get
             {
-                return this.opcode;
+                return this._opcode;
             }
         }
 
-        /*public string Argument
+        public object Argument
         {
             get
             {
-                return this.argument;
+                return this._argument;
             }
-        }*/
+        }
+
+        public Type ArgumentType
+        {
+            get
+            {
+                return this._argumentType;
+            }
+        }
     }
 }

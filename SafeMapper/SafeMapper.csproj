@@ -75,6 +75,8 @@
     <Compile Include="Utils\ExpressionHelper.cs" />
     <Compile Include="Utils\ILGeneratorAdapterBase.cs" />
     <Compile Include="Utils\ILInstruction.cs" />
+    <Compile Include="Utils\LabelWrapper.cs" />
+    <Compile Include="Utils\LocalBuilderWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="StrongNameKey.snk" />
