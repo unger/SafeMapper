@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using SafeMapper.Utils;
 
 namespace SafeMapper.Configuration
 {
@@ -17,5 +18,11 @@ namespace SafeMapper.Configuration
         void AddConvertMethods<TConvertClass>();
 
         void AddConvertMethods(Type convertClass);
+
+        ILInstruction[] GetConvertInstructions(Type fromType, Type toType);
+
+        void SetConvertInstructions<TFrom, TTo>(ILInstruction[] instructions);
+
+        void SetConvertInstructions(Type fromType, Type toType, ILInstruction[] instructions);
     }
 }

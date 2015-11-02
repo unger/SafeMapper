@@ -146,6 +146,14 @@
             this.AddInstruction(opcode, methodInfo, null);
         }
 
+        public void EmitInstructions(ILInstruction[] ins)
+        {
+            foreach (var instruction in ins)
+            {
+                AddInstruction(instruction);
+            }
+        }
+
         public void MarkLabel(LabelWrapper label)
         {
             AddInstruction(new ILInstruction(OpCodes.Nop, label, typeof(LabelWrapper), ILInstructionType.MarkLabel));

@@ -1067,8 +1067,10 @@
 
         public static Guid ToGuid(string s)
         {
+            return Guid.Parse(s);
             Guid g;
-            return Guid.TryParse(s, out g) ? g : Guid.Empty;
+            Guid.TryParse(s, out g);
+            return g;
         }
 
         #endregion

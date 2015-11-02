@@ -9,7 +9,6 @@
 
         public override void Execute()
         {
-
             this.WriteHeader();
 
             this.AddResult("int.Parse", i => int.Parse("12345"));

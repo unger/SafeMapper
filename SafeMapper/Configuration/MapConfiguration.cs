@@ -1,5 +1,9 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using SafeMapper.Utils;
 
 namespace SafeMapper.Configuration
 {
@@ -14,11 +18,34 @@ namespace SafeMapper.Configuration
 
         private readonly ConcurrentDictionary<string, MethodWrapper> convertMethods = new ConcurrentDictionary<string, MethodWrapper>();
 
+        private readonly ConcurrentDictionary<string, ILInstruction[]> convertInstructions = new ConcurrentDictionary<string, ILInstruction[]>();
+
         public MapConfiguration()
         {
             AddConvertMethods<SafeConvert>();
             AddConvertMethods<SafeNullableConvert>();
-            //AddConvertMethods<SafeConvertNonStatic>();
+
+            //SetConvertInstructions<string, Guid>(GetTryParseInstructions<Guid>());
+            //SetConvertInstructions<string, int>(GetTryParseInstructions<int>());
+        }
+
+        private ILInstruction[] GetTryParseInstructions<TTo>() where TTo : struct
+        {
+            var toType = typeof (TTo);
+            MethodInfo tryParse = toType.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(m => m.Name == "TryParse" && m.GetParameters().Length == 2).FirstOrDefault();
+
+            var ilGenerator = new ILGeneratorAdapter(this);
+
+            if (tryParse != null)
+            {
+                var toLocal = ilGenerator.DeclareLocal(toType);
+                ilGenerator.EmitLocal(OpCodes.Ldloca, toLocal);
+                ilGenerator.EmitCall(OpCodes.Call, tryParse);
+                ilGenerator.Emit(OpCodes.Pop);
+                ilGenerator.EmitLocal(OpCodes.Ldloc, toLocal);
+            }
+
+            return ilGenerator.Instructions;
         }
 
         public ITypeMapping GetTypeMapping(Type fromType, Type toType)
@@ -36,6 +63,30 @@ namespace SafeMapper.Configuration
                 (key, oldValue) => typeMapping);
         }
 
+        public ILInstruction[] GetConvertInstructions(Type fromType, Type toType)
+        {
+            ILInstruction[] instructions;
+            if (this.convertInstructions.TryGetValue(string.Concat(fromType.FullName, toType.FullName), out instructions))
+            {
+                return instructions;
+            }
+
+            return null;
+        }
+
+        public void SetConvertInstructions<TFrom, TTo>(ILInstruction[] instructions)
+        {
+            this.SetConvertInstructions(typeof(TFrom), typeof(TTo), instructions);
+        }
+
+        public void SetConvertInstructions(Type fromType, Type toType, ILInstruction[] instructions)
+        {
+            this.convertInstructions.AddOrUpdate(
+                string.Concat(fromType.FullName, toType.FullName),
+                instructions,
+                (key, oldValue) => instructions);
+        }
+        
         public MethodWrapper GetConvertMethod(Type fromType, Type toType)
         {
             MethodWrapper mv;

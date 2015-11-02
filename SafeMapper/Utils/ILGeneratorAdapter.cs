@@ -258,9 +258,14 @@
                 }
             }
 
+            var convertInstructions = this.mapCfg.GetConvertInstructions(fromType, toType);
             var converter = this.mapCfg.GetConvertMethod(fromType, toType);
 
-            if (converter != null)
+            if (convertInstructions != null)
+            {
+                this.EmitInstructions(convertInstructions);
+            }
+            else if (converter != null)
             {
                 this.EmitCallConverter(fromType, toType, converter);
             }

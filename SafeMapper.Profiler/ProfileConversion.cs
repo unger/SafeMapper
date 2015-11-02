@@ -97,7 +97,7 @@
 
             // FromString conversions
             //this.ProfileConvert<string, Guid>(stringGuidArray, formatProvider, i => new Guid(stringGuidArray[i]));
-            //this.ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
+            this.ProfileConvert<string, int>(stringIntArray, formatProvider, i => int.Parse(stringIntArray[i], formatProvider));
             //this.ProfileConvert<string, string>(stringIntArray, formatProvider, i => stringIntArray[i].Clone());
             //this.ProfileConvert<string, DateTime>(stringDateTimeArray, formatProvider, i => Convert.ToDateTime(stringDateTimeArray[i]));
             //this.ProfileConvert<string, decimal>(stringDecimalArray, formatProvider, i => StringParser.TryParseDecimal(stringDecimalArray[i], formatProvider));
@@ -114,12 +114,12 @@
             this.ProfileConvert<Guid, string>(guidArray, CultureInfo.CurrentCulture, i => guidArray[i].ToString());
 
             this.ProfileConvert<DateTime, string>(dateTimeArray, CultureInfo.CurrentCulture, i => dateTimeArray[i].ToString());
-            
-            this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
             */
+            //this.ProfileConvert<PersonStringDto, Person>(personStringArray, CultureInfo.CurrentCulture, null);
+            
             //this.ProfileConvert<Customer, CustomerDto>(customerArray, CultureInfo.CurrentCulture, null);
             
-            this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
+            //this.ProfileConvert<CustomerDto, Customer>(customerDtoArray, CultureInfo.CurrentCulture, null);
 
             //this.ProfileConvert<BenchSource, BenchDestination>(benchSourceArray, CultureInfo.CurrentCulture, null);
 
@@ -178,12 +178,7 @@
 
             this.AddResult("SafeMapper", i => safeMapper(input[i]));
 
-            this.AddResult("EmitMapper", i =>
-            {
-                var x = emitMapper.Map(input[i]);
-                if (x != null) { }
-            }
-            );
+            this.AddResult("EmitMapper", i => emitMapper.Map(input[i]));
 
             this.AddResult("FastMapper", i => TypeAdapter.Adapt(input[i], sourceType, destinationType));
 
