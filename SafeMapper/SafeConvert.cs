@@ -1,7 +1,6 @@
 ﻿namespace SafeMapper
 {
     using System;
-    using System.Data.SqlTypes;
     using System.Globalization;
     using System.Linq;
 
@@ -1084,20 +1083,6 @@
         {
             DateTime d;
             return DateTime.TryParse(s, provider, DateTimeStyles.None, out d) ? d : DateTime.MinValue;
-        }
-
-        public static DateTime ToDateTime(SqlDateTime sqldate)
-        {
-            return sqldate.Value;
-        }
-
-        #endregion
-
-        #region ToSqlDateTime
-
-        public static SqlDateTime ToSqlDateTime(DateTime date)
-        {
-            return date < (DateTime)SqlDateTime.MinValue ? SqlDateTime.MinValue : date;
         }
 
         #endregion

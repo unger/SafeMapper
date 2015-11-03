@@ -24,6 +24,7 @@ namespace SafeMapper.Configuration
         {
             AddConvertMethods<SafeConvert>();
             AddConvertMethods<SafeNullableConvert>();
+            AddConvertMethods<SafeSqlConvert>();
 
             //SetConvertInstructions<string, Guid>(GetTryParseInstructions<Guid>());
             //SetConvertInstructions<string, int>(GetTryParseInstructions<int>());

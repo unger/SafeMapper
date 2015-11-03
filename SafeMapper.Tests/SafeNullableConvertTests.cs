@@ -1580,22 +1580,6 @@
             return SafeNullableConvert.ToDateTime(input, CultureInfo.InvariantCulture);
         }
 
-        [TestCaseSource(typeof(TestData), "SqlDateTimeToDateTimeData")]
-        public DateTime? ToNullableDateTime_FromSqlDateTime(SqlDateTime input)
-        {
-            return SafeNullableConvert.ToDateTime(input);
-        }
-
-        #endregion
-
-        #region? ToNullableSqlDateTime
-
-        [TestCaseSource(typeof(TestData), "DateTimeToSqlDateTimeData")]
-        public SqlDateTime? ToNullableSqlDateTime_FromSqlDateTime(DateTime input)
-        {
-            return SafeNullableConvert.ToSqlDateTime(input);
-        }
-
         #endregion
     }
 }

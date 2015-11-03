@@ -1576,22 +1576,6 @@
             return SafeConvert.ToDateTime(input, CultureInfo.InvariantCulture);
         }
 
-        [TestCaseSource(typeof(TestData), "SqlDateTimeToDateTimeData")]
-        public DateTime ToDateTime_FromSqlDateTime(SqlDateTime input)
-        {
-            return SafeConvert.ToDateTime(input);
-        }
-
-        #endregion
-
-        #region ToSqlDateTime
-
-        [TestCaseSource(typeof(TestData), "DateTimeToSqlDateTimeData")]
-        public SqlDateTime ToSqlDateTime_FromSqlDateTime(DateTime input)
-        {
-            return SafeConvert.ToSqlDateTime(input);
-        }
-
         #endregion
 
         #region ToString
