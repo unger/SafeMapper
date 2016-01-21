@@ -206,7 +206,11 @@
 
             if (toType.IsAssignableFrom(fromType))
             {
-                return;
+                // if to type is not nullable return
+                if (!(toType.IsGenericType && toType.GetGenericTypeDefinition() == typeof (Nullable<>)))
+                {
+                    return;
+                }
             }
 
             // Check if fromValue is null

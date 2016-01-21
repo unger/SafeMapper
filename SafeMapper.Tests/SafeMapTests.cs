@@ -46,6 +46,14 @@
         }
 
         [Test]
+        public void Convert_Generic_IntToNullableInt()
+        {
+            var result = SafeMap.Convert<int, int?>(2);
+
+            Assert.AreEqual(2, result);
+        }
+
+        [Test]
         public void GetConverter_NonGeneric_StringToInt()
         {
             var converter = SafeMap.GetConverter(typeof(string), typeof(int));

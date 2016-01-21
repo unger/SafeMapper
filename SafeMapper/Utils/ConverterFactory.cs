@@ -82,7 +82,7 @@ namespace SafeMapper.Utils
 
             return (Converter<TFrom, TTo>)CompileDynamicMethod<Converter<TFrom, TTo>>(convertDynamicMethod, il.Instructions, provider);
 
-            return (Converter<TFrom, TTo>)convertDynamicMethod.CreateDelegate(typeof(Converter<TFrom, TTo>), provider);
+            //return (Converter<TFrom, TTo>)convertDynamicMethod.CreateDelegate(typeof(Converter<TFrom, TTo>), provider);
         }
 
 
