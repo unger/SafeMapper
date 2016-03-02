@@ -62,6 +62,14 @@
         }
 
         [Test]
+        public void Convert_Generic_NullableTimeSpanToNullableTimeSpan()
+        {
+            var result = SafeMap.Convert<TimeSpan?, TimeSpan?>(TimeSpan.FromDays(28));
+
+            Assert.AreEqual(TimeSpan.FromDays(28), result);
+        }
+
+        [Test]
         public void Convert_Generic_NullableLongToNullableInt()
         {
             var result = SafeMap.Convert<long?, int?>(2L);
