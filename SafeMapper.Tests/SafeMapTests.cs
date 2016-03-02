@@ -54,6 +54,22 @@
         }
 
         [Test]
+        public void Convert_Generic_NullableIntToNullableInt()
+        {
+            var result = SafeMap.Convert<int?, int?>(2);
+
+            Assert.AreEqual(2, result);
+        }
+
+        [Test]
+        public void Convert_Generic_NullableLongToNullableInt()
+        {
+            var result = SafeMap.Convert<long?, int?>(2L);
+
+            Assert.AreEqual(2, result);
+        }
+
+        [Test]
         public void GetConverter_NonGeneric_StringToInt()
         {
             var converter = SafeMap.GetConverter(typeof(string), typeof(int));
