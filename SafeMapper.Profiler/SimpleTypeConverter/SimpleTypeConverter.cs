@@ -9,14 +9,14 @@
 
     public class SimpleTypeConverter
     {
-        private static Converter<object, object> guidToString = input => input.ToString();
-        private static Converter<object, object> stringToGuid = input =>
+        private static Func<object, object> guidToString = input => input.ToString();
+        private static Func<object, object> stringToGuid = input =>
             {
                 Guid guid;
                 return Guid.TryParse((string)input, out guid) ? guid : Guid.Empty;
             };
 
-        private static Dictionary<string, Converter<object, object>> converters = new Dictionary<string, Converter<object, object>>();
+        private static Dictionary<string, Func<object, object>> converters = new Dictionary<string, Func<object, object>>();
 
         static SimpleTypeConverter()
         {
@@ -175,7 +175,7 @@
             }
         }
 
-        private static Converter<object, object> GetConverter(Type fromType, Type toType)
+        private static Func<object, object> GetConverter(Type fromType, Type toType)
         {
             var key = string.Format("{0},{1}", fromType.FullName, toType.FullName);
             if (converters.ContainsKey(key))

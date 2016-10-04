@@ -1,9 +1,9 @@
-﻿using System.Reflection;
-using SafeMapper.Utils;
-
-namespace SafeMapper.Configuration
+﻿namespace SafeMapper.Abstractions
 {
     using System;
+
+    using SafeMapper.Configuration;
+    using SafeMapper.Utils;
 
     public interface IMapConfiguration
     {

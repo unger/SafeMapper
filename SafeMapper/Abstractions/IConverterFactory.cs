@@ -1,8 +1,6 @@
-namespace SafeMapper.Utils
+namespace SafeMapper.Abstractions
 {
     using System;
-
-    using SafeMapper.Configuration;
 
     public interface IConverterFactory
     {
@@ -12,8 +10,8 @@ namespace SafeMapper.Utils
 
         Func<object, object> CreateDelegate(Type fromType, Type toType, IFormatProvider provider);
 
-        Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>();
+        Func<TFrom, TTo> CreateDelegate<TFrom, TTo>();
 
-        Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>(IFormatProvider provider);
+        Func<TFrom, TTo> CreateDelegate<TFrom, TTo>(IFormatProvider provider);
     }
 }

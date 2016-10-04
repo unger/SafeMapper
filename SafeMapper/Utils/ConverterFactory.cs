@@ -1,5 +1,4 @@
-﻿using System.CodeDom;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace SafeMapper.Utils
 {
@@ -8,6 +7,7 @@ namespace SafeMapper.Utils
     using System.Globalization;
     using System.Reflection.Emit;
 
+    using SafeMapper.Abstractions;
     using SafeMapper.Configuration;
 
     public class ConverterFactory : IConverterFactory
@@ -53,16 +53,16 @@ namespace SafeMapper.Utils
             il.Emit(OpCodes.Box, toType);
             il.Emit(OpCodes.Ret);
 
-            return (Func<object, object>)CompileDynamicMethod<Func<object, object>>(convertDynamicMethod, il.Instructions, provider);
-            return (Func<object, object>)convertDynamicMethod.CreateDelegate(typeof(Func<object, object>), provider);
+            return (Func<object, object>)this.CompileDynamicMethod<Func<object, object>>(convertDynamicMethod, il.Instructions, provider);
+            //return (Func<object, object>)convertDynamicMethod.CreateDelegate(typeof(Func<object, object>), provider);
         }
 
-        public Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>()
+        public Func<TFrom, TTo> CreateDelegate<TFrom, TTo>()
         {
             return this.CreateDelegate<TFrom, TTo>(CultureInfo.CurrentCulture);
         }
 
-        public Converter<TFrom, TTo> CreateDelegate<TFrom, TTo>(IFormatProvider provider)
+        public Func<TFrom, TTo> CreateDelegate<TFrom, TTo>(IFormatProvider provider)
         {
             var toType = typeof(TTo);
             var fromType = typeof(TFrom);
@@ -80,11 +80,9 @@ namespace SafeMapper.Utils
             il.EmitConvertValue(fromType, toType, new HashSet<Type>());
             il.Emit(OpCodes.Ret);
 
-            return (Converter<TFrom, TTo>)CompileDynamicMethod<Converter<TFrom, TTo>>(convertDynamicMethod, il.Instructions, provider);
-
-            //return (Converter<TFrom, TTo>)convertDynamicMethod.CreateDelegate(typeof(Converter<TFrom, TTo>), provider);
+            return (Func<TFrom, TTo>)this.CompileDynamicMethod<Func<TFrom, TTo>>(convertDynamicMethod, il.Instructions, provider);
+            //return (Converter<TFrom, TTo>)convertDynamicMethod.CreateDelegate(typeof(Func<TFrom, TTo>), provider);
         }
-
 
         private Delegate CompileDynamicMethod<TDelegate>(DynamicMethod dynamicMethod, ILInstruction[] instructions, IFormatProvider provider)
         {

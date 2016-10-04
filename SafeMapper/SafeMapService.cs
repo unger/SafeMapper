@@ -4,8 +4,8 @@
     using System.Collections.Concurrent;
     using System.Globalization;
 
+    using SafeMapper.Abstractions;
     using SafeMapper.Configuration;
-    using SafeMapper.Utils;
 
     public class SafeMapService
     {
@@ -58,14 +58,14 @@
                 k => this.converterFactory.CreateDelegate(fromType, toType, provider));
         }
 
-        public Converter<TFrom, TTo> GetConverter<TFrom, TTo>()
+        public Func<TFrom, TTo> GetConverter<TFrom, TTo>()
         {
             return this.GetConverter<TFrom, TTo>(CultureInfo.CurrentCulture);
         }
 
-        public Converter<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider provider)
+        public Func<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider provider)
         {
-            return (Converter<TFrom, TTo>)this.converterCache.GetOrAdd(
+            return (Func<TFrom, TTo>)this.converterCache.GetOrAdd(
                 string.Concat(typeof(TTo).FullName, typeof(TFrom).FullName),
                 k => this.converterFactory.CreateDelegate<TFrom, TTo>(provider));
         }

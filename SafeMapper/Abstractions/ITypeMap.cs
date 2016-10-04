@@ -1,4 +1,4 @@
-namespace SafeMapper.Configuration
+namespace SafeMapper.Abstractions
 {
     using System;
     using System.Linq.Expressions;

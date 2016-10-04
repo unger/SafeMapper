@@ -20,14 +20,14 @@
         public LocalBuilderWrapper DeclareLocal(Type type)
         {
             var local = new LocalBuilderWrapper(type);
-            AddInstruction(new ILInstruction(OpCodes.Nop, local, typeof(LocalBuilderWrapper), ILInstructionType.DeclareLocal));
+            this.AddInstruction(new ILInstruction(OpCodes.Nop, local, typeof(LocalBuilderWrapper), ILInstructionType.DeclareLocal));
             return local;
         }
 
         public LabelWrapper DefineLabel()
         {
             var label = new LabelWrapper();
-            AddInstruction(new ILInstruction(OpCodes.Nop, label, typeof(LabelWrapper), ILInstructionType.DefineLabel));
+            this.AddInstruction(new ILInstruction(OpCodes.Nop, label, typeof(LabelWrapper), ILInstructionType.DefineLabel));
             return label;
         }
 
@@ -82,7 +82,7 @@
 
         public void EmitByte(byte value)
         {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
+            this.AddInstruction(OpCodes.Ldc_I4, value);
             this.AddInstruction(OpCodes.Conv_U1);
         }
 
@@ -120,19 +120,19 @@
 
         public void EmitSByte(sbyte value)
         {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
+            this.AddInstruction(OpCodes.Ldc_I4, value);
             this.AddInstruction(OpCodes.Conv_I1);
         }
 
         public void EmitShort(short value)
         {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
+            this.AddInstruction(OpCodes.Ldc_I4, value);
             this.AddInstruction(OpCodes.Conv_I2);
         }
 
         public void EmitUShort(ushort value)
         {
-            this.AddInstruction(OpCodes.Ldc_I4, (int)value);
+            this.AddInstruction(OpCodes.Ldc_I4, value);
             this.AddInstruction(OpCodes.Conv_U2);
         }
 
@@ -150,73 +150,73 @@
         {
             foreach (var instruction in ins)
             {
-                AddInstruction(instruction);
+                this.AddInstruction(instruction);
             }
         }
 
         public void MarkLabel(LabelWrapper label)
         {
-            AddInstruction(new ILInstruction(OpCodes.Nop, label, typeof(LabelWrapper), ILInstructionType.MarkLabel));
+            this.AddInstruction(new ILInstruction(OpCodes.Nop, label, typeof(LabelWrapper), ILInstructionType.MarkLabel));
         }
 
         private void AddInstruction(OpCode opcode)
         {
-            AddInstruction(new ILInstruction(opcode));
+            this.AddInstruction(new ILInstruction(opcode));
         }
 
         private void AddInstruction(OpCode opcode, ConstructorInfo con)
         {
-            AddInstruction(new ILInstruction(opcode, con, typeof(ConstructorInfo)));
+            this.AddInstruction(new ILInstruction(opcode, con, typeof(ConstructorInfo)));
         }
 
         private void AddInstruction(OpCode opcode, FieldInfo field)
         {
-            AddInstruction(new ILInstruction(opcode, field, typeof(FieldInfo)));
+            this.AddInstruction(new ILInstruction(opcode, field, typeof(FieldInfo)));
         }
 
         private void AddInstruction(OpCode opcode, LabelWrapper label)
         {
-            AddInstruction(new ILInstruction(opcode, label, typeof(LabelWrapper)));
+            this.AddInstruction(new ILInstruction(opcode, label, typeof(LabelWrapper)));
         }
 
         private void AddInstruction(OpCode opcode, Type type)
         {
-            AddInstruction(new ILInstruction(opcode, type, typeof(Type)));
+            this.AddInstruction(new ILInstruction(opcode, type, typeof(Type)));
         }
 
         private void AddInstruction(OpCode opcode, int value)
         {
-            AddInstruction(new ILInstruction(opcode, value, typeof(int)));
+            this.AddInstruction(new ILInstruction(opcode, value, typeof(int)));
         }
 
         private void AddInstruction(OpCode opcode, long value)
         {
-            AddInstruction(new ILInstruction(opcode, value, typeof(long)));
+            this.AddInstruction(new ILInstruction(opcode, value, typeof(long)));
         }
 
         private void AddInstruction(OpCode opcode, double value)
         {
-            AddInstruction(new ILInstruction(opcode, value, typeof(double)));
+            this.AddInstruction(new ILInstruction(opcode, value, typeof(double)));
         }
 
         private void AddInstruction(OpCode opcode, float value)
         {
-            AddInstruction(new ILInstruction(opcode, value, typeof(float)));
+            this.AddInstruction(new ILInstruction(opcode, value, typeof(float)));
         }
 
         private void AddInstruction(OpCode opcode, LocalBuilderWrapper local)
         {
-            AddInstruction(new ILInstruction(opcode, local, typeof(LocalBuilderWrapper)));
+            this.AddInstruction(new ILInstruction(opcode, local, typeof(LocalBuilderWrapper)));
         }
 
         private void AddInstruction(OpCode opcode, string argument)
         {
-            AddInstruction(new ILInstruction(opcode, argument, typeof(string)));
+            this.AddInstruction(new ILInstruction(opcode, argument, typeof(string)));
         }
 
         private void AddInstruction(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes)
         {
-            AddInstruction(new ILInstruction(opcode, methodInfo, typeof(MethodInfo)));
+            this.AddInstruction(new ILInstruction(opcode, methodInfo, typeof(MethodInfo)));
         }
 
         private void AddInstruction(ILInstruction instruction)

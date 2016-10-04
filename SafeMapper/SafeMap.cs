@@ -2,7 +2,7 @@
 {
     using System;
 
-    using SafeMapper.Configuration;
+    using SafeMapper.Abstractions;
     using SafeMapper.Utils;
 
     public class SafeMap
@@ -59,12 +59,12 @@
             return safeMapService.GetConverter(fromType, toType, provider);
         }
 
-        public static Converter<TFrom, TTo> GetConverter<TFrom, TTo>()
+        public static Func<TFrom, TTo> GetConverter<TFrom, TTo>()
         {
             return safeMapService.GetConverter<TFrom, TTo>();
         }
 
-        public static Converter<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider provider)
+        public static Func<TFrom, TTo> GetConverter<TFrom, TTo>(IFormatProvider provider)
         {
             return safeMapService.GetConverter<TFrom, TTo>(provider);
         }

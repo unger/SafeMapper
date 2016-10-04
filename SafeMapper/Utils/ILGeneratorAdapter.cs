@@ -6,6 +6,7 @@
     using System.Reflection;
     using System.Reflection.Emit;
 
+    using SafeMapper.Abstractions;
     using SafeMapper.Configuration;
     using SafeMapper.Reflection;
 

@@ -5,6 +5,7 @@
     using System.Linq.Expressions;
     using System.Reflection;
 
+    using SafeMapper.Abstractions;
     using SafeMapper.Reflection;
     using SafeMapper.Utils;
 

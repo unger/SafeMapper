@@ -5,18 +5,18 @@ namespace SafeMapper.Utils
 {
     public class LocalBuilderWrapper
     {
-        private readonly Type _localType;
+        private readonly Type localType;
 
         public LocalBuilderWrapper(Type localType)
         {
-            _localType = localType;
+            this.localType = localType;
         }
 
         public LocalBuilder LocalBuilder { get; set; }
 
         public Type LocalType
         {
-            get { return _localType; }
+            get { return this.localType; }
         }
     }
 }

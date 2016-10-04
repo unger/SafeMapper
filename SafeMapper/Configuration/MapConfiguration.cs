@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
+﻿using System.Reflection;
+
 using SafeMapper.Utils;
 
 namespace SafeMapper.Configuration
@@ -10,6 +7,7 @@ namespace SafeMapper.Configuration
     using System;
     using System.Collections.Concurrent;
 
+    using SafeMapper.Abstractions;
     using SafeMapper.Reflection;
 
     public class MapConfiguration : IMapConfiguration
@@ -22,31 +20,9 @@ namespace SafeMapper.Configuration
 
         public MapConfiguration()
         {
-            AddConvertMethods<SafeConvert>();
-            AddConvertMethods<SafeNullableConvert>();
-            AddConvertMethods<SafeSqlConvert>();
-
-            //SetConvertInstructions<string, Guid>(GetTryParseInstructions<Guid>());
-            //SetConvertInstructions<string, int>(GetTryParseInstructions<int>());
-        }
-
-        private ILInstruction[] GetTryParseInstructions<TTo>() where TTo : struct
-        {
-            var toType = typeof (TTo);
-            MethodInfo tryParse = toType.GetMethods(BindingFlags.Static | BindingFlags.Public).Where(m => m.Name == "TryParse" && m.GetParameters().Length == 2).FirstOrDefault();
-
-            var ilGenerator = new ILGeneratorAdapter(this);
-
-            if (tryParse != null)
-            {
-                var toLocal = ilGenerator.DeclareLocal(toType);
-                ilGenerator.EmitLocal(OpCodes.Ldloca, toLocal);
-                ilGenerator.EmitCall(OpCodes.Call, tryParse);
-                ilGenerator.Emit(OpCodes.Pop);
-                ilGenerator.EmitLocal(OpCodes.Ldloc, toLocal);
-            }
-
-            return ilGenerator.Instructions;
+            this.AddConvertMethods<SafeConvert>();
+            this.AddConvertMethods<SafeNullableConvert>();
+            this.AddConvertMethods<SafeSqlConvert>();
         }
 
         public ITypeMapping GetTypeMapping(Type fromType, Type toType)
@@ -117,7 +93,7 @@ namespace SafeMapper.Configuration
                 var pars = method.GetParameters();
                 if ((pars.Length == 2 && pars[1].ParameterType == typeof (IFormatProvider)) || pars.Length == 1)
                 {
-                    SetConvertMethod(pars[0].ParameterType, method.ReturnType, method, null);
+                    this.SetConvertMethod(pars[0].ParameterType, method.ReturnType, method, null);
                 }
             }
         }

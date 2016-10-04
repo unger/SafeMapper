@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using SafeMapper.Abstractions;
     using SafeMapper.Reflection;
 
     public class TypeMapping : ITypeMapping

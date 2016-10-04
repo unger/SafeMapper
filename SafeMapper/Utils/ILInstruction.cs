@@ -13,10 +13,10 @@ namespace SafeMapper.Utils
 
         public ILInstruction(OpCode opcode, object argument, Type argumentType, ILInstructionType instructionType = ILInstructionType.OpCode)
         {
-            OpCode = opcode;
-            Argument = argument;
-            ArgumentType = argumentType;
-            InstructionType = instructionType;
+            this.OpCode = opcode;
+            this.Argument = argument;
+            this.ArgumentType = argumentType;
+            this.InstructionType = instructionType;
         }
 
         public OpCode OpCode { get; private set; }

@@ -9,7 +9,7 @@
     {
         public static string GetEnumDisplayValue(Enum value)
         {
-            var fieldInfo = value.GetType().GetField(value.ToString());
+            var fieldInfo = value.GetType().GetRuntimeField(value.ToString());
             var attribute = GetAttribute<DisplayAttribute>(fieldInfo);
 
             return (attribute != null) ? attribute.GetName() : string.Empty;
@@ -17,7 +17,7 @@
 
         public static string GetEnumDescriptionValue(Enum value)
         {
-            var fieldInfo = value.GetType().GetField(value.ToString());
+            var fieldInfo = value.GetType().GetRuntimeField(value.ToString());
             var attribute = GetAttribute<DescriptionAttribute>(fieldInfo);
 
             return (attribute != null) ? attribute.Description : string.Empty;
@@ -31,7 +31,13 @@
 
         public static T[] GetAttributes<T>(MemberInfo member) where T : Attribute
         {
-            return Array.ConvertAll(member.GetCustomAttributes(typeof(T), false), input => (T)input);
+            var array = member.GetCustomAttributes(typeof(T), false);
+            T[] newArray = new T[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                newArray[i] = (T)array[i];
+            }
+            return newArray;
         }
     }
 }
