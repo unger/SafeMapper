@@ -678,7 +678,7 @@
             if (toType == typeof(string))
             {
                 var enumValues = Enum.GetValues(fromType);
-                var temptype = fromType.GetEnumUnderlyingType();
+
                 var switchType = Enum.GetUnderlyingType(fromType);
                 var switchReturnValues = new List<Tuple<object, object>>();
 
