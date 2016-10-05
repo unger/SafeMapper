@@ -87,6 +87,7 @@
     <Compile Include="Person\PersonStringDto.cs" />
     <Compile Include="Person\PersonStruct.cs" />
     <Compile Include="Person\PersonStructDto.cs" />
+    <Compile Include="Profiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\ResourceStrings.Designer.cs">
       <AutoGen>True</AutoGen>

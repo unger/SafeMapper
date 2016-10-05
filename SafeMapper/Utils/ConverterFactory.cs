@@ -42,13 +42,13 @@ namespace SafeMapper.Utils
                 "ConvertFrom" + fromType.Name + "To" + toType.Name + "NonGeneric",
                 typeof(object),
                 new[] { typeof(IFormatProvider), typeof(object) },
-                typeof(ConverterFactory).Module,
+                typeof(ConverterFactory).GetTypeInfo().Module,
                 true);
 
             var il = new ILGeneratorAdapter(this.mapCfg);
 
             il.Emit(OpCodes.Ldarg_1);
-            il.Emit(fromType.IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, fromType); // cast input to correct type
+            il.Emit(fromType.GetTypeInfo().IsValueType ? OpCodes.Unbox_Any : OpCodes.Castclass, fromType); // cast input to correct type
             il.EmitConvertValue(fromType, toType, new HashSet<Type>());
             il.Emit(OpCodes.Box, toType);
             il.Emit(OpCodes.Ret);
@@ -71,7 +71,7 @@ namespace SafeMapper.Utils
                 "ConvertFrom" + fromType.Name + "To" + toType.Name,
                 toType,
                 new[] { typeof(IFormatProvider), fromType },
-                typeof(ConverterFactory).Module, 
+                typeof(ConverterFactory).GetTypeInfo().Module, 
                 true);
 
             var il = new ILGeneratorAdapter(this.mapCfg);

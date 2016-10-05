@@ -55,6 +55,10 @@
       <HintPath>..\packages\valueinjecter.3.1.1\lib\net40\Omu.ValueInjecter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SafeMapper, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SafeMapper\bin\Debug\net45\SafeMapper.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Text, Version=4.0.46.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ServiceStack.Text.4.0.46\lib\net40\ServiceStack.Text.dll</HintPath>
       <Private>True</Private>
@@ -83,7 +87,6 @@
     <Compile Include="ProfileConversion.cs" />
     <Compile Include="ProfileArrayToArray.cs" />
     <Compile Include="ProfileArrayCreation.cs" />
-    <Compile Include="Profiler.cs" />
     <Compile Include="ProfileStringConcat.cs" />
     <Compile Include="ProfileTypeOf.cs" />
     <Compile Include="ProfilePropertyGetSet.cs" />
@@ -100,10 +103,6 @@
     <ProjectReference Include="..\SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj">
       <Project>{955aa075-d841-4bb9-9487-dac42eebcecc}</Project>
       <Name>SafeMapper.Tests.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SafeMapper\SafeMapper.csproj">
-      <Project>{6240f741-b1ab-46fc-acca-06414ec53e45}</Project>
-      <Name>SafeMapper</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

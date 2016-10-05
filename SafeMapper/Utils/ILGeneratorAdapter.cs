@@ -87,21 +87,21 @@
             if (memberMap.FromMember.NeedsContainsCheck)
             {
                 var containsKey = fromLocal.LocalType.GetMethod("ContainsKey", new[] { typeof(string) });
-                this.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+                this.EmitLocal(fromLocal.LocalType.GetTypeInfo().IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
                 this.EmitString(memberMap.FromMember.Name);
                 this.EmitCall(OpCodes.Call, containsKey);
                 this.EmitBreak(OpCodes.Brfalse, skipMemberMap);
             }
 
             // Load toLocal as parameter for the setter
-            this.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
+            this.EmitLocal(toLocal.LocalType.GetTypeInfo().IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
             if (memberMap.ToMember.NeedsStringIndex)
             {
                 this.EmitString(memberMap.ToMember.Name);
             }
 
             // Load fromLocal as parameter for the getter
-            this.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+            this.EmitLocal(fromLocal.LocalType.GetTypeInfo().IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
 
             if (memberMap.FromMember.MemberInfo is PropertyInfo)
             {
@@ -153,12 +153,12 @@
 
         public void EmitValueTypeBox(Type fromType)
         {
-            if (fromType.IsValueType)
+            if (fromType.GetTypeInfo().IsValueType)
             {
                 // Put property/field value in a local variable to be able to call instance method on it
                 var localReturnType = this.DeclareLocal(fromType);
                 this.EmitLocal(OpCodes.Stloc, localReturnType);
-                if (fromType.IsEnum)
+                if (fromType.GetTypeInfo().IsEnum)
                 {
                     this.EmitLocal(OpCodes.Ldloc, localReturnType);
                     this.Emit(OpCodes.Box, fromType);
@@ -190,7 +190,7 @@
         public void EmitConvertValue(Type fromType, Type toType, HashSet<Type> convertedTypes)
         {
             // Circular reference check
-            if (!fromType.IsValueType && fromType != typeof(string))
+            if (!fromType.GetTypeInfo().IsValueType && fromType != typeof(string))
             {
                 if (convertedTypes.Contains(fromType))
                 {
@@ -213,7 +213,7 @@
                 }
 
                 // if types differ and totype is not nullable
-                if (!(toType.IsGenericType && toType.GetGenericTypeDefinition() == typeof (Nullable<>)))
+                if (!(toType.GetTypeInfo().IsGenericType && toType.GetGenericTypeDefinition() == typeof (Nullable<>)))
                 {
                     return;
                 }
@@ -221,7 +221,7 @@
 
             // Check if fromValue is null
             var underlyingFromType = Nullable.GetUnderlyingType(fromType);
-            if (!fromType.IsValueType || underlyingFromType != null)
+            if (!fromType.GetTypeInfo().IsValueType || underlyingFromType != null)
             {
                 var fromLocal = this.DeclareLocal(fromType);
                 var toLocal = this.DeclareLocal(toType);
@@ -279,11 +279,11 @@
             {
                 this.EmitCallConverter(fromType, toType, converter);
             }
-            else if (toType.IsEnum)
+            else if (toType.GetTypeInfo().IsEnum)
             {
                 this.EmitConvertToEnum(fromType, toType);
             }
-            else if (fromType.IsEnum)
+            else if (fromType.GetTypeInfo().IsEnum)
             {
                 this.EmitConvertFromEnum(fromType, toType);
             }
@@ -492,14 +492,14 @@
             var skipMemberMap = this.DefineLabel();
 
             // Load toLocal as parameter for the setter
-            this.EmitLocal(toLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
+            this.EmitLocal(toLocal.LocalType.GetTypeInfo().IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, toLocal);
             if (toMember.NeedsStringIndex)
             {
                 this.EmitLocal(OpCodes.Ldloc, key);
             }
 
             // Load fromLocal as parameter for the getter
-            this.EmitLocal(fromLocal.LocalType.IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
+            this.EmitLocal(fromLocal.LocalType.GetTypeInfo().IsValueType ? OpCodes.Ldloca : OpCodes.Ldloc, fromLocal);
 
             if (fromMember.MemberInfo is PropertyInfo)
             {
@@ -568,7 +568,7 @@
 
                 this.EmitLocal(OpCodes.Ldloc, collectionLocal);
             }
-            else if (collectionType.IsGenericType)
+            else if (collectionType.GetTypeInfo().IsGenericType)
             {
                 var concreteCollectionType = ReflectionUtils.GetConcreteType(collectionType);
                 var collectionLocal = this.DeclareLocal(concreteCollectionType);
@@ -619,7 +619,7 @@
                 this.MarkLabel(defaultLabel);
                 this.EmitLocal(OpCodes.Ldloc, fromElementLocal);
             }
-            else if (collectionType.IsGenericType)
+            else if (collectionType.GetTypeInfo().IsGenericType)
             {
                 var firstMethod = typeof(Enumerable).GetMethods().Single(method => method.Name == "FirstOrDefault" && method.IsStatic && method.GetParameters().Length == 1).MakeGenericMethod(elementType);
 
@@ -671,7 +671,7 @@
 
         public void EmitConvertFromEnum(Type fromType, Type toType)
         {
-            if (!fromType.IsEnum)
+            if (!fromType.GetTypeInfo().IsEnum)
             {
                 throw new ArgumentException("fromType needs to be an enum", "fromType");
             }
@@ -722,14 +722,14 @@
 
         public void EmitConvertToEnum(Type fromType, Type toType)
         {
-            if (!toType.IsEnum)
+            if (!toType.GetTypeInfo().IsEnum)
             {
                 throw new ArgumentException("toType needs to be an enum", "toType");
             }
 
             var enumValues = Enum.GetValues(toType);
             var underlayingToType = Enum.GetUnderlyingType(toType);
-            var underlayingFromType = fromType.IsEnum ? Enum.GetUnderlyingType(fromType) : fromType;
+            var underlayingFromType = fromType.GetTypeInfo().IsEnum ? Enum.GetUnderlyingType(fromType) : fromType;
             var switchType = fromType == typeof(string) ? typeof(string) : underlayingToType;
             var switchReturnValues = new List<Tuple<object, object>>();
 

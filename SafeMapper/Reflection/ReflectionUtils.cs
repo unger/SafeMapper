@@ -31,7 +31,7 @@
         {
             if (IsStringKeyDictionary(type))
             {
-                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                var itemIndexer = GetIndexer(type, "Item", new[] { typeof(string) });
                 return new MemberGetter(itemIndexer, name);
             }
 
@@ -43,7 +43,7 @@
                     return new MemberGetter(getValuesMethod, name);
                 }
 
-                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                var itemIndexer = GetIndexer(type, "Item", new[] { typeof(string) });
                 return new MemberGetter(itemIndexer, name);
             }
 
@@ -66,7 +66,7 @@
         {
             if (IsStringKeyDictionary(type))
             {
-                var itemIndexer = type.GetProperty("Item", new[] { typeof(string) });
+                var itemIndexer = GetIndexer(type, "Item", new []{ typeof(string) });
                 return new MemberSetter(itemIndexer, name);
             }
 
@@ -86,6 +86,30 @@
             if (fieldInfo != null)
             {
                 return new MemberSetter(fieldInfo);
+            }
+
+            return null;
+        }
+
+        public static PropertyInfo GetIndexer(Type type, string indexerName, Type[] indexTypes)
+        {
+            var props = type.GetProperties().Where(p => p.Name == "Item");
+            foreach (var prop in props)
+            {
+                var indexParams = prop.GetIndexParameters();
+                if (indexParams.Length == indexTypes.Length)
+                {
+                    var same = true;
+                    for (int i = 0; i < indexParams.Length; i++)
+                    {
+                        same = same && indexParams[i].ParameterType == indexTypes[i];
+                    }
+
+                    if (same)
+                    {
+                        return prop;
+                    }
+                }
             }
 
             return null;
@@ -114,7 +138,7 @@
 
         public static Type GetTypeWithGenericTypeDefinition(Type searchType, Type genericTypeDefinition)
         {
-            if (!genericTypeDefinition.IsGenericTypeDefinition)
+            if (!genericTypeDefinition.GetTypeInfo().IsGenericTypeDefinition)
             {
                 return null;
             }
@@ -122,7 +146,7 @@
             var interfaces = new List<Type>(searchType.GetInterfaces());
             interfaces.Insert(0, searchType);
 
-            return interfaces.FirstOrDefault(intType => intType.IsGenericType && intType.GetGenericTypeDefinition() == genericTypeDefinition);
+            return interfaces.FirstOrDefault(intType => intType.GetTypeInfo().IsGenericType && intType.GetGenericTypeDefinition() == genericTypeDefinition);
         }
 
         public static bool IsDictionary(Type type)
@@ -154,7 +178,7 @@
                 return type.GetElementType();
             }
 
-            if (IsCollection(type) && type.IsGenericType)
+            if (IsCollection(type) && type.GetTypeInfo().IsGenericType)
             {
                 var types = type.GetGenericArguments();
                 return types.Length > 0 ? types[0] : null;
@@ -165,9 +189,9 @@
 
         public static Type GetConcreteType(Type type)
         {
-            if (type.IsInterface)
+            if (type.GetTypeInfo().IsInterface)
             {
-                if (type.IsGenericType)
+                if (type.GetTypeInfo().IsGenericType)
                 {
                     var genericTypeDefinition = type.GetGenericTypeDefinition();
                     var elementType = GetElementType(type);
@@ -183,7 +207,7 @@
 
         public static Type GetConcreteTypeDefinition(Type typedefinition)
         {
-            if (typedefinition.IsInterface)
+            if (typedefinition.GetTypeInfo().IsInterface)
             {
                 if (typedefinition == typeof(IEnumerable<>) || typedefinition == typeof(IList<>))
                 {
@@ -296,7 +320,7 @@
                 return CanHaveCircularReferenceRecursive(GetElementType(type), new HashSet<Type>(addedTypes));
             }
 
-            if (type.IsGenericType)
+            if (type.GetTypeInfo().IsGenericType)
             {
                 foreach (var genericArg in type.GetGenericArguments())
                 {
@@ -304,7 +328,7 @@
                 }
             }
 
-            if (!type.IsValueType && type != typeof(string))
+            if (!type.GetTypeInfo().IsValueType && type != typeof(string))
             {
                 addedTypes.Add(type);
 

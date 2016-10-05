@@ -77,7 +77,7 @@ namespace SafeMapper.Configuration
 
         public void SetConvertMethod<TFrom, TTo>(Func<TFrom, TTo> converter)
         {
-            this.SetConvertMethod(typeof(TFrom), typeof(TTo), converter.Method, converter.Target);
+            this.SetConvertMethod(typeof(TFrom), typeof(TTo), converter.GetMethodInfo(), converter.Target);
         }
 
         public void AddConvertMethods<TConvertClass>()
