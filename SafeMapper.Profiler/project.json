@@ -1,0 +1,31 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+
+  "dependencies": {
+    "SafeMapper": "3.0.0-*"
+  },
+
+  "frameworks": {
+    "net45": {
+      "dependencies": {
+        "AutoMapper": "4.1.1",
+        "EmitMapper": "1.0.0",
+        "fasterflect": "2.1.3",
+        "FastMapper": "1.2.0",
+        "fFastMapper": "0.5.3",
+        "SafeMapper.Tests.Model": {
+          "target": "project"
+        },
+        "ServiceStack.Text": "4.0.46",
+        "UniversalTypeConverter": "1.0.2",
+        "ValueInjecter": "3.1.1"
+      },
+      "frameworkAssemblies": {
+        "System.Web": "4.0.0.0"
+      }
+    }
+  }
+}

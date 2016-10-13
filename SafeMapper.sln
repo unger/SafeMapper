@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Profiler", "SafeMapper.Profiler\SafeMapper.Profiler.csproj", "{AB4705B8-874D-47D0-BF6D-2414C6F436BE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests.Model", "SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj", "{955AA075-D841-4BB9-9487-DAC42EEBCECC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E55C46B7-922B-4E50-8115-15B1A28EA66D}"
@@ -16,9 +14,9 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper.StrongName", "Sa
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper", "SafeMapper\SafeMapper.xproj", "{C5A7E95F-5BDB-4E3F-8D84-7B5888830838}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests.Performance", "SafeMapper.Tests.Performance\SafeMapper.Tests.Performance.csproj", "{521BB35C-2196-435D-B181-9172E5AE5F78}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper.Profiler", "SafeMapper.Profiler\SafeMapper.Profiler.xproj", "{AF7EB1C2-2804-4584-91ED-4366F18ABE40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests", "SafeMapper.Tests\SafeMapper.Tests.csproj", "{25A7A26F-1382-49F6-B11D-C32C0787A3AD}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper.Tests", "SafeMapper.Tests\SafeMapper.Tests.xproj", "{A99996F7-7890-4831-AE03-0E656D1C712F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +24,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AB4705B8-874D-47D0-BF6D-2414C6F436BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB4705B8-874D-47D0-BF6D-2414C6F436BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB4705B8-874D-47D0-BF6D-2414C6F436BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB4705B8-874D-47D0-BF6D-2414C6F436BE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{955AA075-D841-4BB9-9487-DAC42EEBCECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{955AA075-D841-4BB9-9487-DAC42EEBCECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{955AA075-D841-4BB9-9487-DAC42EEBCECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -42,14 +36,14 @@ Global
 		{C5A7E95F-5BDB-4E3F-8D84-7B5888830838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5A7E95F-5BDB-4E3F-8D84-7B5888830838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C5A7E95F-5BDB-4E3F-8D84-7B5888830838}.Release|Any CPU.Build.0 = Release|Any CPU
-		{521BB35C-2196-435D-B181-9172E5AE5F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{521BB35C-2196-435D-B181-9172E5AE5F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{521BB35C-2196-435D-B181-9172E5AE5F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{521BB35C-2196-435D-B181-9172E5AE5F78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{25A7A26F-1382-49F6-B11D-C32C0787A3AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{25A7A26F-1382-49F6-B11D-C32C0787A3AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{25A7A26F-1382-49F6-B11D-C32C0787A3AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{25A7A26F-1382-49F6-B11D-C32C0787A3AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF7EB1C2-2804-4584-91ED-4366F18ABE40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF7EB1C2-2804-4584-91ED-4366F18ABE40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF7EB1C2-2804-4584-91ED-4366F18ABE40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF7EB1C2-2804-4584-91ED-4366F18ABE40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A99996F7-7890-4831-AE03-0E656D1C712F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A99996F7-7890-4831-AE03-0E656D1C712F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A99996F7-7890-4831-AE03-0E656D1C712F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A99996F7-7890-4831-AE03-0E656D1C712F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

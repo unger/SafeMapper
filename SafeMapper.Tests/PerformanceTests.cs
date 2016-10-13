@@ -1,4 +1,4 @@
-﻿namespace SafeMapper.Tests.Performance
+﻿namespace SafeMapper.Tests
 {
     using System;
     using System.Globalization;
