@@ -10,7 +10,7 @@
     using SafeMapper.Profiler;
     using SafeMapper.Tests.Model.Person;
 
-    [Ignore]
+    [Ignore("Ignored")]
     [TestFixture]
     public class PerformanceTests
     {

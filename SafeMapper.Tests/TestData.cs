@@ -19,7 +19,7 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] NonGenericCollectionTestData =
+        public static TestCaseData[] NonGenericCollectionTestData =
             {
                 // Collections
                 new TestCaseData((IList<int>)new List<int> { 1, 2, 3 }, typeof(IList<int>), typeof(int[])).Returns(new[] { 1, 2, 3 }),
@@ -29,7 +29,7 @@
                 new TestCaseData(new List<string> { "1", "2", "3" }, typeof(List<string>), typeof(IEnumerable<int>)).Returns(new List<int> { 1, 2, 3 }),
             };
 
-        public TestCaseData[] NonGenericTestData =
+        public static TestCaseData[] NonGenericTestData =
             {
                 new TestCaseData(new Person { Name = "Magnus", Age = 37 }, typeof(Person), typeof(string)).Returns("Magnus 37"),
 
@@ -329,14 +329,14 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] StringToStringData =
+        public static TestCaseData[] StringToStringData =
             {
                 new TestCaseData(string.Empty).Returns(string.Empty),
                 new TestCaseData(null).Returns(null),
                 new TestCaseData("foo").Returns("foo"),
             };
 
-        public TestCaseData[] StringToIntData =
+        public static TestCaseData[] StringToIntData =
             {
                 new TestCaseData(string.Empty).Returns(0),
                 new TestCaseData(null).Returns(0),
@@ -359,7 +359,7 @@
                 new TestCaseData("123a").Returns(0),
             };
 
-        public TestCaseData[] StringToNullableIntData =
+        public static TestCaseData[] StringToNullableIntData =
             {
                 new TestCaseData(string.Empty).Returns(null),
                 new TestCaseData(null).Returns(null),
@@ -382,7 +382,7 @@
                 new TestCaseData("123a").Returns(null),
             };
 
-        public TestCaseData[] StringToGuidData =
+        public static TestCaseData[] StringToGuidData =
             {
                 new TestCaseData(string.Empty).Returns(Guid.Empty),
                 new TestCaseData(null).Returns(Guid.Empty),
@@ -393,7 +393,7 @@
                 new TestCaseData("123").Returns(Guid.Empty),
             };
 
-        public TestCaseData[] StringToDateTimeData =
+        public static TestCaseData[] StringToDateTimeData =
             {
                 new TestCaseData(string.Empty).Returns(DateTime.MinValue),
                 new TestCaseData(null).Returns(DateTime.MinValue),
@@ -407,7 +407,7 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] DecimalToStringData =
+        public static TestCaseData[] DecimalToStringData =
             {
                 new TestCaseData(decimal.MaxValue).Returns("79228162514264337593543950335"),
                 new TestCaseData(decimal.MinValue).Returns("-79228162514264337593543950335"),
@@ -419,7 +419,7 @@
                 new TestCaseData(1000000m).Returns("1000000"),
             };
 
-        public TestCaseData[] DecimalToByteData =
+        public static TestCaseData[] DecimalToByteData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -429,7 +429,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToNullableByteData =
+        public static TestCaseData[] DecimalToNullableByteData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -439,7 +439,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToSByteData =
+        public static TestCaseData[] DecimalToSByteData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -449,7 +449,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToNullableSByteData =
+        public static TestCaseData[] DecimalToNullableSByteData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -459,7 +459,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToInt16Data =
+        public static TestCaseData[] DecimalToInt16Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -469,7 +469,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToNullableInt16Data =
+        public static TestCaseData[] DecimalToNullableInt16Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -479,7 +479,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToUInt16Data =
+        public static TestCaseData[] DecimalToUInt16Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -489,7 +489,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToNullableUInt16Data =
+        public static TestCaseData[] DecimalToNullableUInt16Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -499,7 +499,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToInt32Data =
+        public static TestCaseData[] DecimalToInt32Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -510,7 +510,7 @@
                 new TestCaseData(-123.5m).Returns(-123),
             };
 
-        public TestCaseData[] DecimalToNullableInt32Data =
+        public static TestCaseData[] DecimalToNullableInt32Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -521,7 +521,7 @@
                 new TestCaseData(-123.5m).Returns(-123),
             };
 
-        public TestCaseData[] DecimalToUInt32Data =
+        public static TestCaseData[] DecimalToUInt32Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -531,7 +531,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToNullableUInt32Data =
+        public static TestCaseData[] DecimalToNullableUInt32Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -541,7 +541,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToInt64Data =
+        public static TestCaseData[] DecimalToInt64Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -551,7 +551,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToNullableInt64Data =
+        public static TestCaseData[] DecimalToNullableInt64Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -561,7 +561,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToUInt64Data =
+        public static TestCaseData[] DecimalToUInt64Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(0),
                 new TestCaseData(decimal.MinValue).Returns(0),
@@ -571,7 +571,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToNullableUInt64Data =
+        public static TestCaseData[] DecimalToNullableUInt64Data =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -581,7 +581,7 @@
                 new TestCaseData(123.49m).Returns(123),
             };
 
-        public TestCaseData[] DecimalToSingleData =
+        public static TestCaseData[] DecimalToSingleData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28f),
                 new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28f),
@@ -590,7 +590,7 @@
                 new TestCaseData(-123.5m).Returns(-123.5f),
             };
 
-        public TestCaseData[] DecimalToNullableSingleData =
+        public static TestCaseData[] DecimalToNullableSingleData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28f),
                 new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28f),
@@ -599,7 +599,7 @@
                 new TestCaseData(-123.5m).Returns(-123.5f),
             };
 
-        public TestCaseData[] DecimalToDoubleData =
+        public static TestCaseData[] DecimalToDoubleData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28d),
                 new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28d),
@@ -608,7 +608,7 @@
                 new TestCaseData(-123.5m).Returns(-123.5d),
             };
 
-        public TestCaseData[] DecimalToNullableDoubleData =
+        public static TestCaseData[] DecimalToNullableDoubleData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(7.9228162514264338E+28d),
                 new TestCaseData(decimal.MinValue).Returns(-7.9228162514264338E+28d),
@@ -617,7 +617,7 @@
                 new TestCaseData(-123.5m).Returns(-123.5d),
             };
 
-        public TestCaseData[] DecimalToDecimalData =
+        public static TestCaseData[] DecimalToDecimalData =
             {
                 new TestCaseData(0m).Returns(0m),
                 new TestCaseData(1.000m).Returns(1.000m),
@@ -626,7 +626,7 @@
                 new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
             };
 
-        public TestCaseData[] DecimalToNullableDecimalData =
+        public static TestCaseData[] DecimalToNullableDecimalData =
             {
                 new TestCaseData(0m).Returns(0m),
                 new TestCaseData(1.000m).Returns(1.000m),
@@ -635,28 +635,28 @@
                 new TestCaseData(decimal.MinValue).Returns(decimal.MinValue),
             };
 
-        public TestCaseData[] DecimalToBooleanData =
+        public static TestCaseData[] DecimalToBooleanData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(true),
                 new TestCaseData(decimal.MinValue).Returns(true),
                 new TestCaseData(0m).Returns(false),
             };
 
-        public TestCaseData[] DecimalToNullableBooleanData =
+        public static TestCaseData[] DecimalToNullableBooleanData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(true),
                 new TestCaseData(decimal.MinValue).Returns(true),
                 new TestCaseData(0m).Returns(false),
             };
 
-        public TestCaseData[] DecimalToCharData =
+        public static TestCaseData[] DecimalToCharData =
             {
                 new TestCaseData(decimal.MaxValue).Returns((char)0),
                 new TestCaseData(decimal.MinValue).Returns((char)0),
                 new TestCaseData(65m).Returns('A'),
             };
 
-        public TestCaseData[] DecimalToNullableCharData =
+        public static TestCaseData[] DecimalToNullableCharData =
             {
                 new TestCaseData(decimal.MaxValue).Returns(null),
                 new TestCaseData(decimal.MinValue).Returns(null),
@@ -669,7 +669,7 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] StringToDecimalData =
+        public static TestCaseData[] StringToDecimalData =
             {
                 new TestCaseData(string.Empty).Returns(0m),
                 new TestCaseData(null).Returns(0m),
@@ -683,7 +683,7 @@
                 new TestCaseData("123m").Returns(0m),
             };
 
-        public TestCaseData[] StringToNullableDecimalData =
+        public static TestCaseData[] StringToNullableDecimalData =
             {
                 new TestCaseData(string.Empty).Returns(null),
                 new TestCaseData(null).Returns(null),
@@ -698,7 +698,7 @@
             };
 
         // Use with decimalseperator = . and thousandseperator = [space]
-        public TestCaseData[] StringToDecimalWithFormatData =
+        public static TestCaseData[] StringToDecimalWithFormatData =
             {
                 new TestCaseData(string.Empty).Returns(0m),
                 new TestCaseData(null).Returns(0m),
@@ -725,7 +725,7 @@
             };
 
         // Use with decimalseperator = . and thousandseperator = [space]
-        public TestCaseData[] StringToNullableDecimalWithFormatData =
+        public static TestCaseData[] StringToNullableDecimalWithFormatData =
             {
                 new TestCaseData(string.Empty).Returns(null),
                 new TestCaseData(null).Returns(null),
@@ -751,55 +751,55 @@
                 new TestCaseData("123m").Returns(null),
             };
 
-        public TestCaseData[] ByteToDecimalData =
+        public static TestCaseData[] ByteToDecimalData =
             {
                 new TestCaseData(byte.MaxValue).Returns((decimal)byte.MaxValue),
                 new TestCaseData(byte.MinValue).Returns((decimal)byte.MinValue),
             };
 
-        public TestCaseData[] SByteToDecimalData =
+        public static TestCaseData[] SByteToDecimalData =
             {
                 new TestCaseData(sbyte.MaxValue).Returns((decimal)sbyte.MaxValue),
                 new TestCaseData(sbyte.MinValue).Returns((decimal)sbyte.MinValue),
             };
 
-        public TestCaseData[] Int16ToDecimalData =
+        public static TestCaseData[] Int16ToDecimalData =
             {
                 new TestCaseData(short.MaxValue).Returns((decimal)short.MaxValue),
                 new TestCaseData(short.MinValue).Returns((decimal)short.MinValue),
             };
 
-        public TestCaseData[] UInt16ToDecimalData =
+        public static TestCaseData[] UInt16ToDecimalData =
             {
                 new TestCaseData(ushort.MaxValue).Returns((decimal)ushort.MaxValue),
                 new TestCaseData(ushort.MinValue).Returns((decimal)ushort.MinValue),
             };
 
-        public TestCaseData[] Int32ToDecimalData =
+        public static TestCaseData[] Int32ToDecimalData =
             {
                 new TestCaseData(int.MaxValue).Returns((decimal)int.MaxValue),
                 new TestCaseData(int.MinValue).Returns((decimal)int.MinValue),
             };
 
-        public TestCaseData[] UInt32ToDecimalData =
+        public static TestCaseData[] UInt32ToDecimalData =
             {
                 new TestCaseData(uint.MaxValue).Returns((decimal)uint.MaxValue),
                 new TestCaseData(uint.MinValue).Returns((decimal)uint.MinValue),
             };
 
-        public TestCaseData[] Int64ToDecimalData =
+        public static TestCaseData[] Int64ToDecimalData =
             {
                 new TestCaseData(long.MaxValue).Returns((decimal)long.MaxValue),
                 new TestCaseData(long.MinValue).Returns((decimal)long.MinValue),
             };
 
-        public TestCaseData[] UInt64ToDecimalData =
+        public static TestCaseData[] UInt64ToDecimalData =
             {
                 new TestCaseData(ulong.MaxValue).Returns((decimal)ulong.MaxValue),
                 new TestCaseData(ulong.MinValue).Returns((decimal)ulong.MinValue),
             };
 
-        public TestCaseData[] DoubleToDecimalData =
+        public static TestCaseData[] DoubleToDecimalData =
             {
                 new TestCaseData(double.MaxValue).Returns(0m),
                 new TestCaseData(double.MinValue).Returns(0m),
@@ -810,7 +810,7 @@
                 new TestCaseData(123.49d).Returns(123.49m),
             };
 
-        public TestCaseData[] DoubleToNullableDecimalData =
+        public static TestCaseData[] DoubleToNullableDecimalData =
             {
                 new TestCaseData(double.MaxValue).Returns(null),
                 new TestCaseData(double.MinValue).Returns(null),
@@ -821,7 +821,7 @@
                 new TestCaseData(123.49d).Returns(123.49m),
             };
 
-        public TestCaseData[] SingleToDecimalData =
+        public static TestCaseData[] SingleToDecimalData =
             {
                 new TestCaseData(float.MaxValue).Returns(0m),
                 new TestCaseData(float.MinValue).Returns(0m),
@@ -832,7 +832,7 @@
                 new TestCaseData(123.49f).Returns(123.49m),
             };
 
-        public TestCaseData[] SingleToNullableDecimalData =
+        public static TestCaseData[] SingleToNullableDecimalData =
             {
                 new TestCaseData(float.MaxValue).Returns(null),
                 new TestCaseData(float.MinValue).Returns(null),
@@ -843,13 +843,13 @@
                 new TestCaseData(123.49f).Returns(123.49m),
             };
 
-        public TestCaseData[] BooleanToDecimalData =
+        public static TestCaseData[] BooleanToDecimalData =
             {
                 new TestCaseData(true).Returns(1m),
                 new TestCaseData(false).Returns(0m),
             };
 
-        public TestCaseData[] CharToDecimalData =
+        public static TestCaseData[] CharToDecimalData =
             {
                 new TestCaseData(char.MaxValue).Returns((decimal)char.MaxValue),
                 new TestCaseData(char.MinValue).Returns((decimal)char.MinValue),
@@ -862,7 +862,7 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] LongToIntData =
+        public static TestCaseData[] LongToIntData =
             {
                 new TestCaseData(0).Returns(0),
                 new TestCaseData(int.MaxValue).Returns(int.MaxValue),
@@ -877,21 +877,21 @@
         /*                                                                      
         /************************************************************************/
         
-        public TestCaseData[] IntToLongData =
+        public static TestCaseData[] IntToLongData =
             {
                 new TestCaseData(0).Returns(0),
                 new TestCaseData(int.MaxValue).Returns(int.MaxValue),
                 new TestCaseData(int.MinValue).Returns(int.MinValue),
             };
 
-        public TestCaseData[] IntToIntData =
+        public static TestCaseData[] IntToIntData =
             {
                 new TestCaseData(0).Returns(0),
                 new TestCaseData(int.MaxValue).Returns(int.MaxValue),
                 new TestCaseData(int.MinValue).Returns(int.MinValue),
             };
 
-        public TestCaseData[] IntToStringData =
+        public static TestCaseData[] IntToStringData =
             {
                 new TestCaseData(0).Returns("0"),
                 new TestCaseData(int.MaxValue).Returns(int.MaxValue.ToString()),
@@ -904,7 +904,7 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] GuidToStringData =
+        public static TestCaseData[] GuidToStringData =
             {
                 new TestCaseData(Guid.Empty).Returns("00000000-0000-0000-0000-000000000000"),
                 new TestCaseData(new Guid("0cb6c00f-fc44-484f-8ddd-823709b74601")).Returns("0cb6c00f-fc44-484f-8ddd-823709b74601"),
@@ -916,13 +916,13 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] DateTimeToStringData =
+        public static TestCaseData[] DateTimeToStringData =
             {
                 new TestCaseData(new DateTime(1977, 03, 04)).Returns(new DateTime(1977, 03, 04).ToString()),
                 new TestCaseData(new DateTime(1977, 03, 04, 13, 37, 00)).Returns(new DateTime(1977, 03, 04, 13, 37, 0).ToString()),
             };
 
-        public TestCaseData[] DateTimeToSqlDateTimeData =
+        public static TestCaseData[] DateTimeToSqlDateTimeData =
             {
                 new TestCaseData(DateTime.MinValue).Returns(SqlDateTime.MinValue),
                 new TestCaseData(DateTime.MaxValue).Returns(SqlDateTime.MaxValue),
@@ -934,7 +934,7 @@
         /*                                                                      
         /************************************************************************/
 
-        public TestCaseData[] SqlDateTimeToDateTimeData =
+        public static TestCaseData[] SqlDateTimeToDateTimeData =
             {
                 new TestCaseData(SqlDateTime.MinValue).Returns((DateTime)SqlDateTime.MinValue),
                 new TestCaseData(SqlDateTime.MaxValue).Returns((DateTime)SqlDateTime.MaxValue),

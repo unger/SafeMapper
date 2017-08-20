@@ -68,20 +68,23 @@
                     {
                     }
                 };
-
-            if (typeof(TDestination) != typeof(string))
+            AutoMapper.Mapper.Initialize(cfg =>
             {
-                if (typeof(TDestination) == typeof(DateTime) && typeof(TSource) == typeof(string))
+                if (typeof(TDestination) != typeof(string))
                 {
-                    AutoMapper.Mapper.CreateMap(typeof(TSource), typeof(TDestination)).ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
+                    if (typeof(TDestination) == typeof(DateTime) && typeof(TSource) == typeof(string))
+                    {
+                        cfg.CreateMap(typeof(TSource), typeof(TDestination))
+                            .ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
+                    }
+                    else
+                    {
+                        cfg.CreateMap<TSource, TDestination>();
+                    }
                 }
-                else
-                {
-                    AutoMapper.Mapper.CreateMap<TSource, TDestination>();
-                }
-            }
 
-            AutoMapper.Mapper.CreateMap<Address, AddressDto>();
+                cfg.CreateMap<Address, AddressDto>();
+            });
 
             this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
 

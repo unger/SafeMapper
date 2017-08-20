@@ -4,9 +4,9 @@
 
     using AutoMapper;
 
-    public class AutoMapperDateTimeTypeConverter : TypeConverter<string, DateTime>
+    public class AutoMapperDateTimeTypeConverter : ITypeConverter<string, DateTime>
     {
-        protected override DateTime ConvertCore(string source)
+        public DateTime Convert(string source, DateTime destination, ResolutionContext context)
         {
             return System.Convert.ToDateTime(source);
         }

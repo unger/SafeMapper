@@ -90,7 +90,7 @@ namespace SafeMapper.Tests
             Assert.Null(member);
         }
 
-        [TestCase(typeof(NameValueCollection), Result = true)]
+        [TestCase(typeof(NameValueCollection), ExpectedResult = true)]
         public bool IsDictionary(Type type)
         {
             return ReflectionUtils.IsDictionary(type);
@@ -180,7 +180,7 @@ namespace SafeMapper.Tests
         [Test]
         public void CanHaveCircularReference_Person_ShouldReturnFalse()
         {
-            var result = ReflectionUtils.CanHaveCircularReference(typeof(Person));
+             var result = ReflectionUtils.CanHaveCircularReference(typeof(Person));
 
             Assert.False(result);
         }
@@ -188,7 +188,7 @@ namespace SafeMapper.Tests
         [Test]
         public void CanHaveCircularReference_Parent_ShouldReturnTrue()
         {
-            var result = ReflectionUtils.CanHaveCircularReference(typeof(Parent));
+             var result = ReflectionUtils.CanHaveCircularReference(typeof(Parent));
 
             Assert.True(result);
         }
@@ -196,7 +196,7 @@ namespace SafeMapper.Tests
         [Test]
         public void CanHaveCircularReference_String_ShouldReturnFalse()
         {
-            var result = ReflectionUtils.CanHaveCircularReference(typeof(string));
+             var result = ReflectionUtils.CanHaveCircularReference(typeof(string));
 
             Assert.False(result);
         }
@@ -204,7 +204,7 @@ namespace SafeMapper.Tests
         [Test]
         public void CanHaveCircularReference_DateTime_ShouldReturnFalse()
         {
-            var result = ReflectionUtils.CanHaveCircularReference(typeof(DateTime));
+             var result = ReflectionUtils.CanHaveCircularReference(typeof(DateTime));
 
             Assert.False(result);
         }
@@ -212,7 +212,7 @@ namespace SafeMapper.Tests
         [Test]
         public void CanHaveCircularReference_ClassFieldPerson_ShouldReturnFalse()
         {
-            var result = ReflectionUtils.CanHaveCircularReference(typeof(ClassField<Person>));
+             var result = ReflectionUtils.CanHaveCircularReference(typeof(ClassField<Person>));
 
             Assert.False(result);
         }
@@ -220,7 +220,7 @@ namespace SafeMapper.Tests
         [Test]
         public void CanHaveCircularReference_BenchSource_ShouldReturnFalse()
         {
-            var result = ReflectionUtils.CanHaveCircularReference(typeof(BenchSource));
+             var result = ReflectionUtils.CanHaveCircularReference(typeof(BenchSource));
 
             Assert.False(result);
         }
@@ -228,7 +228,7 @@ namespace SafeMapper.Tests
         [Test]
         public void CanHaveCircularReference_Root_ShouldReturnTrue()
         {
-            var result = ReflectionUtils.CanHaveCircularReference(typeof(Root));
+             var result = ReflectionUtils.CanHaveCircularReference(typeof(Root));
 
             Assert.True(result);
         }
@@ -236,7 +236,7 @@ namespace SafeMapper.Tests
         [Test]
         public void GetTypeWithGenericTypeDefinition_GenericTypeDefinition_ShouldReturnCorrectType()
         {
-            var result = ReflectionUtils.GetTypeWithGenericTypeDefinition(typeof(List<string>), typeof(IEnumerable<>));
+             var result = ReflectionUtils.GetTypeWithGenericTypeDefinition(typeof(List<string>), typeof(IEnumerable<>));
 
             Assert.AreEqual(typeof(IEnumerable<string>), result);
         }
@@ -244,7 +244,7 @@ namespace SafeMapper.Tests
         [Test]
         public void GetTypeWithGenericTypeDefinition_NotGenericTypeDefinition_ShouldReturnNull()
         {
-            var result = ReflectionUtils.GetTypeWithGenericTypeDefinition(typeof(List<string>), typeof(IEnumerable<string>));
+             var result = ReflectionUtils.GetTypeWithGenericTypeDefinition(typeof(List<string>), typeof(IEnumerable<string>));
 
             Assert.IsNull(result);
         }
@@ -253,7 +253,7 @@ namespace SafeMapper.Tests
         [Test]
         public void GetMemberMaps_NameValueCollectionAndDictionary_ShouldReturnEmptyList()
         {
-            var result = ReflectionUtils.GetMemberMaps(typeof(NameValueCollection), typeof(Dictionary<string, int>));
+             var result = ReflectionUtils.GetMemberMaps(typeof(NameValueCollection), typeof(Dictionary<string, int>));
 
             Assert.IsEmpty(result);
         }
@@ -261,7 +261,7 @@ namespace SafeMapper.Tests
         [Test]
         public void GetStaticMemberInfo_OnClassWithSingletonField_ShouldReturnFieldInfo()
         {
-            var result = ReflectionUtils.GetStaticMemberInfo(typeof(SingletonFieldClass));
+             var result = ReflectionUtils.GetStaticMemberInfo(typeof(SingletonFieldClass));
 
             Assert.IsInstanceOf<FieldInfo>(result);
             Assert.AreEqual(typeof(SingletonFieldClass), (result as FieldInfo).FieldType);
@@ -270,7 +270,7 @@ namespace SafeMapper.Tests
         [Test]
         public void GetStaticMemberInfo_OnClassWithSingletonProperty_ShouldReturnPropertyInfo()
         {
-            var result = ReflectionUtils.GetStaticMemberInfo(typeof(SingletonPropertyClass));
+             var result = ReflectionUtils.GetStaticMemberInfo(typeof(SingletonPropertyClass));
 
             Assert.IsInstanceOf<PropertyInfo>(result);
             Assert.AreEqual(typeof(SingletonPropertyClass), (result as PropertyInfo).PropertyType);

@@ -16,7 +16,7 @@
         [Test]
         public void Convert_NonGeneric_StringToInt()
         {
-            var result = SafeMap.Convert("10", typeof(string), typeof(int));
+             var result = SafeMap.Convert("10", typeof(string), typeof(int));
 
             Assert.AreEqual(10, result);
         }
@@ -24,7 +24,7 @@
         [Test]
         public void Convert_NonGenericWithFormat_StringToInt()
         {
-            var result = SafeMap.Convert("10", typeof(string), typeof(int), CultureInfo.CurrentCulture);
+             var result = SafeMap.Convert("10", typeof(string), typeof(int), CultureInfo.CurrentCulture);
 
             Assert.AreEqual(10, result);
         }
@@ -32,7 +32,7 @@
         [Test]
         public void Convert_Generic_StringToInt()
         {
-            var result = SafeMap.Convert<string, int>("10");
+             var result = SafeMap.Convert<string, int>("10");
 
             Assert.AreEqual(10, result);
         }
@@ -40,7 +40,7 @@
         [Test]
         public void Convert_GenericWithFormat_StringToInt()
         {
-            var result = SafeMap.Convert<string, int>("10", CultureInfo.CurrentCulture);
+             var result = SafeMap.Convert<string, int>("10", CultureInfo.CurrentCulture);
 
             Assert.AreEqual(10, result);
         }
@@ -48,7 +48,7 @@
         [Test]
         public void Convert_Generic_IntToNullableInt()
         {
-            var result = SafeMap.Convert<int, int?>(2);
+             var result = SafeMap.Convert<int, int?>(2);
 
             Assert.AreEqual(2, result);
         }
@@ -56,7 +56,7 @@
         [Test]
         public void Convert_Generic_NullableIntToNullableInt()
         {
-            var result = SafeMap.Convert<int?, int?>(2);
+             var result = SafeMap.Convert<int?, int?>(2);
 
             Assert.AreEqual(2, result);
         }
@@ -64,7 +64,7 @@
         [Test]
         public void Convert_Generic_NullableTimeSpanToNullableTimeSpan()
         {
-            var result = SafeMap.Convert<TimeSpan?, TimeSpan?>(TimeSpan.FromDays(28));
+             var result = SafeMap.Convert<TimeSpan?, TimeSpan?>(TimeSpan.FromDays(28));
 
             Assert.AreEqual(TimeSpan.FromDays(28), result);
         }
@@ -72,7 +72,7 @@
         [Test]
         public void Convert_Generic_NullableLongToNullableInt()
         {
-            var result = SafeMap.Convert<long?, int?>(2L);
+             var result = SafeMap.Convert<long?, int?>(2L);
 
             Assert.AreEqual(2, result);
         }
@@ -81,7 +81,7 @@
         public void GetConverter_NonGeneric_StringToInt()
         {
             var converter = SafeMap.GetConverter(typeof(string), typeof(int));
-            var result = converter("10");
+             var result = converter("10");
 
             Assert.AreEqual(10, result);
         }
@@ -90,7 +90,7 @@
         public void GetConverter_NonGenericWithFormat_StringToInt()
         {
             var converter = SafeMap.GetConverter(typeof(string), typeof(int), CultureInfo.CurrentCulture);
-            var result = converter("10");
+             var result = converter("10");
 
             Assert.AreEqual(10, result);
         }
@@ -99,7 +99,7 @@
         public void GetConverter_Generic_StringToInt()
         {
             var converter = SafeMap.GetConverter<string, int>();
-            var result = converter("10");
+             var result = converter("10");
 
             Assert.AreEqual(10, result);
         }
@@ -108,7 +108,7 @@
         public void GetConverter_GenericWithFormat_StringToInt()
         {
             var converter = SafeMap.GetConverter<string, int>(CultureInfo.CurrentCulture);
-            var result = converter("10");
+             var result = converter("10");
 
             Assert.AreEqual(10, result);
         }
@@ -134,7 +134,7 @@
                 Length = 1.85m,
                 BirthDate = new DateTime(1977, 03, 04),
             };
-            var result = SafeMap.Convert<Person, PersonSwedish>(person);
+             var result = SafeMap.Convert<Person, PersonSwedish>(person);
 
             Assert.AreEqual(person.Id, result.PersonId);
             Assert.AreEqual(person.Name, result.Namn);
@@ -154,7 +154,7 @@
                 });
 
             var input = new NameValueCollection { { "Value2", "1337" } };
-            var result = SafeMap.Convert<NameValueCollection, ClassProperty<int>>(input);
+             var result = SafeMap.Convert<NameValueCollection, ClassProperty<int>>(input);
 
             Assert.AreEqual(1337, result.Value);
         }
@@ -170,7 +170,7 @@
                 });
 
             var input = new NameValueCollection { { "Value2", "1337" } };
-            var result = SafeMap.Convert<NameValueCollection, ClassProperty<int>>(input);
+             var result = SafeMap.Convert<NameValueCollection, ClassProperty<int>>(input);
 
             Assert.AreEqual(1337, result.Value);
         }
@@ -187,7 +187,7 @@
                 });
 
             var input = new ClassProperty<int> { Value = 1337 };
-            var result = SafeMap.Convert<ClassProperty<int>, NameValueCollection>(input);
+             var result = SafeMap.Convert<ClassProperty<int>, NameValueCollection>(input);
 
             Assert.AreEqual("1337", result["Value2"]);
         }
