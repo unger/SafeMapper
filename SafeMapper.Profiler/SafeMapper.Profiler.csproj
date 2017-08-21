@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net45</TargetFramework>
+    <AssemblyName>SafeMapper.Profiler</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>SafeMapper.Profiler</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SafeMapper\SafeMapper.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+    <PackageReference Include="AutoMapper" Version="6.1.1" />
+    <PackageReference Include="EmitMapper" Version="1.0.0" />
+    <PackageReference Include="fasterflect" Version="2.1.3" />
+    <PackageReference Include="FastMapper" Version="1.2.0" />
+    <PackageReference Include="fFastMapper" Version="0.5.3" />
+    <PackageReference Include="ServiceStack.Text" Version="4.5.12" />
+    <PackageReference Include="UniversalTypeConverter" Version="1.0.4" />
+    <PackageReference Include="ValueInjecter" Version="3.1.1.3" />
+    <Reference Include="System.Web" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

@@ -142,7 +142,8 @@
             */
         }
 
-        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider, Action<int> compareFunc)
+        private void ProfileConvert<TSource, TDestination>(TSource[] input, CultureInfo formatProvider,
+            Action<int> compareFunc)
         {
             var safeMapper = SafeMap.GetConverter<TSource, TDestination>();
             var sourceType = typeof(TSource);
@@ -151,26 +152,31 @@
             var emitMapper = ObjectMapperManager.DefaultInstance.GetMapper<TSource, TDestination>();
 
             //var fFastMapper = fFastMap.MapperFor<TSource, TDestination>();
-
-            if (typeof(TDestination) != typeof(string))
+            AutoMapper.Mapper.Initialize(cfg =>
             {
-                if (typeof(TDestination) == typeof(DateTime) && typeof(TSource) == typeof(string))
+                if (typeof(TDestination) != typeof(string))
                 {
-                    AutoMapper.Mapper.CreateMap(typeof(TSource), typeof(TDestination)).ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
+                    if (typeof(TDestination) == typeof(DateTime) && typeof(TSource) == typeof(string))
+                    {
+                        cfg.CreateMap(typeof(TSource), typeof(TDestination))
+                            .ConvertUsing(typeof(AutoMapperDateTimeTypeConverter));
+                    }
+                    else
+                    {
+                        cfg.CreateMap<TSource, TDestination>();
+                    }
                 }
-                else
-                {
-                    AutoMapper.Mapper.CreateMap<TSource, TDestination>();
-                }
-            }
 
-            AutoMapper.Mapper.CreateMap<Address, AddressDto>();
-            AutoMapper.Mapper.CreateMap<AddressDto, Address>();
-            AutoMapper.Mapper.CreateMap<BenchSource.Int1, BenchDestination.Int1>();
-            AutoMapper.Mapper.CreateMap<BenchSource.Int2, BenchDestination.Int2>();
+                cfg.CreateMap<Address, AddressDto>();
+                cfg.CreateMap<AddressDto, Address>();
+                cfg.CreateMap<BenchSource.Int1, BenchDestination.Int1>();
+                cfg.CreateMap<BenchSource.Int2, BenchDestination.Int2>();
+            });
+  
 
-            this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name, typeof(TDestination).Name, input.Length));
-            
+            this.WriteHeader(string.Format("Profiling convert from {0} to {1}, {2} iterations", typeof(TSource).Name,
+                typeof(TDestination).Name, input.Length));
+
             if (compareFunc != null)
             {
                 this.AddResult("Native", compareFunc);
@@ -188,7 +194,7 @@
             this.AddResult("ValueInjecter",
                 i =>
                     {
-                        var result = new TDestination();
+                         var result = new TDestination();
                         result.InjectFrom(input[i]);
                     });*/
 

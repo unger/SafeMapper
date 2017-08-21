@@ -45,7 +45,7 @@
             var input = new ClassMethod<int>();
             input.SetValue(1337);
 
-            var result = this.safeMapService.Convert<ClassMethod<int>, ClassProperty<string>>(input);
+             var result = this.safeMapService.Convert<ClassMethod<int>, ClassProperty<string>>(input);
 
             Assert.AreEqual("1337", result.Value);
         }
@@ -58,7 +58,7 @@
 
             var input = new ClassProperty<string> { Value = "1337" };
 
-            var result = this.safeMapService.Convert<ClassProperty<string>, ClassMethod<int>>(input);
+             var result = this.safeMapService.Convert<ClassProperty<string>, ClassMethod<int>>(input);
 
             Assert.AreEqual(1337, result.GetValue());
         }
@@ -71,7 +71,7 @@
 
             var input = new ClassProperty<string> { Value = "1337" };
 
-            var result = this.safeMapService.Convert<ClassProperty<string>, NameValueCollection>(input);
+             var result = this.safeMapService.Convert<ClassProperty<string>, NameValueCollection>(input);
 
             Assert.AreEqual("1337", result["Value2"]);
         }
@@ -84,7 +84,7 @@
 
             var input = new NameValueCollection { { "Value2", "1337" } };
 
-            var result = this.safeMapService.Convert<NameValueCollection, ClassProperty<string>>(input);
+             var result = this.safeMapService.Convert<NameValueCollection, ClassProperty<string>>(input);
 
             Assert.AreEqual("1337", result.Value);
         }
@@ -97,7 +97,7 @@
 
             var input = new NameValueCollection { { "Value2", "1337" } };
 
-            var result = this.safeMapService.Convert<NameValueCollection, ClassMethod<string>>(input);
+             var result = this.safeMapService.Convert<NameValueCollection, ClassMethod<string>>(input);
 
             Assert.AreEqual("1337", result.GetValue());
         }
@@ -109,7 +109,7 @@
 
             var input = 1337;
 
-            var result = this.safeMapService.Convert<int, string>(input);
+             var result = this.safeMapService.Convert<int, string>(input);
 
             Assert.AreEqual("1337pcs", result);
         }
@@ -122,7 +122,7 @@
             this.safeMapService.Configuration.SetConvertMethod<decimal, string>(
                 x => Math.Round(x, decimals).ToString(CultureInfo.InvariantCulture));
 
-            var result = this.safeMapService.Convert<decimal, string>(1337.1337m);
+             var result = this.safeMapService.Convert<decimal, string>(1337.1337m);
 
             Assert.AreEqual("1337.13", result);
         }

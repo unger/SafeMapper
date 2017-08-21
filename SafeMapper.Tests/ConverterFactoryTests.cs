@@ -367,7 +367,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<List<string>, List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new List<string> { "1", "2", "3", "4", "5" };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<List<int>>(result);
             Assert.AreEqual(expected, result);
@@ -379,7 +379,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<string[], List<int>>();
             var expected = new List<int> { 1, 2, 3, 4, 5 };
             var input = new[] { "1", "2", "3", "4", "5" };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<List<int>>(result);
             Assert.AreEqual(expected, result);
@@ -391,7 +391,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<List<int>, decimal[]>();
             var input = new List<int> { 1, 2, 3, 4, 5 };
             var expected = new[] { 1m, 2m, 3m, 4m, 5m };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<decimal[]>(result);
             Assert.AreEqual(expected, result);
@@ -403,7 +403,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<List<int>, List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new List<int> { 1, 2, 3, 4, 5 };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<List<decimal>>(result);
             Assert.AreEqual(expected, result);
@@ -415,7 +415,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<int[], List<decimal>>();
             var expected = new List<decimal> { 1m, 2m, 3m, 4m, 5m };
             var input = new[] { 1, 2, 3, 4, 5 };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<List<decimal>>(result);
             Assert.AreEqual(expected, result);
@@ -433,7 +433,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<ICollection<string>, string[]>();
             var input = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
             var expected = new[] { "1", "2", "3", "4", "5" };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<string[]>(result);
             Assert.AreEqual(expected, result);
@@ -445,7 +445,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<string[], ICollection<string>>();
             var input = new[] { "1", "2", "3", "4", "5" };
             var expected = new List<string> { "1", "2", "3", "4", "5" } as ICollection<string>;
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ICollection<string>>(result);
             Assert.AreEqual(expected, result);
@@ -457,30 +457,30 @@ namespace SafeMapper.Tests
         /*                                                                      
         /************************************************************************/
 
-        [TestCase(ByteEnum.Undefined, Result = (byte)0)]
-        [TestCase(ByteEnum.Value1, Result = (byte)1)]
-        [TestCase(ByteEnum.Value2, Result = (byte)2)]
-        [TestCase(ByteEnum.Value3, Result = (byte)3)]
+        [TestCase(ByteEnum.Undefined, ExpectedResult = (byte)0)]
+        [TestCase(ByteEnum.Value1, ExpectedResult = (byte)1)]
+        [TestCase(ByteEnum.Value2, ExpectedResult = (byte)2)]
+        [TestCase(ByteEnum.Value3, ExpectedResult = (byte)3)]
         public byte ToByte_FromByteEnum(ByteEnum input)
         {
             var converter = this.converterFactory.CreateDelegate<ByteEnum, byte>();
             return converter(input);
         }
 
-        [TestCase(ByteEnum.Undefined, Result = (long)0)]
-        [TestCase(ByteEnum.Value1, Result = (long)1)]
-        [TestCase(ByteEnum.Value2, Result = (long)2)]
-        [TestCase(ByteEnum.Value3, Result = (long)3)]
+        [TestCase(ByteEnum.Undefined, ExpectedResult = (long)0)]
+        [TestCase(ByteEnum.Value1, ExpectedResult = (long)1)]
+        [TestCase(ByteEnum.Value2, ExpectedResult = (long)2)]
+        [TestCase(ByteEnum.Value3, ExpectedResult = (long)3)]
         public long ToInt64_FromByteEnum(ByteEnum input)
         {
             var converter = this.converterFactory.CreateDelegate<ByteEnum, long>();
             return converter(input);
         }
 
-        [TestCase(Int64Enum.Undefined, Result = (byte)0)]
-        [TestCase(Int64Enum.Value1, Result = (byte)1)]
-        [TestCase(Int64Enum.Min, Result = (byte)0)]
-        [TestCase(Int64Enum.Max, Result = (byte)0)]
+        [TestCase(Int64Enum.Undefined, ExpectedResult = (byte)0)]
+        [TestCase(Int64Enum.Value1, ExpectedResult = (byte)1)]
+        [TestCase(Int64Enum.Min, ExpectedResult = (byte)0)]
+        [TestCase(Int64Enum.Max, ExpectedResult = (byte)0)]
         public byte ToByte_FromInt64Enum(Int64Enum input)
         {
             var converter = this.converterFactory.CreateDelegate<Int64Enum, byte>();
@@ -493,137 +493,137 @@ namespace SafeMapper.Tests
         /*                                                                      
         /************************************************************************/
 
-        [TestCase("Undefined", Result = ByteEnum.Undefined)]
-        [TestCase("Value1", Result = ByteEnum.Value1)]
-        [TestCase("Value2", Result = ByteEnum.Value2)]
-        [TestCase("Value3", Result = ByteEnum.Value3)]
-        [TestCase("Value4", Result = ByteEnum.Undefined)]
+        [TestCase("Undefined", ExpectedResult = ByteEnum.Undefined)]
+        [TestCase("Value1", ExpectedResult = ByteEnum.Value1)]
+        [TestCase("Value2", ExpectedResult = ByteEnum.Value2)]
+        [TestCase("Value3", ExpectedResult = ByteEnum.Value3)]
+        [TestCase("Value4", ExpectedResult = ByteEnum.Undefined)]
         public ByteEnum ToByteEnum_FromString(string input)
         {
             var converter = this.converterFactory.CreateDelegate<string, ByteEnum>();
             return converter(input);
         }
 
-        [TestCase((byte)0, Result = ByteEnum.Undefined)]
-        [TestCase((byte)1, Result = ByteEnum.Value1)]
-        [TestCase((byte)2, Result = ByteEnum.Value2)]
-        [TestCase((byte)3, Result = ByteEnum.Value3)]
-        [TestCase((byte)4, Result = ByteEnum.Undefined)]
+        [TestCase((byte)0, ExpectedResult = ByteEnum.Undefined)]
+        [TestCase((byte)1, ExpectedResult = ByteEnum.Value1)]
+        [TestCase((byte)2, ExpectedResult = ByteEnum.Value2)]
+        [TestCase((byte)3, ExpectedResult = ByteEnum.Value3)]
+        [TestCase((byte)4, ExpectedResult = ByteEnum.Undefined)]
         public ByteEnum ToByteEnum_FromByte(byte input)
         {
             var converter = this.converterFactory.CreateDelegate<byte, ByteEnum>();
             return converter(input);
         }
 
-        [TestCase((byte)0, Result = SByteEnum.Undefined)]
-        [TestCase((byte)1, Result = SByteEnum.Value1)]
-        [TestCase((byte)2, Result = SByteEnum.Value2)]
-        [TestCase((byte)3, Result = SByteEnum.Value3)]
-        [TestCase((byte)4, Result = SByteEnum.Undefined)]
+        [TestCase((byte)0, ExpectedResult = SByteEnum.Undefined)]
+        [TestCase((byte)1, ExpectedResult = SByteEnum.Value1)]
+        [TestCase((byte)2, ExpectedResult = SByteEnum.Value2)]
+        [TestCase((byte)3, ExpectedResult = SByteEnum.Value3)]
+        [TestCase((byte)4, ExpectedResult = SByteEnum.Undefined)]
         public SByteEnum ToSByteEnum_FromByte(byte input)
         {
             var converter = this.converterFactory.CreateDelegate<byte, SByteEnum>();
             return converter(input);
         }
 
-        [TestCase((byte)0, Result = Int16Enum.Undefined)]
-        [TestCase((byte)1, Result = Int16Enum.Value1)]
-        [TestCase((byte)2, Result = Int16Enum.Value2)]
-        [TestCase((byte)3, Result = Int16Enum.Value3)]
-        [TestCase((byte)4, Result = Int16Enum.Undefined)]
+        [TestCase((byte)0, ExpectedResult = Int16Enum.Undefined)]
+        [TestCase((byte)1, ExpectedResult = Int16Enum.Value1)]
+        [TestCase((byte)2, ExpectedResult = Int16Enum.Value2)]
+        [TestCase((byte)3, ExpectedResult = Int16Enum.Value3)]
+        [TestCase((byte)4, ExpectedResult = Int16Enum.Undefined)]
         public Int16Enum ToInt16Enum_FromByte(byte input)
         {
             var converter = this.converterFactory.CreateDelegate<byte, Int16Enum>();
             return converter(input);
         }
 
-        [TestCase((byte)0, Result = UInt16Enum.Undefined)]
-        [TestCase((byte)1, Result = UInt16Enum.Value1)]
-        [TestCase((byte)2, Result = UInt16Enum.Value2)]
-        [TestCase((byte)3, Result = UInt16Enum.Value3)]
-        [TestCase((byte)4, Result = UInt16Enum.Undefined)]
+        [TestCase((byte)0, ExpectedResult = UInt16Enum.Undefined)]
+        [TestCase((byte)1, ExpectedResult = UInt16Enum.Value1)]
+        [TestCase((byte)2, ExpectedResult = UInt16Enum.Value2)]
+        [TestCase((byte)3, ExpectedResult = UInt16Enum.Value3)]
+        [TestCase((byte)4, ExpectedResult = UInt16Enum.Undefined)]
         public UInt16Enum ToUInt16Enum_FromByte(byte input)
         {
             var converter = this.converterFactory.CreateDelegate<byte, UInt16Enum>();
             return converter(input);
         }
 
-        [TestCase(-1, Result = Int32Enum.Undefined)]
-        [TestCase(0, Result = Int32Enum.Undefined)]
-        [TestCase(1, Result = Int32Enum.Value1)]
-        [TestCase(2, Result = Int32Enum.Value2)]
-        [TestCase(3, Result = Int32Enum.Value3)]
-        [TestCase(4, Result = Int32Enum.Undefined)]
+        [TestCase(-1, ExpectedResult = Int32Enum.Undefined)]
+        [TestCase(0, ExpectedResult = Int32Enum.Undefined)]
+        [TestCase(1, ExpectedResult = Int32Enum.Value1)]
+        [TestCase(2, ExpectedResult = Int32Enum.Value2)]
+        [TestCase(3, ExpectedResult = Int32Enum.Value3)]
+        [TestCase(4, ExpectedResult = Int32Enum.Undefined)]
         public Int32Enum ToInt32Enum_FromInt32(int input)
         {
             var converter = this.converterFactory.CreateDelegate<int, Int32Enum>();
             return converter(input);
         }
 
-        [TestCase(-1, Result = UInt32Enum.Undefined)]
-        [TestCase(0, Result = UInt32Enum.Undefined)]
-        [TestCase(1, Result = UInt32Enum.Value1)]
-        [TestCase(2, Result = UInt32Enum.Value2)]
-        [TestCase(3, Result = UInt32Enum.Value3)]
-        [TestCase(4, Result = UInt32Enum.Undefined)]
+        [TestCase(-1, ExpectedResult = UInt32Enum.Undefined)]
+        [TestCase(0, ExpectedResult = UInt32Enum.Undefined)]
+        [TestCase(1, ExpectedResult = UInt32Enum.Value1)]
+        [TestCase(2, ExpectedResult = UInt32Enum.Value2)]
+        [TestCase(3, ExpectedResult = UInt32Enum.Value3)]
+        [TestCase(4, ExpectedResult = UInt32Enum.Undefined)]
         public UInt32Enum ToUInt32Enum_FromInt32(int input)
         {
             var converter = this.converterFactory.CreateDelegate<int, UInt32Enum>();
             return converter(input);
         }
 
-        [TestCase(-1L, Result = Int32Enum.Undefined)]
-        [TestCase(0L, Result = Int32Enum.Undefined)]
-        [TestCase(1L, Result = Int32Enum.Value1)]
-        [TestCase(2L, Result = Int32Enum.Value2)]
-        [TestCase(3L, Result = Int32Enum.Value3)]
-        [TestCase(4L, Result = Int32Enum.Undefined)]
+        [TestCase(-1L, ExpectedResult = Int32Enum.Undefined)]
+        [TestCase(0L, ExpectedResult = Int32Enum.Undefined)]
+        [TestCase(1L, ExpectedResult = Int32Enum.Value1)]
+        [TestCase(2L, ExpectedResult = Int32Enum.Value2)]
+        [TestCase(3L, ExpectedResult = Int32Enum.Value3)]
+        [TestCase(4L, ExpectedResult = Int32Enum.Undefined)]
         public Int32Enum ToInt32Enum_FromInt64(long input)
         {
             var converter = this.converterFactory.CreateDelegate<long, Int32Enum>();
             return converter(input);
         }
 
-        [TestCase(-1L, Result = Int64Enum.Undefined)]
-        [TestCase(0L, Result = Int64Enum.Undefined)]
-        [TestCase(1L, Result = Int64Enum.Value1)]
-        [TestCase(long.MinValue, Result = Int64Enum.Min)]
-        [TestCase(long.MaxValue, Result = Int64Enum.Max)]
-        [TestCase(4L, Result = Int64Enum.Undefined)]
+        [TestCase(-1L, ExpectedResult = Int64Enum.Undefined)]
+        [TestCase(0L, ExpectedResult = Int64Enum.Undefined)]
+        [TestCase(1L, ExpectedResult = Int64Enum.Value1)]
+        [TestCase(long.MinValue, ExpectedResult = Int64Enum.Min)]
+        [TestCase(long.MaxValue, ExpectedResult = Int64Enum.Max)]
+        [TestCase(4L, ExpectedResult = Int64Enum.Undefined)]
         public Int64Enum ToInt64Enum_FromInt64(long input)
         {
             var converter = this.converterFactory.CreateDelegate<long, Int64Enum>();
             return converter(input);
         }
 
-        [TestCase(-1L, Result = UInt64Enum.Undefined)]
-        [TestCase(0L, Result = UInt64Enum.Undefined)]
-        [TestCase(1L, Result = UInt64Enum.Value1)]
-        [TestCase(long.MinValue, Result = UInt64Enum.Undefined)]
-        [TestCase(long.MaxValue, Result = UInt64Enum.Undefined)]
-        [TestCase(4L, Result = UInt64Enum.Undefined)]
+        [TestCase(-1L, ExpectedResult = UInt64Enum.Undefined)]
+        [TestCase(0L, ExpectedResult = UInt64Enum.Undefined)]
+        [TestCase(1L, ExpectedResult = UInt64Enum.Value1)]
+        [TestCase(long.MinValue, ExpectedResult = UInt64Enum.Undefined)]
+        [TestCase(long.MaxValue, ExpectedResult = UInt64Enum.Undefined)]
+        [TestCase(4L, ExpectedResult = UInt64Enum.Undefined)]
         public UInt64Enum ToUInt64Enum_FromInt64(long input)
         {
             var converter = this.converterFactory.CreateDelegate<long, UInt64Enum>();
             return converter(input);
         }
 
-        [TestCase(0UL, Result = UInt64Enum.Undefined)]
-        [TestCase(1UL, Result = UInt64Enum.Value1)]
-        [TestCase(ulong.MinValue, Result = UInt64Enum.Undefined)]
-        [TestCase(ulong.MaxValue, Result = UInt64Enum.Max)]
-        [TestCase(4UL, Result = UInt64Enum.Undefined)]
+        [TestCase(0UL, ExpectedResult = UInt64Enum.Undefined)]
+        [TestCase(1UL, ExpectedResult = UInt64Enum.Value1)]
+        [TestCase(ulong.MinValue, ExpectedResult = UInt64Enum.Undefined)]
+        [TestCase(ulong.MaxValue, ExpectedResult = UInt64Enum.Max)]
+        [TestCase(4UL, ExpectedResult = UInt64Enum.Undefined)]
         public UInt64Enum ToUInt64Enum_FromUInt64(ulong input)
         {
             var converter = this.converterFactory.CreateDelegate<ulong, UInt64Enum>();
             return converter(input);
         }
 
-        [TestCase("Odefinerat", Result = DisplayAttributeResourceEnum.Undefined)]
-        [TestCase("Värde 1", Result = DisplayAttributeResourceEnum.Value1)]
-        [TestCase("Värde 2", Result = DisplayAttributeResourceEnum.Value2)]
-        [TestCase("Värde 3", Result = DisplayAttributeResourceEnum.Value3)]
-        [TestCase("Värde 4", Result = DisplayAttributeResourceEnum.Undefined)]
+        [TestCase("Odefinerat", ExpectedResult = DisplayAttributeResourceEnum.Undefined)]
+        [TestCase("Värde 1", ExpectedResult = DisplayAttributeResourceEnum.Value1)]
+        [TestCase("Värde 2", ExpectedResult = DisplayAttributeResourceEnum.Value2)]
+        [TestCase("Värde 3", ExpectedResult = DisplayAttributeResourceEnum.Value3)]
+        [TestCase("Värde 4", ExpectedResult = DisplayAttributeResourceEnum.Undefined)]
         public DisplayAttributeResourceEnum ToDisplayAttributeResourceEnum_FromString_CultureSv(string input)
         {
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("sv-SE");
@@ -631,11 +631,11 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [TestCase("Undefined", Result = DisplayAttributeResourceEnum.Undefined)]
-        [TestCase("Value 1", Result = DisplayAttributeResourceEnum.Value1)]
-        [TestCase("Value 2", Result = DisplayAttributeResourceEnum.Value2)]
-        [TestCase("Value 3", Result = DisplayAttributeResourceEnum.Value3)]
-        [TestCase("Value 4", Result = DisplayAttributeResourceEnum.Undefined)]
+        [TestCase("Undefined", ExpectedResult = DisplayAttributeResourceEnum.Undefined)]
+        [TestCase("Value 1", ExpectedResult = DisplayAttributeResourceEnum.Value1)]
+        [TestCase("Value 2", ExpectedResult = DisplayAttributeResourceEnum.Value2)]
+        [TestCase("Value 3", ExpectedResult = DisplayAttributeResourceEnum.Value3)]
+        [TestCase("Value 4", ExpectedResult = DisplayAttributeResourceEnum.Undefined)]
         public DisplayAttributeResourceEnum ToDisplayAttributeResourceEnum_FromString_CultureEn(string input)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
@@ -644,12 +644,12 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [Ignore]
-        [TestCase("Odefinerat", Result = DisplayAttributeResxEnum.Undefined)]
-        [TestCase("Värde 1", Result = DisplayAttributeResxEnum.Value1)]
-        [TestCase("Värde 2", Result = DisplayAttributeResxEnum.Value2)]
-        [TestCase("Värde 3", Result = DisplayAttributeResxEnum.Value3)]
-        [TestCase("Värde 4", Result = DisplayAttributeResxEnum.Undefined)]
+        [Ignore("Ignored")]
+        [TestCase("Odefinerat", ExpectedResult = DisplayAttributeResxEnum.Undefined)]
+        [TestCase("Värde 1", ExpectedResult = DisplayAttributeResxEnum.Value1)]
+        [TestCase("Värde 2", ExpectedResult = DisplayAttributeResxEnum.Value2)]
+        [TestCase("Värde 3", ExpectedResult = DisplayAttributeResxEnum.Value3)]
+        [TestCase("Värde 4", ExpectedResult = DisplayAttributeResxEnum.Undefined)]
         public DisplayAttributeResxEnum ToDisplayAttributeResxEnum_FromString_CultureSv(string input)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("sv-SE");
@@ -657,12 +657,12 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [Ignore]
-        [TestCase("Undefined", Result = DisplayAttributeResxEnum.Undefined)]
-        [TestCase("Value 1", Result = DisplayAttributeResxEnum.Value1)]
-        [TestCase("Value 2", Result = DisplayAttributeResxEnum.Value2)]
-        [TestCase("Value 3", Result = DisplayAttributeResxEnum.Value3)]
-        [TestCase("Value 4", Result = DisplayAttributeResxEnum.Undefined)]
+        [Ignore("Ignored")]
+        [TestCase("Undefined", ExpectedResult = DisplayAttributeResxEnum.Undefined)]
+        [TestCase("Value 1", ExpectedResult = DisplayAttributeResxEnum.Value1)]
+        [TestCase("Value 2", ExpectedResult = DisplayAttributeResxEnum.Value2)]
+        [TestCase("Value 3", ExpectedResult = DisplayAttributeResxEnum.Value3)]
+        [TestCase("Value 4", ExpectedResult = DisplayAttributeResxEnum.Undefined)]
         public DisplayAttributeResxEnum ToDisplayAttributeResxEnum_FromString_CultureEn(string input)
         {
             Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-US");
@@ -670,51 +670,51 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [TestCase("Undefined", Result = DescriptionAttributeEnum.Undefined)]
-        [TestCase("Value 1", Result = DescriptionAttributeEnum.Value1)]
-        [TestCase("Value 2", Result = DescriptionAttributeEnum.Value2)]
-        [TestCase("Value 3", Result = DescriptionAttributeEnum.Value3)]
-        [TestCase("Value 4", Result = DescriptionAttributeEnum.Undefined)]
+        [TestCase("Undefined", ExpectedResult = DescriptionAttributeEnum.Undefined)]
+        [TestCase("Value 1", ExpectedResult = DescriptionAttributeEnum.Value1)]
+        [TestCase("Value 2", ExpectedResult = DescriptionAttributeEnum.Value2)]
+        [TestCase("Value 3", ExpectedResult = DescriptionAttributeEnum.Value3)]
+        [TestCase("Value 4", ExpectedResult = DescriptionAttributeEnum.Undefined)]
         public DescriptionAttributeEnum ToDescriptionEnum_FromString(string input)
         {
             var converter = this.converterFactory.CreateDelegate<string, DescriptionAttributeEnum>();
             return converter(input);
         }
 
-        [TestCase("Undefined", Result = DisplayAttributeEnum.Undefined)]
-        [TestCase("Value 1", Result = DisplayAttributeEnum.Value1)]
-        [TestCase("Value 2", Result = DisplayAttributeEnum.Value2)]
-        [TestCase("Value 3", Result = DisplayAttributeEnum.Value3)]
-        [TestCase("Value 4", Result = DisplayAttributeEnum.Undefined)]
+        [TestCase("Undefined", ExpectedResult = DisplayAttributeEnum.Undefined)]
+        [TestCase("Value 1", ExpectedResult = DisplayAttributeEnum.Value1)]
+        [TestCase("Value 2", ExpectedResult = DisplayAttributeEnum.Value2)]
+        [TestCase("Value 3", ExpectedResult = DisplayAttributeEnum.Value3)]
+        [TestCase("Value 4", ExpectedResult = DisplayAttributeEnum.Undefined)]
         public DisplayAttributeEnum ToDisplayAttributeEnum_FromString(string input)
         {
             var converter = this.converterFactory.CreateDelegate<string, DisplayAttributeEnum>();
             return converter(input);
         }
 
-        [TestCase(DisplayAttributeEnum.Undefined, Result = "Undefined")]
-        [TestCase(DisplayAttributeEnum.Value1, Result = "Value 1")]
-        [TestCase(DisplayAttributeEnum.Value2, Result = "Value 2")]
-        [TestCase(DisplayAttributeEnum.Value3, Result = "Value 3")]
+        [TestCase(DisplayAttributeEnum.Undefined, ExpectedResult = "Undefined")]
+        [TestCase(DisplayAttributeEnum.Value1, ExpectedResult = "Value 1")]
+        [TestCase(DisplayAttributeEnum.Value2, ExpectedResult = "Value 2")]
+        [TestCase(DisplayAttributeEnum.Value3, ExpectedResult = "Value 3")]
         public string ToString_FromDisplayAttributeEnum(DisplayAttributeEnum input)
         {
             var converter = this.converterFactory.CreateDelegate<DisplayAttributeEnum, string>();
             return converter(input);
         }
 
-        [TestCase(DescriptionAttributeEnum.Undefined, Result = "Undefined")]
-        [TestCase(DescriptionAttributeEnum.Value1, Result = "Value 1")]
-        [TestCase(DescriptionAttributeEnum.Value2, Result = "Value 2")]
-        [TestCase(DescriptionAttributeEnum.Value3, Result = "Value 3")]
+        [TestCase(DescriptionAttributeEnum.Undefined, ExpectedResult = "Undefined")]
+        [TestCase(DescriptionAttributeEnum.Value1, ExpectedResult = "Value 1")]
+        [TestCase(DescriptionAttributeEnum.Value2, ExpectedResult = "Value 2")]
+        [TestCase(DescriptionAttributeEnum.Value3, ExpectedResult = "Value 3")]
         public string ToString_FromDisplayAttributeEnum(DescriptionAttributeEnum input)
         {
             var converter = this.converterFactory.CreateDelegate<DescriptionAttributeEnum, string>();
             return converter(input);
         }
 
-        [TestCase(-1, Result = LargeEnum.Undefined)]
-        [TestCase(0, Result = LargeEnum.Undefined)]
-        [TestCase(16, Result = LargeEnum.Value16)]
+        [TestCase(-1, ExpectedResult = LargeEnum.Undefined)]
+        [TestCase(0, ExpectedResult = LargeEnum.Undefined)]
+        [TestCase(16, ExpectedResult = LargeEnum.Value16)]
         public LargeEnum ToLargeEnum_FromInt32(int input)
         {
             var converter = this.converterFactory.CreateDelegate<int, LargeEnum>();
@@ -732,7 +732,7 @@ namespace SafeMapper.Tests
         {
             var converter = this.converterFactory.CreateDelegate<string, int[]>();
             var input = "1";
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual(new[] { 1 }, result);
         }
@@ -742,7 +742,7 @@ namespace SafeMapper.Tests
         {
             var converter = this.converterFactory.CreateDelegate<string, List<int>>();
             var input = "1";
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual(new List<int> { 1 }, result);
         }
@@ -752,7 +752,7 @@ namespace SafeMapper.Tests
         {
             var converter = this.converterFactory.CreateDelegate<string[], int>();
             var input = new[] { "1", "2", "3" };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual(1, result);
         }
@@ -762,7 +762,7 @@ namespace SafeMapper.Tests
         {
             var converter = this.converterFactory.CreateDelegate<List<string>, int>();
             var input = new List<string> { "1", "2", "3" };
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual(1, result);
         }
@@ -772,7 +772,7 @@ namespace SafeMapper.Tests
         {
             var converter = this.converterFactory.CreateDelegate(typeof(DateTime), typeof(SqlDateTime));
             var input = DateTime.MinValue;
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual(SqlDateTime.MinValue, result);
         }
@@ -782,7 +782,7 @@ namespace SafeMapper.Tests
         {
             var converter = this.converterFactory.CreateDelegate(typeof(int), typeof(string));
             var input = 1;
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual("1", result);
         }
@@ -792,7 +792,7 @@ namespace SafeMapper.Tests
         {
             var converter = this.converterFactory.CreateDelegate(typeof(string), typeof(int));
             var input = "1";
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual(1, result);
         }
@@ -812,7 +812,7 @@ namespace SafeMapper.Tests
                     as IEnumerable<Dictionary<string, string>>;
 
             var converter = this.converterFactory.CreateDelegate<IEnumerable<Dictionary<string, string>>, IList<ClassProperty<int>>>();
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.AreEqual(4, result.Count);
             Assert.AreEqual(1, result[0].Value);
@@ -838,10 +838,10 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [TestCase(null, Result = 0)]
-        [TestCase(0, Result = 0)]
-        [TestCase(int.MaxValue, Result = int.MaxValue)]
-        [TestCase(int.MinValue, Result = int.MinValue)]
+        [TestCase(null, ExpectedResult = 0)]
+        [TestCase(0, ExpectedResult = 0)]
+        [TestCase(int.MaxValue, ExpectedResult = int.MaxValue)]
+        [TestCase(int.MinValue, ExpectedResult = int.MinValue)]
         public int CreateDelegate_NullableIntToInt(int? input)
         {
             var converter = this.converterFactory.CreateDelegate<int?, int>();
@@ -849,12 +849,12 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [TestCase(null, Result = 0)]
-        [TestCase((long)0, Result = 0)]
-        [TestCase(long.MaxValue, Result = 0)]
-        [TestCase(long.MinValue, Result = 0)]
-        [TestCase((long)int.MaxValue, Result = int.MaxValue)]
-        [TestCase((long)int.MinValue, Result = int.MinValue)]
+        [TestCase(null, ExpectedResult = 0)]
+        [TestCase((long)0, ExpectedResult = 0)]
+        [TestCase(long.MaxValue, ExpectedResult = 0)]
+        [TestCase(long.MinValue, ExpectedResult = 0)]
+        [TestCase((long)int.MaxValue, ExpectedResult = int.MaxValue)]
+        [TestCase((long)int.MinValue, ExpectedResult = int.MinValue)]
         public int CreateDelegate_NullableLongToInt(long? input)
         {
             var converter = this.converterFactory.CreateDelegate<long?, int>();
@@ -862,9 +862,9 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [TestCase(null, Result = 0)]
-        [TestCase(byte.MaxValue, Result = (int)byte.MaxValue)]
-        [TestCase(byte.MinValue, Result = (int)byte.MinValue)]
+        [TestCase(null, ExpectedResult = 0)]
+        [TestCase(byte.MaxValue, ExpectedResult = (int)byte.MaxValue)]
+        [TestCase(byte.MinValue, ExpectedResult = (int)byte.MinValue)]
         public int CreateDelegate_NullableByteToInt(byte? input)
         {
             var converter = this.converterFactory.CreateDelegate<long?, int>();
@@ -872,10 +872,10 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [TestCase(null, Result = null)]
-        [TestCase(0, Result = "0")]
-        [TestCase(int.MaxValue, Result = "2147483647")]
-        [TestCase(int.MinValue, Result = "-2147483648")]
+        [TestCase(null, ExpectedResult = null)]
+        [TestCase(0, ExpectedResult = "0")]
+        [TestCase(int.MaxValue, ExpectedResult = "2147483647")]
+        [TestCase(int.MinValue, ExpectedResult = "-2147483648")]
         public string CreateDelegate_NullableIntToString(int? input)
         {
             var converter = this.converterFactory.CreateDelegate<int?, string>();
@@ -883,10 +883,10 @@ namespace SafeMapper.Tests
             return converter(input);
         }
 
-        [TestCase(null, Result = null)]
-        [TestCase("0", Result = 0)]
-        [TestCase("2147483647", Result = int.MaxValue)]
-        [TestCase("-2147483648", Result = int.MinValue)]
+        [TestCase(null, ExpectedResult = null)]
+        [TestCase("0", ExpectedResult = 0)]
+        [TestCase("2147483647", ExpectedResult = int.MaxValue)]
+        [TestCase("-2147483648", ExpectedResult = int.MinValue)]
         public int? CreateDelegate_StringToNullableInt(string input)
         {
             var converter = this.converterFactory.CreateDelegate<string, int?>();
@@ -900,7 +900,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<int[]>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ClassProperty<int[]>>(result);
             Assert.AreEqual(new[] { 1, 2, 3 }, result.Value);
@@ -912,7 +912,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<string>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ClassProperty<string>>(result);
             Assert.AreEqual("1,2,3", result.Value);
@@ -924,7 +924,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value", "3" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ClassProperty<int>>(result);
             Assert.AreEqual(1, result.Value);
@@ -936,7 +936,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<NameValueCollection, ClassProperty<int>>();
             var input = new NameValueCollection { { "Value2", "37" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ClassProperty<int>>(result);
             Assert.AreEqual(0, result.Value);
@@ -948,7 +948,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
             var input = new Dictionary<string, string> { { "Value", "37" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ClassProperty<int>>(result);
             Assert.AreEqual(37, result.Value);
@@ -960,7 +960,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<Dictionary<string, string>, ClassProperty<int>>();
             var input = new Dictionary<string, string> { { "Value2", "37" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ClassProperty<int>>(result);
             Assert.AreEqual(0, result.Value);
@@ -972,7 +972,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<ClassProperty<string>, Dictionary<string, int>>();
             var input = new ClassProperty<string> { Value = "1337" };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<Dictionary<string, int>>(result);
             Assert.AreEqual(1337, result["Value"]);
@@ -984,7 +984,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int>>();
             var input = new NameValueCollection { { "Value1", "1" }, { "Value2", "2" }, { "Value3", "3" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<Dictionary<string, int>>(result);
             Assert.AreEqual(1, result["Value1"]);
@@ -998,7 +998,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<Dictionary<string, int>, NameValueCollection>();
             var input = new Dictionary<string, int> { { "Value1", 1 }, { "Value2", 2 }, { "Value3", 3 } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<NameValueCollection>(result);
             Assert.AreEqual("1", result["Value1"]);
@@ -1012,7 +1012,7 @@ namespace SafeMapper.Tests
             var converter = this.converterFactory.CreateDelegate<NameValueCollection, Dictionary<string, int[]>>();
             var input = new NameValueCollection { { "Value", "1" }, { "Value", "2" }, { "Value2", "3" } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<Dictionary<string, int[]>>(result);
             Assert.AreEqual(new[] { 1, 2 }, result["Value"]);
@@ -1026,7 +1026,7 @@ namespace SafeMapper.Tests
             var input = new Parent();
             input.Children = new[] { new Child { Parent = input } };
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<ParentDto>(result);
             Assert.AreEqual(1, result.Children.Length);
@@ -1052,7 +1052,7 @@ namespace SafeMapper.Tests
             input.Add("Length", person.Length.ToString(CultureInfo.CurrentCulture));
             input.Add("BirthDate", person.BirthDate.ToString(CultureInfo.CurrentCulture));
 
-            var result = converter(input);
+             var result = converter(input);
 
             Assert.IsInstanceOf<Person>(result);
             Assert.AreEqual(person.Id, result.Id);
@@ -1075,7 +1075,7 @@ namespace SafeMapper.Tests
                 BirthDate = new DateTime(1977, 03, 04)
             };
 
-            var result = converter(person);
+             var result = converter(person);
 
             Assert.IsInstanceOf<NameValueCollection>(result);
             Assert.AreEqual(person.Id.ToString(), result["Id"]);
@@ -1097,7 +1097,7 @@ namespace SafeMapper.Tests
                                  Length = 182.5m,
                                  BirthDate = new DateTime(1977, 03, 04)
                              };
-            var result = converter(person);
+             var result = converter(person);
 
             Assert.IsInstanceOf<PersonDto>(result);
             Assert.AreEqual(person.Id, result.Id);
@@ -1121,7 +1121,7 @@ namespace SafeMapper.Tests
                 Length = expectedDecimal.ToString(CultureInfo.CurrentCulture),
                 BirthDate = "1977-03-04"
             };
-            var result = converter(person);
+             var result = converter(person);
 
             Assert.AreEqual(new Guid(guidStr), result.Id);
             Assert.AreEqual("Magnus", result.Name);
@@ -1142,7 +1142,7 @@ namespace SafeMapper.Tests
                 Length = 182.5m,
                 BirthDate = new DateTime(1977, 03, 04)
             };
-            var result = converter(person);
+             var result = converter(person);
 
             Assert.IsInstanceOf<Person>(result);
             Assert.AreEqual(person.Id, result.Id);
@@ -1164,7 +1164,7 @@ namespace SafeMapper.Tests
                 Length = 182.5m,
                 BirthDate = new DateTime(1977, 03, 04)
             };
-            var result = converter(person);
+             var result = converter(person);
 
             Assert.IsInstanceOf<PersonStruct>(result);
             Assert.AreEqual(person.Id, result.Id);
@@ -1188,7 +1188,7 @@ namespace SafeMapper.Tests
                 Length = expectedDecimal,
                 BirthDate = DateTime.Parse("1977-03-04")
             };
-            var result = converter(person);
+             var result = converter(person);
 
             Assert.AreEqual(guidStr, result.Id);
             Assert.AreEqual("Magnus", result.Name);
@@ -1252,7 +1252,7 @@ namespace SafeMapper.Tests
 
             var converter = factory.CreateDelegate<int, string>();
 
-            var result = converter(0);
+             var result = converter(0);
             Assert.AreEqual("1337", result);
         }
 
@@ -1265,7 +1265,7 @@ namespace SafeMapper.Tests
 
             var converter = factory.CreateDelegate<string, int>();
 
-            var result = converter(string.Empty);
+             var result = converter(string.Empty);
             Assert.AreEqual(1337, result);
         }
 
@@ -1278,7 +1278,7 @@ namespace SafeMapper.Tests
 
             var converter = factory.CreateDelegate<int, string>();
 
-            var result = converter(0);
+             var result = converter(0);
             Assert.AreEqual("1337", result);
         }
 
@@ -1291,7 +1291,7 @@ namespace SafeMapper.Tests
 
             var converter = factory.CreateDelegate<string, int>();
 
-            var result = converter(string.Empty);
+             var result = converter(string.Empty);
             Assert.AreEqual(1337, result);
         }
 
@@ -1304,7 +1304,7 @@ namespace SafeMapper.Tests
 
             var converter = factory.CreateDelegate<int, string>();
 
-            var result = converter(0);
+             var result = converter(0);
             Assert.AreEqual("1337", result);
         }
 
@@ -1317,7 +1317,7 @@ namespace SafeMapper.Tests
 
             var converter = factory.CreateDelegate<string, int>();
 
-            var result = converter(string.Empty);
+             var result = converter(string.Empty);
             Assert.AreEqual(1337, result);
         }
 
@@ -1330,7 +1330,7 @@ namespace SafeMapper.Tests
 
             var converter = factory.CreateDelegate<string, int>();
 
-            var result = converter("1337");
+             var result = converter("1337");
             Assert.AreEqual(0, result);
         }
         

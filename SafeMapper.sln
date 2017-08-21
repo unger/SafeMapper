@@ -1,22 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests.Model", "SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj", "{955AA075-D841-4BB9-9487-DAC42EEBCECC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E55C46B7-922B-4E50-8115-15B1A28EA66D}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\packages.config = .nuget\packages.config
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper.StrongName", "SafeMapper.StrongName\SafeMapper.StrongName.xproj", "{64F2A2F9-A66E-407F-8F40-E936B45245BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SafeMapper.Tests.Model", "SafeMapper.Tests.Model\SafeMapper.Tests.Model.csproj", "{955AA075-D841-4BB9-9487-DAC42EEBCECC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper", "SafeMapper\SafeMapper.xproj", "{C5A7E95F-5BDB-4E3F-8D84-7B5888830838}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeMapper.StrongName", "SafeMapper.StrongName\SafeMapper.StrongName.csproj", "{64F2A2F9-A66E-407F-8F40-E936B45245BC}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper.Profiler", "SafeMapper.Profiler\SafeMapper.Profiler.xproj", "{AF7EB1C2-2804-4584-91ED-4366F18ABE40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeMapper", "SafeMapper\SafeMapper.csproj", "{C5A7E95F-5BDB-4E3F-8D84-7B5888830838}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SafeMapper.Tests", "SafeMapper.Tests\SafeMapper.Tests.xproj", "{A99996F7-7890-4831-AE03-0E656D1C712F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeMapper.Profiler", "SafeMapper.Profiler\SafeMapper.Profiler.csproj", "{AF7EB1C2-2804-4584-91ED-4366F18ABE40}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SafeMapper.Tests", "SafeMapper.Tests\SafeMapper.Tests.csproj", "{A99996F7-7890-4831-AE03-0E656D1C712F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,5 +47,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D5B8EBE-9704-4D97-B8F8-E1070B4839AE}
 	EndGlobalSection
 EndGlobal
